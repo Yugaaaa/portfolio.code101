@@ -3,141 +3,166 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CODE101 | Portfolio</title>
+  <title>CODE101 | Web Design Bureau</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg-color: #0a0a0a;
-      --surface-color: #141414;
-      --text-color: #ffffff;
-      --accent-color: #ffffff;
-      --secondary-action: #707070;
+    :root { --bg: #0a0a0a; --fg: #ffffff; }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    
+    body { 
+      background: var(--bg); color: var(--fg); 
+      font-family: 'Syne', sans-serif; overflow: hidden; 
     }
 
-    html, body { height: 100%; margin: 0; overflow: hidden; background: var(--bg-color); color: var(--text-color); }
-    
-    /* Responsive Cursor: Hide on touch devices */
+    /* Desktop Cursor Logic */
     @media (pointer: fine) {
       body { cursor: none; }
-      .custom-cursor {
-        position: fixed; width: 20px; height: 20px; border-radius: 50%;
-        border: 2px solid var(--text-color); pointer-events: none;
-        z-index: 99999; transform: translate(-50%, -50%);
-        transition: width 0.3s ease, height 0.3s ease;
-        mix-blend-mode: difference;
+      .cursor-follower {
+        position: fixed; width: 35px; height: 35px; border: 1px solid var(--fg);
+        border-radius: 50%; pointer-events: none; z-index: 9999;
+        mix-blend-mode: difference; transition: transform 0.15s ease-out;
       }
       .cursor-dot {
-        position: fixed; width: 4px; height: 4px; background: var(--text-color);
-        border-radius: 50%; pointer-events: none; z-index: 99999; transform: translate(-50%, -50%);
+        position: fixed; width: 6px; height: 6px; background: var(--fg);
+        border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%);
       }
     }
-    @media (pointer: coarse) {
-      .custom-cursor, .cursor-dot { display: none; }
-      body { cursor: auto; overflow-y: auto; } /* Allow native scroll if snap fails on old mobile */
+
+    /* Mobile-Specific Scrolling & Snapping */
+    .main-container {
+      height: 100vh; overflow-y: auto; 
+      scroll-snap-type: y mandatory; scroll-behavior: smooth;
+    }
+    section {
+      height: 100vh; scroll-snap-align: start;
+      position: relative; display: flex; flex-direction: column;
+      justify-content: center; padding: 2.5rem; overflow: hidden;
     }
 
-    .section-container {
-      height: 100vh; overflow-y: auto; scroll-snap-type: y mandatory;
-      scrollbar-width: none; -ms-overflow-style: none;
-    }
-    .section-container::-webkit-scrollbar { display: none; }
+    /* Cinematic Text */
+    .hero-title { font-size: clamp(3.5rem, 18vw, 12rem); line-height: 0.8; letter-spacing: -0.05em; }
     
-    .section {
-      min-height: 100vh; scroll-snap-align: start;
-      position: relative; padding: 2rem 1rem;
-      display: flex; align-items: center; justify-content: center;
+    /* Grain/Smoke Overlay */
+    .overlay-effect {
+      position: absolute; inset: 0; z-index: -1;
+      background: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #0a0a0a 100%);
+      opacity: 0.7;
     }
 
-    /* Mobile-optimized Grid */
-    .responsive-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      width: 100%;
-      max-width: 1100px;
+    /* Navigation */
+    .nav-fullscreen {
+      position: fixed; inset: 0; background: var(--bg);
+      z-index: 100; display: none; flex-direction: column;
+      align-items: center; justify-content: center; backdrop-filter: blur(15px);
     }
+    .nav-fullscreen.active { display: flex; }
+    .nav-item { font-size: 3rem; font-weight: 800; margin: 0.5rem; transition: 0.4s; }
 
-    .video-bg { position: absolute; inset: 0; z-index: -1; }
-    .video-bg canvas { width: 100%; height: 100%; object-fit: cover; opacity: 0.4; }
-
-    /* Hamburger & Nav */
-    .hamburger { position: fixed; top: 1.5rem; right: 1.5rem; z-index: 100; background: none; border: none; }
-    .nav-overlay {
-      position: fixed; inset: 0; background: var(--bg-color);
-      display: none; flex-direction: column; align-items: center; justify-content: center;
-      z-index: 90; gap: 2rem;
+    /* Interactive Inputs */
+    input, textarea {
+      background: transparent; border-bottom: 1px solid #333;
+      width: 100%; padding: 1rem 0; color: white; outline: none;
+      font-family: 'Space Mono', monospace; font-size: 0.85rem;
     }
-    .nav-overlay.active { display: flex; }
+    input:focus { border-bottom-color: white; }
 
-    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+    .reveal { opacity: 0; transform: translateY(30px); transition: 0.8s ease-out; }
     .reveal.visible { opacity: 1; transform: translateY(0); }
   </style>
  </head>
  <body>
-  <div class="custom-cursor" id="cursor"></div>
+
+  <div class="cursor-follower" id="follower"></div>
   <div class="cursor-dot" id="dot"></div>
 
-  <button class="hamburger" id="menuBtn">
-    <i data-lucide="menu" class="w-8 h-8"></i>
+  <button id="menuBtn" class="fixed top-8 right-8 z-[110] mix-blend-difference">
+    <i data-lucide="menu" class="w-8 h-8 text-white"></i>
   </button>
 
-  <nav class="nav-overlay" id="nav">
-    <a href="#hero" class="text-4xl font-bold">HOME</a>
-    <a href="#work" class="text-4xl font-bold">SOLUTIONS</a>
-    <a href="#pricing" class="text-4xl font-bold">INVESTMENTS</a>
-    <a href="#contact" class="text-4xl font-bold">CONNECT</a>
+  <nav class="nav-fullscreen" id="nav">
+    <a href="#home" class="nav-item">HOME</a>
+    <a href="#solutions" class="nav-item">SOLUTIONS</a>
+    <a href="#investments" class="nav-item">INVESTMENTS</a>
+    <a href="#connect" class="nav-item">CONNECT</a>
   </nav>
 
-  <div class="section-container" id="container">
-    <section class="section" id="hero">
-      <div class="video-bg"><canvas id="heroCanvas"></canvas></div>
-      <div class="text-center z-10">
-        <h1 class="reveal font-extrabold leading-none" style="font-size: clamp(4rem, 15vw, 10rem);">CODE101</h1>
-        <p class="reveal mt-4 opacity-60 font-mono">MINIMALIST DESIGN SOLUTIONS</p>
+  <div class="main-container">
+    
+    <section id="home">
+      <div class="overlay-effect"></div>
+      <p class="font-mono text-[10px] tracking-[0.5em] mb-6 opacity-40">ESTABLISHED 2026</p>
+      <h1 class="hero-title font-extrabold reveal">CODE<br>101</h1>
+      <div class="mt-10 flex items-center gap-6 reveal">
+        <div class="w-16 h-[1px] bg-white"></div>
+        <p class="font-mono text-[10px] uppercase opacity-60">High-End Web Design Bureau</p>
       </div>
     </section>
 
-    <section class="section" id="work">
-      <div class="w-full max-w-6xl">
-        <h2 class="text-4xl font-bold mb-8 reveal">SOLUTIONS</h2>
-        <div class="responsive-grid">
-          <div class="bg-zinc-900 p-6 rounded-xl border border-zinc-800 reveal">
-            <h3 class="text-xl font-bold">Web Design</h3>
-            <p class="text-sm opacity-50 mt-2">Minimalist & Monochromatic</p>
-          </div>
-          <div class="bg-zinc-900 p-6 rounded-xl border border-zinc-800 reveal">
-            <h3 class="text-xl font-bold">UI/UX</h3>
-            <p class="text-sm opacity-50 mt-2">Interactive Experiences</p>
-          </div>
+    <section id="solutions">
+      <h2 class="text-5xl font-extrabold mb-12 reveal">SOLUTIONS</h2>
+      <div class="grid grid-cols-1 gap-6 w-full max-w-lg">
+        <div class="border border-zinc-800 p-6 reveal">
+          <h3 class="font-bold text-xl uppercase">Visual Architecture</h3>
+          <p class="font-mono text-[11px] opacity-40 mt-2">Monochromatic & Minimalist aesthetic designed for modern brands.</p>
+        </div>
+        <div class="border border-zinc-800 p-6 reveal">
+          <h3 class="font-bold text-xl uppercase">Motion UX</h3>
+          <p class="font-mono text-[11px] opacity-40 mt-2">Magnetic cursors, smooth reveals, and immersive video integration.</p>
         </div>
       </div>
     </section>
+
+    <section id="investments">
+      <h2 class="text-5xl font-extrabold mb-12 reveal">INVESTMENTS</h2>
+      <div class="space-y-4 w-full max-w-lg">
+        <div class="flex justify-between items-center py-4 border-b border-zinc-900 reveal">
+          <span class="font-mono text-xs uppercase">Portfolio Landing</span>
+          <span class="font-bold italic">Tier 01</span>
+        </div>
+        <div class="flex justify-between items-center py-4 border-b border-zinc-900 reveal">
+          <span class="font-mono text-xs uppercase">Bespoke Enterprise</span>
+          <span class="font-bold italic">Tier 02</span>
+        </div>
+        <div class="flex justify-between items-center py-4 border-b border-zinc-900 reveal">
+          <span class="font-mono text-xs uppercase">Ongoing Strategy</span>
+          <span class="font-bold italic">Tier 03</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="connect">
+      <h2 class="text-5xl font-extrabold mb-8 reveal">CONNECT</h2>
+      <div class="w-full max-w-lg reveal">
+        <div class="space-y-6">
+          <input type="text" id="name" placeholder="YOUR NAME">
+          <textarea id="msg" placeholder="YOUR PROJECT DETAILS" rows="2"></textarea>
+          
+          <button onclick="sendWhatsApp()" class="w-full py-5 bg-white text-black font-extrabold text-xs tracking-widest uppercase hover:bg-zinc-200 transition-colors">
+            Send Message
+          </button>
+        </div>
+
+        <div class="mt-12 grid grid-cols-2 gap-4">
+          <a href="https://instagram.com/yuga_._._" class="text-[10px] font-mono opacity-40 hover:opacity-100 transition-opacity uppercase">Instagram / @yuga_._._</a>
+          <p class="text-[10px] font-mono opacity-40 uppercase">WhatsApp / +91 98434 87386</p>
+        </div>
+      </div>
+    </section>
+
   </div>
 
   <script>
-    // Lucide Icons
     lucide.createIcons();
 
-    // Custom Cursor Logic
-    const cursor = document.getElementById('cursor');
-    const dot = document.getElementById('dot');
-    
-    document.addEventListener('mousemove', (e) => {
-      cursor.style.left = e.clientX + 'px';
-      cursor.style.top = e.clientY + 'px';
-      dot.style.left = e.clientX + 'px';
-      dot.style.top = e.clientY + 'px';
-    });
-
-    // Mobile Menu
+    // Menu Toggle Logic
     const menuBtn = document.getElementById('menuBtn');
     const nav = document.getElementById('nav');
     menuBtn.onclick = () => nav.classList.toggle('active');
     nav.onclick = () => nav.classList.remove('active');
 
-    // Scroll Observer
+    // Smooth reveal animation
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) entry.target.classList.add('visible');
@@ -145,6 +170,31 @@
     }, { threshold: 0.1 });
 
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Working WhatsApp Messaging Logic
+    function sendWhatsApp() {
+      const name = document.getElementById('name').value;
+      const message = document.getElementById('msg').value;
+      const phoneNumber = "919843487386"; // International format
+      
+      const text = `Hello CODE101! My name is ${name}. %0A%0AProject Details: ${message}`;
+      const url = `https://wa.me/${phoneNumber}?text=${text}`;
+      
+      window.open(url, '_blank').focus();
+    }
+
+    // Cursor Logic (Disabled on touch)
+    const follower = document.getElementById('follower');
+    const dot = document.getElementById('dot');
+
+    if (window.matchMedia("(pointer: fine)").matches) {
+      document.addEventListener('mousemove', (e) => {
+        follower.style.left = e.clientX + 'px';
+        follower.style.top = e.clientY + 'px';
+        dot.style.left = e.clientX + 'px';
+        dot.style.top = e.clientY + 'px';
+      });
+    }
   </script>
  </body>
 </html>
