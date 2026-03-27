@@ -3,407 +3,288 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CODE101 | Cinematic Portfolio</title>
+  <title>CODE101 | Digital Solutions</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-color: #0a0a0a;
-      --surface-color: #141414;
+      --surface-color: #111111;
       --text-color: #ffffff;
       --accent-color: #ffffff;
-      --secondary-action: #707070;
-      --grey-light: #262626;
-      --grey-medium: #3a3a3a;
+      --secondary-action: #888888;
+      --border-color: rgba(255,255,255,0.1);
     }
-    html, body { height: 100%; margin: 0; overflow: hidden; }
     
+    html, body { height: 100%; margin: 0; overflow-x: hidden; background: var(--bg-color); color: var(--text-color); }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg-color); }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+
     @media (pointer: fine) {
       body { cursor: none; }
-      body.no-js { cursor: auto; }
-      * { cursor: inherit; }
+      .custom-cursor { position: fixed; width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid white; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); transition: width 0.3s, height 0.3s, background 0.3s; mix-blend-mode: difference; }
+      .cursor-dot { position: fixed; width: 4px; height: 4px; background: white; border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); }
     }
+
+    /* Smoke & Video Overlay */
+    .hero-wrap { position: relative; height: 100vh; height: 100dvh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .smoke-canvas { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
     
-    .custom-cursor { position: fixed; width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--text-color); pointer-events: none; z-index: 99999; transform: translate(-50%, -50%); transition: width 0.3s ease, height 0.3s ease, background 0.3s ease, border-color 0.3s ease; mix-blend-mode: screen; }
-    .custom-cursor.hovering { width: 60px; height: 60px; background: rgba(255,255,255,0.1); box-shadow: 0 0 30px rgba(255,255,255,0.5); }
-    .cursor-dot { position: fixed; width: 5px; height: 5px; border-radius: 50%; background: var(--text-color); pointer-events: none; z-index: 99999; transform: translate(-50%, -50%); transition: opacity 0.3s; }
-    .cursor-text { position: fixed; pointer-events: none; z-index: 99999; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--bg-color); transform: translate(-50%, -50%); opacity: 0; font-weight: 700; background: rgba(255,255,255,0.9); padding: 0.4rem 0.8rem; border-radius: 4px; }
-    .cursor-text.visible { opacity: 1; }
+    /* Magnetic Text */
+    .magnetic-text { display: inline-block; transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1); will-change: transform; z-index: 10; position: relative; }
 
-    @media (pointer: coarse) {
-      .custom-cursor, .cursor-dot, .cursor-text { display: none !important; }
-      body { overflow-y: auto; }
-    }
+    /* Layout Elements */
+    .section-padding { padding: 8rem 1.5rem; }
+    @media (max-width: 768px) { .section-padding { padding: 4rem 1rem; } }
 
-    .section-container { height: 100%; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; scroll-snap-type: y mandatory; }
-    .section { min-height: 100vh; min-height: 100dvh; scroll-snap-align: start; position: relative; display: flex; align-items: center; justify-content: center; }
-
-    .video-bg { position: absolute; inset: 0; overflow: hidden; }
-    .video-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.95) 100%); }
-    .video-bg canvas { width: 100%; height: 100%; object-fit: cover; }
-
-    .nav-overlay { position: fixed; inset: 0; z-index: 9990; background: var(--bg-color); opacity: 0; pointer-events: none; transition: opacity 0.6s ease; display: flex; align-items: center; justify-content: center; }
-    .nav-overlay.open { opacity: 1; pointer-events: all; }
-    .nav-overlay a { display: block; font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 5rem); font-weight: 800; color: var(--text-color); text-decoration: none; padding: 0.3em 0; opacity: 0; transform: translateY(40px); transition: all 0.5s ease; }
-    .nav-overlay.open a { opacity: 1; transform: translateY(0); }
-
-    .hamburger { position: fixed; top: 2rem; right: 2rem; z-index: 9995; width: 40px; height: 30px; background: none; border: none; padding: 0; }
-    .hamburger span { display: block; width: 100%; height: 2px; background: var(--text-color); transition: all 0.4s ease; transform-origin: center; margin-bottom: 8px; }
-    .hamburger span:nth-child(2) { width: 60%; margin-left: auto; }
-    .hamburger.open span:nth-child(1) { transform: translateY(10px) rotate(45deg); }
-    .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-    .hamburger.open span:nth-child(3) { transform: translateY(-10px) rotate(-45deg); margin-bottom: 0; }
-
-    .project-card { position: relative; overflow: hidden; border-radius: 16px; background: var(--surface-color); border: 1px solid rgba(255,255,255,0.1); transition: all 0.5s ease; }
-    .project-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 30px 60px rgba(0,0,0,0.8); background: var(--grey-light); }
-    .card-image { height: 220px; position: relative; overflow: hidden; }
-    .card-gradient { position: absolute; inset: 0; transition: opacity 0.5s; opacity: 0.4; }
-    .project-card:hover .card-gradient { opacity: 0.7; }
-    .card-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.4s ease; }
-    .project-card:hover .card-overlay { opacity: 1; }
-
-    @media (pointer: coarse) {
-      .card-overlay { opacity: 1; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); align-items: flex-end; padding-bottom: 1rem; }
-      .project-card:active { transform: scale(0.98); border-color: var(--accent-color); }
-    }
-
-    /* Enhanced Form Styling */
-    .float-group { position: relative; margin-bottom: 2.5rem; }
-    .float-group input, .float-group textarea, .float-group select { width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--secondary-action); color: var(--text-color); font-family: 'Space Mono', monospace; font-size: 14px; padding: 1.5rem 0 0.5rem; outline: none; transition: border-color 0.3s; border-radius: 0; appearance: none; }
-    .float-group select option { background: var(--surface-color); color: var(--text-color); padding: 10px; }
-    .float-group input:focus, .float-group textarea:focus, .float-group select:focus { border-color: var(--text-color); }
-    .float-group label { position: absolute; left: 0; top: 1.5rem; font-family: 'Space Mono', monospace; font-size: 13px; color: var(--secondary-action); pointer-events: none; transition: all 0.3s ease; letter-spacing: 1px; text-transform: uppercase; }
-    .float-group input:focus ~ label, .float-group input:not(:placeholder-shown) ~ label, .float-group textarea:focus ~ label, .float-group textarea:not(:placeholder-shown) ~ label, .float-group select:focus ~ label, .float-group select:valid ~ label { top: -0.2rem; font-size: 10px; color: var(--text-color); }
-    .select-arrow { position: absolute; right: 0; top: 1.5rem; pointer-events: none; color: var(--secondary-action); }
-
-    .reveal { opacity: 0; transform: translateY(60px); transition: all 0.8s ease; }
+    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
     .reveal.visible { opacity: 1; transform: translateY(0); }
 
-    .skill-card { position: relative; padding: 2rem; border-radius: 12px; background: rgba(45, 45, 45, 0.6); border: 1px solid rgba(255, 255, 255, 0.15); transition: all 0.5s ease; }
-    .skill-card:hover { background: rgba(45, 45, 45, 0.95); border-color: rgba(255, 255, 255, 0.3); transform: translateY(-12px) scale(1.05); }
-    .skill-icon { font-size: 2.5rem; margin-bottom: 1rem; transition: transform 0.5s ease; }
-    .skill-card:hover .skill-icon { transform: scale(1.3) rotate(10deg); }
-    .skill-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .skill-desc { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--secondary-action); line-height: 1.5; }
+    /* Bento Grid for Solutions */
+    .bento-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+    .bento-item { background: var(--surface-color); border: 1px solid var(--border-color); padding: 2.5rem; border-radius: 24px; transition: all 0.4s ease; }
+    .bento-item:hover { border-color: var(--text-color); transform: translateY(-5px); }
+    
+    @media (max-width: 1024px) { .bento-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 640px) { .bento-grid { grid-template-columns: 1fr; } }
 
-    .pricing-card { position: relative; padding: 2.5rem; border-radius: 12px; background: rgba(45, 45, 45, 0.6); border: 1px solid rgba(255, 255, 255, 0.15); display: flex; flex-direction: column; transition: all 0.6s ease; }
-    .pricing-card:hover { background: rgba(45, 45, 45, 0.95); transform: translateY(-15px) scale(1.02); }
-    .pricing-badge { position: absolute; top: 1.5rem; right: 1.5rem; background: var(--text-color); color: var(--bg-color); padding: 0.3rem 0.8rem; border-radius: 999px; font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700; text-transform: uppercase; opacity: 0; transition: all 0.5s ease; }
-    .pricing-card:hover .pricing-badge { opacity: 1; transform: translateX(0); }
-    @media (pointer: coarse) { .pricing-badge { opacity: 1; transform: translateX(0); } }
+    /* Magnetic Button */
+    .mag-btn-wrap { display: inline-block; padding: 20px; }
+    .magnetic-button { padding: 1.25rem 2.5rem; background: white; color: black; font-family: 'Space Mono', monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; border-radius: 50px; transition: transform 0.3s ease; display: block; }
 
-    .pricing-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem; }
-    .pricing-desc { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--secondary-action); margin-bottom: 1.5rem; flex-grow: 1; }
-    .pricing-amount { font-size: 2.5rem; font-weight: 800; margin-bottom: 1.5rem; }
-    .pricing-features { list-style: none; padding: 0; margin: 1.5rem 0; font-family: 'Space Mono', monospace; font-size: 12px; color: var(--secondary-action); }
-    .pricing-features li { padding: 0.5rem 0; display: flex; align-items: center; }
-    .pricing-features li::before { content: '✓'; color: var(--text-color); margin-right: 0.8rem; font-weight: 700; }
-    .pricing-btn { margin-top: auto; padding: 1rem; border: 1.5px solid var(--text-color); color: var(--text-color); border-radius: 8px; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; text-transform: uppercase; transition: all 0.4s ease; text-align: center; }
-    .pricing-btn:hover { background: var(--text-color); color: var(--bg-color); }
-
-    .scroll-indicator { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
-    .scroll-line { width: 1px; height: 50px; background: linear-gradient(to bottom, var(--text-color), transparent); animation: scrollPulse 2s infinite; }
-    @keyframes scrollPulse { 0%, 100% { opacity: 0.3; transform: scaleY(0.5); } 50% { opacity: 1; transform: scaleY(1); } }
-
-    .section-counter { position: fixed; right: 2rem; top: 50%; transform: translateY(-50%); z-index: 100; display: flex; flex-direction: column; gap: 12px; }
-    .section-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--secondary-action); transition: all 0.4s ease; border: none; padding: 0; }
-    .section-dot.active { background: var(--text-color); transform: scale(1.4); }
-
-    .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--text-color); color: var(--bg-color); padding: 1rem 2rem; border-radius: 8px; font-family: 'Space Mono', monospace; font-size: 13px; z-index: 99999; opacity: 0; transition: all 0.5s ease; font-weight: 700; text-align: center; }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-    .noise { position: fixed; inset: 0; z-index: 9980; pointer-events: none; opacity: 0.03; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
-
-    /* MOBILE LAYOUT FIXES */
-    @media (max-width: 768px) {
-      .hamburger { top: 1.5rem; right: 1.5rem; width: 32px; height: 24px; }
-      .section-counter { display: none; }
-      .section { height: auto; padding: 6rem 0; min-height: 100dvh; } /* Dynamic viewport and heavy padding */
-      .section-container { scroll-snap-type: none; } 
-      
-      .nav-overlay a { font-size: 2.5rem; }
-      .project-card { border-radius: 12px; margin-bottom: 1rem; }
-      .skill-card, .pricing-card { padding: 1.5rem; margin-bottom: 1rem; }
-      
-      h1 { font-size: clamp(3rem, 15vw, 5rem) !important; }
-      h2 { font-size: clamp(2rem, 8vw, 3rem) !important; }
-      
-      .float-group { margin-bottom: 2rem; }
-      .float-group label { font-size: 12px; top: 1.2rem; }
-      .pricing-badge { font-size: 9px; padding: 0.3rem 0.6rem; top: 1rem; right: 1rem; }
-      
-      .grid { display: flex; flex-direction: column; gap: 1rem; } /* Force stack on mobile */
-      #contactForm { margin-bottom: 2rem; }
-    }
+    .stat-card { border-left: 1px solid var(--border-color); padding-left: 2rem; }
   </style>
  </head>
- <body class="h-full" style="background: var(--bg-color); color: var(--text-color); font-family: 'Syne', sans-serif;">
-  <script>document.documentElement.classList.add('js');</script>
+ <body style="font-family: 'Syne', sans-serif;">
   
   <div class="custom-cursor" id="cursor"></div>
   <div class="cursor-dot" id="cursorDot"></div>
-  <div class="cursor-text" id="cursorText"></div>
-  <div class="noise"></div>
 
-  <nav class="section-counter" id="sectionCounter">
-      <button class="section-dot active" data-section="0"></button> 
-      <button class="section-dot" data-section="1"></button> 
-      <button class="section-dot" data-section="2"></button> 
-      <button class="section-dot" data-section="3"></button>
+  <nav class="fixed top-0 w-full z-50 p-8 flex justify-between items-center mix-blend-difference">
+      <div class="font-extrabold text-2xl tracking-tighter">CODE101</div>
+      <div class="hidden md:flex gap-10 font-mono text-[11px] uppercase tracking-widest">
+          <a href="#work" class="hover:opacity-50 transition-opacity">Work</a>
+          <a href="#solutions" class="hover:opacity-50 transition-opacity">Solutions</a>
+          <a href="#investments" class="hover:opacity-50 transition-opacity">Investments</a>
+          <a href="#contact" class="hover:opacity-50 transition-opacity">Connect</a>
+      </div>
+      <button class="md:hidden" id="menuBtn"><i data-lucide="menu"></i></button>
   </nav>
 
-  <button class="hamburger" id="hamburger"> <span></span><span></span><span></span> </button> 
-  
-  <div class="nav-overlay" id="navOverlay">
-   <div class="text-center">
-       <a href="#hero" data-nav="0">Home</a> 
-       <a href="#work" data-nav="1">Work</a> 
-       <a href="#about" data-nav="2">About</a> 
-       <a href="#contact" data-nav="3">Contact</a>
-   </div>
-  </div>
-
-  <div class="section-container" id="sectionContainer">
-      
-   <section class="section" id="hero">
-    <div class="video-bg"><canvas id="heroCanvas"></canvas></div>
-    <canvas id="smokeCanvasHero" class="smoke-canvas"></canvas>
-    <div class="relative z-10 text-center px-6 w-full" style="max-width: 1000px;">
-     <p class="reveal" style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 6px; text-transform: uppercase; margin-bottom: 1.5rem;">Digital Creator & Designer</p>
-     <h1 class="reveal" style="font-size: 8rem; font-weight: 800; line-height: 0.95; letter-spacing: -3px; margin-bottom: 1.5rem;" id="heroTitle">CODE<br>101</h1>
-     <p class="reveal" style="font-family: 'Space Mono', monospace; font-size: 14px; color: var(--secondary-action); max-width: 500px; margin: 0 auto;">Crafting immersive digital experiences at the intersection of design and technology</p>
-     <div class="scroll-indicator reveal"><span style="font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--secondary-action);">Scroll</span><div class="scroll-line"></div></div>
+  <section class="hero-wrap">
+    <canvas id="smokeCanvas" class="smoke-canvas"></canvas>
+    <div class="relative z-10 text-center">
+        <div class="overflow-hidden">
+            <h1 class="magnetic-text text-[15vw] md:text-[12rem] font-black leading-[0.8] tracking-tighter" id="heroText">
+                CODE<br>101
+            </h1>
+        </div>
+        <div class="mt-12 reveal">
+            <p class="font-mono text-zinc-500 uppercase tracking-[0.5em] text-[10px] mb-8">Engineering Digital Excellence</p>
+            <div class="mag-btn-wrap">
+                <a href="#work" class="magnetic-button">View Portfolio</a>
+            </div>
+        </div>
     </div>
-   </section>
+  </section>
 
-   <section class="section" id="work">
-    <div class="video-bg"><canvas id="workCanvas"></canvas></div>
-    <div class="relative z-10 w-full px-6" style="max-width: 1100px; margin: 0 auto;">
-     <div class="reveal" style="margin-bottom: 3rem;">
-      <p style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 0.5rem;">Portfolio</p>
-      <h2 style="font-size: 4.5rem; font-weight: 800; letter-spacing: -2px;">Selected Work</h2>
-     </div>
-     <div class="grid md:grid-cols-2 gap-6">
-       <a href="#" class="project-card-link reveal" data-hover="true" data-hover-text="VISIT">
-       <div class="project-card">
-        <div class="card-image"><div class="card-gradient" style="background: linear-gradient(135deg, #ffffff 0%, #0a0a0f 100%);"></div><div class="card-overlay"><span style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 3px;">EXPLORE →</span></div></div>
-        <div class="p-5"><p class="font-mono text-[10px] tracking-widest text-zinc-400 mb-1">BRAND IDENTITY</p><h3 class="text-xl font-bold">Minimal Studio</h3></div>
-       </div></a> 
-       
-       <a href="#" class="project-card-link reveal" data-hover="true" data-hover-text="VISIT">
-       <div class="project-card md:translate-y-10">
-        <div class="card-image"><div class="card-gradient" style="background: linear-gradient(135deg, #e0e0e0 0%, #0a0a0f 100%);"></div><div class="card-overlay"><span style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 3px;">EXPLORE →</span></div></div>
-        <div class="p-5"><p class="font-mono text-[10px] tracking-widest text-zinc-400 mb-1">WEB DESIGN</p><h3 class="text-xl font-bold">Digital Agency</h3></div>
-       </div></a> 
-     </div>
-    </div>
-   </section>
-
-   <section class="section" id="about">
-    <div class="video-bg"><canvas id="aboutCanvas"></canvas></div>
-    <canvas id="smokeCanvasAbout" class="smoke-canvas"></canvas>
-    <div class="relative z-10 w-full px-6" style="max-width: 1200px; margin: 0 auto;">
-     <p class="reveal font-mono text-[11px] tracking-[4px] uppercase mb-2">About</p>
-     <h2 class="reveal text-[4.5rem] font-extrabold tracking-[-2px] mb-2">The Story</h2>
-     <p class="reveal font-mono text-[13px] text-zinc-400 mb-10">I'm 18 years old, just starting my journey in digital design and development.</p>
-     
-     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
-      <div class="skill-card reveal"><div class="skill-icon">🎬</div><div class="skill-title">Motion Design</div><div class="skill-desc">Cinematic animations and dynamic visual storytelling.</div></div>
-      <div class="skill-card reveal md:translate-y-5"><div class="skill-icon">💻</div><div class="skill-title">Web Development</div><div class="skill-desc">Creating interactive experiences with modern tech.</div></div>
-      <div class="skill-card reveal"><div class="skill-icon">🎨</div><div class="skill-title">Brand Identity</div><div class="skill-desc">Crafting unique visual identities for brands.</div></div>
-      <div class="skill-card reveal md:translate-y-5"><div class="skill-icon">🌐</div><div class="skill-title">3D / WebGL</div><div class="skill-desc">Immersive 3D experiences for the web.</div></div>
-     </div>
-    </div>
-   </section>
-
-   <section class="section" id="pricing" style="flex-direction: column; align-items: center;">
-    <div class="video-bg"><canvas id="pricingCanvas"></canvas></div>
-    <div class="relative z-10 w-full px-6 mb-20" style="max-width: 1200px;">
-     <p class="reveal font-mono text-[11px] tracking-[4px] uppercase mb-2">Services</p>
-     <h2 class="reveal text-[4.5rem] font-extrabold tracking-[-2px] mb-12">Pricing Plans</h2>
-     <div class="grid md:grid-cols-3 gap-6">
-      <div class="pricing-card reveal"><div class="pricing-badge">Entry</div><div class="pricing-title">Starter</div><div class="pricing-amount">₹499</div><ul class="pricing-features"><li>Single Page Design</li><li>Mobile Responsive</li></ul><button class="pricing-btn">Choose Plan</button></div>
-      <div class="pricing-card reveal md:scale-105"><div class="pricing-badge">Popular</div><div class="pricing-title">Professional</div><div class="pricing-amount">₹999</div><ul class="pricing-features"><li>Multi-Page Design</li><li>Advanced Animation</li><li>CMS Integration</li></ul><button class="pricing-btn">Choose Plan</button></div>
-      <div class="pricing-card reveal"><div class="pricing-badge">Premium</div><div class="pricing-title">Enterprise</div><div class="pricing-amount">Custom</div><ul class="pricing-features"><li>Full Custom Build</li><li>Motion & 3D Graphics</li></ul><button class="pricing-btn">Get Quote</button></div>
-     </div>
-    </div>
-
-    <div class="relative z-10 w-full px-6" style="max-width: 700px;" id="contact">
-     <h2 class="reveal text-[4.5rem] font-extrabold tracking-[-2px] mb-10 text-center">Let's Talk</h2>
-     
-     <form id="contactForm" class="reveal bg-black/50 p-6 md:p-10 rounded-2xl border border-zinc-800 backdrop-blur-md">
-      
-      <div class="grid md:grid-cols-2 gap-x-6">
-          <div class="float-group">
-              <input type="text" id="nameInput" placeholder=" " required autocomplete="name"> 
-              <label for="nameInput">Your Name</label>
-          </div>
-          <div class="float-group">
-              <input type="text" id="roleInput" placeholder=" " required> 
-              <label for="roleInput">Role / Company</label>
-          </div>
-      </div>
-
-      <div class="grid md:grid-cols-2 gap-x-6">
-          <div class="float-group">
-              <input type="email" id="emailInput" placeholder=" " required autocomplete="email"> 
-              <label for="emailInput">Email Address</label>
-          </div>
-          <div class="float-group">
-              <select id="typeInput" required class="cursor-pointer">
-                  <option value="" disabled selected hidden></option>
-                  <option value="Web Design Project">Web Design Project</option>
-                  <option value="Motion / 3D Design">Motion / 3D Design</option>
-                  <option value="Enterprise Solution">Enterprise Solution</option>
-                  <option value="General Inquiry">General Inquiry</option>
-              </select>
-              <label for="typeInput">Inquiry Type</label>
-              <i data-lucide="chevron-down" class="select-arrow w-4 h-4"></i>
-          </div>
-      </div>
-
-      <div class="float-group">
-          <textarea id="messageInput" rows="4" placeholder=" " required style="resize: none;"></textarea> 
-          <label for="messageInput">Project Details / Message</label>
+  <section id="solutions" class="section-padding max-w-7xl mx-auto">
+      <div class="mb-20">
+          <p class="font-mono text-xs uppercase tracking-widest text-zinc-500 mb-4">What we do</p>
+          <h2 class="text-6xl md:text-8xl font-bold tracking-tighter">Strategic<br>Solutions</h2>
       </div>
       
-      <button type="submit" class="w-full magnetic-btn py-4 bg-white text-black font-bold font-mono text-sm tracking-widest uppercase rounded hover:bg-zinc-200 transition-colors"> 
-          Send Inquiry via WhatsApp
-      </button>
-     </form>
-     
-     <div class="reveal mt-16 text-center pb-10">
-      <p class="font-mono text-[11px] text-zinc-500">© 2026 CODE101. All rights reserved.</p>
-     </div>
-    </div>
-   </section>
-  </div>
-  
-  <div class="toast" id="toast"></div>
+      <div class="bento-grid">
+          <div class="bento-item reveal col-span-1 md:col-span-2">
+              <i data-lucide="layout" class="mb-6 opacity-50"></i>
+              <h3 class="text-2xl font-bold mb-4">Web Architecture</h3>
+              <p class="font-mono text-sm text-zinc-400 leading-relaxed">Developing high-performance, scalable web ecosystems using cutting-edge frameworks and immersive UI/UX patterns.</p>
+          </div>
+          <div class="bento-item reveal">
+              <i data-lucide="layers" class="mb-6 opacity-50"></i>
+              <h3 class="text-2xl font-bold mb-4">Identity</h3>
+              <p class="font-mono text-sm text-zinc-400">Minimalist brand systems that command attention.</p>
+          </div>
+          <div class="bento-item reveal">
+              <i data-lucide="zap" class="mb-6 opacity-50"></i>
+              <h3 class="text-2xl font-bold mb-4">Motion</h3>
+              <p class="font-mono text-sm text-zinc-400">Cinematic interactions and fluid animations.</p>
+          </div>
+      </div>
+  </section>
+
+  <section id="investments" class="bg-white text-black section-padding">
+      <div class="max-w-7xl mx-auto">
+          <div class="grid md:grid-cols-2 gap-20 items-center">
+              <div>
+                  <h2 class="text-6xl md:text-8xl font-bold tracking-tighter mb-8">Scalable<br>Investment</h2>
+                  <p class="font-mono text-zinc-600 mb-12">We build digital assets that yield long-term value. Our approach combines design precision with technical robustness.</p>
+                  <div class="grid grid-cols-2 gap-8">
+                      <div class="stat-card border-zinc-200">
+                          <span class="text-4xl font-bold">99%</span>
+                          <p class="font-mono text-[10px] uppercase text-zinc-500 mt-2">Uptime Reliability</p>
+                      </div>
+                      <div class="stat-card border-zinc-200">
+                          <span class="text-4xl font-bold">200+</span>
+                          <p class="font-mono text-[10px] uppercase text-zinc-500 mt-2">Projects Delivered</p>
+                      </div>
+                  </div>
+              </div>
+              <div class="relative aspect-square bg-zinc-100 rounded-3xl overflow-hidden flex items-center justify-center p-12">
+                  <div class="text-center">
+                      <p class="font-mono text-sm mb-4">Investment Strategy</p>
+                      <h4 class="text-3xl font-bold">Digital Transformation & Infrastructure Design</h4>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </section>
+
+  <section id="contact" class="section-padding max-w-4xl mx-auto">
+      <div class="text-center mb-20 reveal">
+          <h2 class="text-6xl md:text-8xl font-bold tracking-tighter">Connect</h2>
+          <p class="font-mono text-zinc-500 mt-4">Available for worldwide collaborations.</p>
+      </div>
+      
+      <form id="contactForm" class="grid gap-8">
+          <div class="grid md:grid-cols-2 gap-8">
+              <input type="text" id="name" placeholder="Name" class="bg-transparent border-b border-zinc-800 p-4 focus:border-white outline-none font-mono text-sm" required>
+              <input type="text" id="company" placeholder="Company / Role" class="bg-transparent border-b border-zinc-800 p-4 focus:border-white outline-none font-mono text-sm" required>
+          </div>
+          <select id="type" class="bg-transparent border-b border-zinc-800 p-4 focus:border-white outline-none font-mono text-sm text-zinc-500" required>
+              <option value="" disabled selected>Select Inquiry Type</option>
+              <option value="Solution Architecture">Solution Architecture</option>
+              <option value="Investment Inquiry">Investment Inquiry</option>
+              <option value="Creative Partnership">Creative Partnership</option>
+          </select>
+          <textarea id="message" rows="4" placeholder="Message Details" class="bg-transparent border-b border-zinc-800 p-4 focus:border-white outline-none font-mono text-sm" required></textarea>
+          
+          <div class="text-center mt-8">
+              <button type="submit" class="magnetic-button inline-block">Send Inquery</button>
+          </div>
+      </form>
+  </section>
+
+  <footer class="p-12 border-t border-zinc-900 text-center">
+      <p class="font-mono text-[10px] text-zinc-600 uppercase tracking-widest">© 2026 CODE101 | All rights reserved.</p>
+  </footer>
 
   <script>
     lucide.createIcons();
 
-    // ── PERFORMANCE FIX: Reduce particles heavily on Mobile ──
     const isMobile = window.innerWidth < 768;
-    const particleCount = isMobile ? 12 : 40; 
-    const smokeCount = isMobile ? 8 : 30;
+    
+    // --- MAGNETIC HERO TEXT ---
+    const heroText = document.getElementById('heroText');
+    if (!isMobile) {
+        window.addEventListener('mousemove', (e) => {
+            const { clientX, clientY } = e;
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            
+            const moveX = (clientX - centerX) / 25;
+            const moveY = (clientY - centerY) / 25;
+            
+            heroText.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        });
+    }
 
-    function initCanvas(canvasId) {
-      const canvas = document.getElementById(canvasId);
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      const particles = [];
-      
-      function resize() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
-      resize(); window.addEventListener('resize', resize);
+    // --- CURSOR LOGIC ---
+    const cursor = document.getElementById('cursor');
+    const dot = document.getElementById('cursorDot');
+    
+    if (!isMobile) {
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            dot.style.left = e.clientX + 'px';
+            dot.style.top = e.clientY + 'px';
+        });
 
-      for (let i = 0; i < particleCount; i++) {
-        particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4, r: Math.random() * 2 + 0.5, alpha: Math.random() * 0.3 + 0.1 });
-      }
+        document.querySelectorAll('a, button, input, select, textarea').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.style.transform = 'translate(-50%, -50%) scale(3)');
+            el.addEventListener('mouseleave', () => cursor.style.transform = 'translate(-50%, -50%) scale(1)');
+        });
+    }
 
-      function draw() {
+    // --- SMOKE BACKGROUND ---
+    const canvas = document.getElementById('smokeCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    class Particle {
+        constructor() {
+            this.reset();
+        }
+        reset() {
+            this.x = Math.random() * canvas.width;
+            this.y = canvas.height + Math.random() * 100;
+            this.vx = (Math.random() - 0.5) * 0.5;
+            this.vy = -Math.random() * 1.5 - 0.5;
+            this.radius = Math.random() * 150 + 50;
+            this.alpha = Math.random() * 0.4;
+            this.decay = Math.random() * 0.002 + 0.001;
+        }
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            this.alpha -= this.decay;
+            if (this.alpha <= 0) this.reset();
+        }
+        draw() {
+            ctx.beginPath();
+            const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
+            grad.addColorStop(0, `rgba(255, 255, 255, ${this.alpha * 0.2})`);
+            grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+            ctx.fillStyle = grad;
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    const count = isMobile ? 15 : 45;
+    for (let i = 0; i < count; i++) particles.push(new Particle());
+
+    function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         particles.forEach(p => {
-          p.x += p.vx; p.y += p.vy;
-          if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
-          if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
-          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`; ctx.fill();
+            p.update();
+            p.draw();
         });
-        requestAnimationFrame(draw);
-      }
-      requestAnimationFrame(draw);
+        requestAnimationFrame(animate);
     }
-    
-    initCanvas('heroCanvas'); initCanvas('workCanvas'); initCanvas('aboutCanvas'); initCanvas('pricingCanvas');
+    animate();
 
-    // ── Smoke Effect ──
-    function initSmokeEffect(canvasId) {
-      const canvas = document.getElementById(canvasId);
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      let smokeParticles = [];
-
-      function resize() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
-      resize(); window.addEventListener('resize', resize);
-
-      for (let i = 0; i < smokeCount; i++) {
-        smokeParticles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.2 - 0.1, r: Math.random() * 80 + 40, alpha: Math.random() * 0.4, decay: Math.random() * 0.003 + 0.001 });
-      }
-
-      function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        smokeParticles.forEach((p, idx) => {
-          p.x += p.vx; p.y += p.vy; p.alpha -= p.decay;
-          if (p.alpha <= 0) {
-            smokeParticles[idx] = { x: Math.random() * canvas.width, y: canvas.height + 20, vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.2 - 0.1, r: Math.random() * 80 + 40, alpha: Math.random() * 0.4, decay: Math.random() * 0.003 + 0.001 };
-          }
-          const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
-          grad.addColorStop(0, `rgba(255, 255, 255, ${p.alpha * 0.3})`); grad.addColorStop(0.5, `rgba(255, 255, 255, ${p.alpha * 0.1})`); grad.addColorStop(1, `rgba(255, 255, 255, 0)`);
-          ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+    // --- REVEAL ANIMATION ---
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('visible');
         });
-        requestAnimationFrame(draw);
-      }
-      requestAnimationFrame(draw);
-    }
-    
-    initSmokeEffect('smokeCanvasAbout'); initSmokeEffect('smokeCanvasHero');
+    }, { threshold: 0.1 });
 
-    // ── Desktop Cursor Logic ──
-    if (!isMobile && window.matchMedia("(pointer: fine)").matches) {
-        const cursor = document.getElementById('cursor');
-        const cursorDot = document.getElementById('cursorDot');
-        let mouseX = 0, mouseY = 0, cursorX = 0, cursorY = 0;
-        
-        document.addEventListener('mousemove', e => {
-          mouseX = e.clientX; mouseY = e.clientY;
-          cursorDot.style.left = mouseX + 'px'; cursorDot.style.top = mouseY + 'px';
-        });
-
-        function animateCursor() {
-          cursorX += (mouseX - cursorX) * 0.15; cursorY += (mouseY - cursorY) * 0.15;
-          cursor.style.left = cursorX + 'px'; cursor.style.top = cursorY + 'px';
-          requestAnimationFrame(animateCursor);
-        }
-        requestAnimationFrame(animateCursor);
-    }
-
-    // ── Nav & Observers ──
-    const hamburger = document.getElementById('hamburger');
-    const navOverlay = document.getElementById('navOverlay');
-    const container = document.getElementById('sectionContainer');
-    
-    hamburger.addEventListener('click', () => { hamburger.classList.toggle('open'); navOverlay.classList.toggle('open'); });
-    navOverlay.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', e => {
-        e.preventDefault(); hamburger.classList.remove('open'); navOverlay.classList.remove('open');
-        container.querySelectorAll('.section')[parseInt(a.getAttribute('data-nav'))].scrollIntoView({ behavior: 'smooth' });
-      });
-    });
-
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-    }, { threshold: 0.1, root: container });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    // ── UPGRADED WHATSAPP LOGIC ──
-    const contactForm = document.getElementById('contactForm');
-    contactForm.addEventListener('submit', e => {
-      e.preventDefault();
-      
-      const name = document.getElementById('nameInput').value;
-      const role = document.getElementById('roleInput').value;
-      const email = document.getElementById('emailInput').value;
-      const type = document.getElementById('typeInput').value;
-      const msg = document.getElementById('messageInput').value;
-      const phone = "919843487386"; 
-      
-      // Formatting the text specifically for WhatsApp (using asterisks for bolding)
-      const text = `*NEW INQUIRY: CODE101*%0A%0A*Name:* ${name}%0A*Role/Company:* ${role}%0A*Email:* ${email}%0A*Inquiry Type:* ${type}%0A%0A*Project Details:*%0A${msg}`;
-      
-      const url = `https://wa.me/${phone}?text=${text}`;
-      window.open(url, '_blank').focus();
+    // --- WHATSAPP FORM ---
+    document.getElementById('contactForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('name').value;
+        const comp = document.getElementById('company').value;
+        const type = document.getElementById('type').value;
+        const msg = document.getElementById('message').value;
+        
+        const text = `*CODE101 INQUIRY*%0A*Sender:* ${name}%0A*Role:* ${comp}%0A*Type:* ${type}%0A*Message:* ${msg}`;
+        window.open(`https://wa.me/919843487386?text=${text}`, '_blank');
     });
   </script>
  </body>
