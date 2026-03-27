@@ -3,7 +3,7 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CODE101 | Digital Lab</title>
+  <title>CODE101 | Digital Architecture</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -12,22 +12,20 @@
       --bg: #050505;
       --surface: #0f0f0f;
       --text: #ffffff;
+      --accent: #ffffff;
     }
     
     html, body { height: 100%; margin: 0; background: var(--bg); color: var(--text); scroll-behavior: smooth; overflow-x: hidden; }
 
-    /* Fluid Typography & Scaling */
-    :root {
-        font-size: clamp(14px, 1vw, 18px);
-    }
+    /* Fluid Typography */
+    :root { font-size: clamp(14px, 1vw, 18px); }
+    .hero-text { font-size: clamp(5rem, 18vw, 15rem); }
+    .section-padding { padding: clamp(5rem, 12vh, 12rem) clamp(1.5rem, 6vw, 5rem); }
 
-    .hero-text { font-size: clamp(4rem, 15vw, 14rem); }
-    .section-padding { padding: clamp(4rem, 10vh, 10rem) clamp(1rem, 5vw, 4rem); }
-
-    /* Button Interactions */
+    /* Professional Button - Magnetic + Glow + Inversion */
     .btn-pro {
         position: relative;
-        padding: 0.8rem 2rem;
+        padding: 1rem 2.5rem;
         background: transparent;
         color: white;
         border: 1px solid rgba(255,255,255,0.2);
@@ -35,14 +33,13 @@
         font-size: 11px;
         text-transform: uppercase;
         letter-spacing: 2px;
-        border-radius: 4px;
+        border-radius: 2px;
         overflow: hidden;
-        transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
         display: inline-block;
         z-index: 1;
         cursor: pointer;
     }
-
     .btn-pro::before {
         content: '';
         position: absolute;
@@ -53,33 +50,43 @@
         transition: width 0.6s ease, height 0.6s ease;
         z-index: -1;
     }
+    .btn-pro:hover { color: black; border-color: white; box-shadow: 0 0 30px rgba(255,255,255,0.15); }
+    .btn-pro:hover::before { width: 350%; height: 350%; }
 
-    .btn-pro:hover { color: black; border-color: white; box-shadow: 0 0 25px rgba(255,255,255,0.2); }
-    .btn-pro:hover::before { width: 300%; height: 300%; }
+    /* Advanced Work Grid (Asymmetric) */
+    .work-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 2rem; }
+    .work-card { position: relative; background: #0d0d0d; overflow: hidden; border: 1px solid #1a1a1a; transition: border 0.4s; }
+    .work-card:hover { border-color: #444; }
+    
+    .slot-1 { grid-column: span 7; aspect-ratio: 16/9; }
+    .slot-2 { grid-column: span 5; aspect-ratio: 1/1; margin-top: 4rem; }
+    .slot-3 { grid-column: span 5; aspect-ratio: 4/5; margin-top: -4rem; }
+    .slot-4 { grid-column: span 7; aspect-ratio: 16/10; }
 
-    /* 3D Perspective */
-    .perspective-container { perspective: 1200px; }
-    #heroTitle { transform-style: preserve-3d; will-change: transform; transition: transform 0.2s ease-out; }
+    @media (max-width: 768px) {
+        .work-grid { display: flex; flex-direction: column; }
+        .work-card { margin-top: 0 !important; }
+    }
 
-    /* Nike-Inspired Work Grid */
-    .work-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
-    .work-card { position: relative; aspect-ratio: 16/10; background: #111; overflow: hidden; border-radius: 2px; }
-    .work-img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1); filter: grayscale(100%); }
-    .work-card:hover .work-img { transform: scale(1.05); filter: grayscale(0%); }
-    .work-info { position: absolute; bottom: 0; left: 0; width: 100%; padding: 2rem; background: linear-gradient(to top, black, transparent); opacity: 0; transform: translateY(10px); transition: all 0.5s ease; }
-    .work-card:hover .work-info { opacity: 1; transform: translateY(0); }
+    .work-img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.5s cubic-bezier(0.19, 1, 0.22, 1); filter: saturate(0); opacity: 0.6; }
+    .work-card:hover .work-img { transform: scale(1.05); filter: saturate(1); opacity: 0.9; }
+    
+    /* FAQ Accordion */
+    .faq-item { border-bottom: 1px solid #1a1a1a; padding: 2rem 0; cursor: pointer; }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.5s ease; color: #71717a; font-family: 'Space Mono'; font-size: 0.8rem; }
+    .faq-item:hover .faq-question { padding-left: 1rem; color: #fff; }
+    .faq-question { transition: all 0.3s ease; }
 
-    /* Smoke Background */
-    #smokeCanvas { position: fixed; inset: 0; pointer-events: none; opacity: 0.4; z-index: 1; }
+    /* Smoke Canvas */
+    #smokeCanvas { position: fixed; inset: 0; pointer-events: none; opacity: 0.35; z-index: 1; }
 
-    /* Reveal System */
-    .reveal { opacity: 0; transform: translateY(30px); transition: all 1s ease-out; }
+    /* Reveal */
+    .reveal { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.19, 1, 0.22, 1); }
     .reveal.visible { opacity: 1; transform: translateY(0); }
 
-    /* Custom Cursor */
     @media (pointer: fine) {
         body { cursor: none; }
-        .cursor { position: fixed; width: 10px; height: 10px; background: white; border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); mix-blend-mode: difference; transition: width 0.3s, height 0.3s; }
+        .cursor { position: fixed; width: 8px; height: 8px; background: white; border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); mix-blend-mode: difference; transition: width 0.3s, height 0.3s; }
     }
   </style>
  </head>
@@ -90,49 +97,92 @@
 
   <nav class="fixed top-0 w-full z-50 p-6 md:p-10 flex justify-between items-center mix-blend-difference">
       <div class="font-extrabold text-2xl tracking-tighter">CODE101</div>
-      <div class="hidden md:flex gap-10 font-mono text-[10px] uppercase tracking-[0.3em]">
-          <a href="#work">Portfolio</a>
-          <a href="#about">Vision</a>
-          <a href="#pricing">Investment</a>
-          <a href="#contact">Connect</a>
+      <div class="hidden md:flex gap-12 font-mono text-[9px] uppercase tracking-[0.4em]">
+          <a href="#work" class="hover:opacity-50 transition-opacity">Portfolio</a>
+          <a href="#process" class="hover:opacity-50 transition-opacity">Process</a>
+          <a href="#about" class="hover:opacity-50 transition-opacity">Vision</a>
+          <a href="#pricing" class="hover:opacity-50 transition-opacity">Invest</a>
       </div>
   </nav>
 
   <main class="relative z-10">
       
-    <section class="h-[100dvh] flex items-center justify-center perspective-container px-4">
-        <div class="text-center">
-            <h1 class="hero-text font-black leading-[0.85] tracking-tighter" id="heroTitle">
+    <section class="h-[100dvh] flex items-center justify-center px-4">
+        <div class="text-center" style="perspective: 1000px;">
+            <h1 class="hero-text font-black leading-[0.8] tracking-tighter" id="heroTitle">
                 CODE<br>101
             </h1>
             <div class="reveal mt-12">
-                <p class="font-mono text-[10px] uppercase tracking-[0.5em] text-zinc-500 mb-8">High-End Digital Engineering</p>
-                <a href="#work" class="btn-pro btn-magnetic">View Archives</a>
+                <p class="font-mono text-[9px] uppercase tracking-[0.8em] text-zinc-600 mb-10">Premium Digital Experiences</p>
+                <a href="#work" class="btn-pro">Enter Archive</a>
             </div>
         </div>
     </section>
 
     <section id="work" class="section-padding max-w-7xl mx-auto">
-        <div class="mb-20 reveal">
-            <p class="font-mono text-[10px] text-zinc-500 uppercase tracking-widest mb-4">01 // Selected Archives</p>
-            <h2 class="text-5xl md:text-8xl font-bold tracking-tighter">Selected Works</h2>
+        <div class="mb-24 reveal">
+            <p class="font-mono text-[10px] text-zinc-600 uppercase tracking-widest mb-4">/ 01 Selected Works</p>
+            <h2 class="text-6xl md:text-9xl font-bold tracking-tighter">The Gallery</h2>
         </div>
+        
         <div class="work-grid">
-            <div class="work-card reveal"><div class="work-info"><h3 class="text-xl font-bold">Project Alpha</h3></div></div>
-            <div class="work-card reveal md:mt-20"><div class="work-info"><h3 class="text-xl font-bold">Minimal Studio</h3></div></div>
-            <div class="work-card reveal"><div class="work-info"><h3 class="text-xl font-bold">Cinematic Hub</h3></div></div>
-            <div class="work-card reveal md:mt-20"><div class="work-info"><h3 class="text-xl font-bold">Future Flow</h3></div></div>
+            <div class="work-card slot-1 reveal"><div class="absolute bottom-6 left-6 z-20 font-mono text-[10px] uppercase">Project Alpha // 2026</div><div class="work-img bg-zinc-900"></div></div>
+            <div class="work-card slot-2 reveal"><div class="absolute bottom-6 left-6 z-20 font-mono text-[10px] uppercase">Minimal Studio // 2026</div><div class="work-img bg-zinc-800"></div></div>
+            <div class="work-card slot-3 reveal"><div class="absolute bottom-6 left-6 z-20 font-mono text-[10px] uppercase">Cinematic Hub // 2026</div><div class="work-img bg-zinc-900"></div></div>
+            <div class="work-card slot-4 reveal"><div class="absolute bottom-6 left-6 z-20 font-mono text-[10px] uppercase">Future Flow // 2026</div><div class="work-img bg-zinc-800"></div></div>
+        </div>
+    </section>
+
+    <section id="process" class="section-padding bg-zinc-900/20">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-24 reveal">
+                <p class="font-mono text-[10px] text-zinc-600 uppercase tracking-widest mb-4">/ 02 Methodology</p>
+                <h2 class="text-6xl md:text-8xl font-bold tracking-tighter">The Workflow</h2>
+            </div>
+            <div class="grid md:grid-cols-4 gap-12">
+                <div class="reveal">
+                    <span class="font-mono text-zinc-700 text-4xl block mb-6">01</span>
+                    <h4 class="text-xl font-bold mb-4 uppercase tracking-tight">Discovery</h4>
+                    <p class="font-mono text-[11px] text-zinc-500 leading-relaxed">Defining the core vision, objectives, and user demographics to establish a solid foundation.</p>
+                </div>
+                <div class="reveal" style="transition-delay: 0.1s;">
+                    <span class="font-mono text-zinc-700 text-4xl block mb-6">02</span>
+                    <h4 class="text-xl font-bold mb-4 uppercase tracking-tight">Architecture</h4>
+                    <p class="font-mono text-[11px] text-zinc-500 leading-relaxed">Mapping user flows and wireframes to ensure seamless digital navigation.</p>
+                </div>
+                <div class="reveal" style="transition-delay: 0.2s;">
+                    <span class="font-mono text-zinc-700 text-4xl block mb-6">03</span>
+                    <h4 class="text-xl font-bold mb-4 uppercase tracking-tight">Visual Dev</h4>
+                    <p class="font-mono text-[11px] text-zinc-500 leading-relaxed">Engineering high-end motion design and minimalist aesthetics tailored to the brand.</p>
+                </div>
+                <div class="reveal" style="transition-delay: 0.3s;">
+                    <span class="font-mono text-zinc-700 text-4xl block mb-6">04</span>
+                    <h4 class="text-xl font-bold mb-4 uppercase tracking-tight">Deployment</h4>
+                    <p class="font-mono text-[11px] text-zinc-500 leading-relaxed">Rigorous performance optimization followed by a precision-led global launch.</p>
+                </div>
+            </div>
         </div>
     </section>
 
     <section id="about" class="bg-white text-black section-padding">
-        <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+        <div class="max-w-5xl mx-auto">
             <div class="reveal">
-                <h2 class="text-5xl md:text-8xl font-bold tracking-tighter mb-8">The Story</h2>
-                <p class="text-xl font-medium leading-tight">My name is Yuga. At 18, I am building the next generation of digital interfaces. I specialize in engineering interactive environments that prioritize high-end motion and professional aesthetics.</p>
-            </div>
-            <div class="reveal border-l border-zinc-200 pl-8">
-                <p class="font-mono text-sm text-zinc-500 italic">"Design should feel as natural as physical movement. I build digital atmospheres where code meets cinematic art."</p>
+                <h2 class="text-6xl md:text-9xl font-bold tracking-tighter mb-12">Yuga.</h2>
+                <div class="grid md:grid-cols-2 gap-20 items-start">
+                    <p class="text-2xl font-bold leading-[1.1] tracking-tight">At 18, I specialize in the intersection of code and cinematic art. CODE101 is my laboratory for digital interaction.</p>
+                    <div class="space-y-8">
+                        <p class="font-mono text-sm text-zinc-500">I build high-performance environments for brands that value silence over noise and precision over clutter.</p>
+                        <div class="pt-8 border-t border-zinc-200">
+                            <p class="font-mono text-[10px] uppercase tracking-widest text-zinc-400 mb-4">Core Stack</p>
+                            <div class="flex flex-wrap gap-3">
+                                <span class="px-4 py-2 bg-zinc-100 rounded text-[10px] font-mono">React / Next.js</span>
+                                <span class="px-4 py-2 bg-zinc-100 rounded text-[10px] font-mono">Tailwind CSS</span>
+                                <span class="px-4 py-2 bg-zinc-100 rounded text-[10px] font-mono">Three.js</span>
+                                <span class="px-4 py-2 bg-zinc-100 rounded text-[10px] font-mono">GSAP</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -140,48 +190,78 @@
     <section id="pricing" class="section-padding max-w-7xl mx-auto">
         <div class="text-center mb-24 reveal">
             <h2 class="text-6xl md:text-9xl font-bold tracking-tighter">Invest</h2>
-            <p class="font-mono text-zinc-500 uppercase tracking-[0.5em] text-[10px] mt-4">Transparent Professional Tiers</p>
+            <p class="font-mono text-zinc-600 uppercase tracking-[0.5em] text-[10px] mt-4">Transparent Professional Tiers</p>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
-            <div class="bg-zinc-900/40 border border-zinc-800 p-10 rounded-lg reveal flex flex-col justify-between">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-zinc-900/30 border border-zinc-800 p-12 rounded reveal flex flex-col justify-between">
                 <div>
-                    <p class="font-mono text-[9px] text-zinc-500 mb-2 uppercase">Tier 01 // Standard</p>
-                    <h3 class="text-4xl font-bold mb-6">₹1499</h3>
-                    <ul class="font-mono text-[11px] text-zinc-400 space-y-4 mb-10">
-                        <li>→ Professional Landing Page</li>
-                        <li>→ Fully Responsive Design</li>
-                        <li>→ Core Performance SEO</li>
+                    <p class="font-mono text-[9px] text-zinc-600 mb-2 uppercase">Lvl 01 // Essential</p>
+                    <h3 class="text-4xl font-bold mb-8">₹1499</h3>
+                    <ul class="font-mono text-[11px] text-zinc-500 space-y-4 mb-12">
+                        <li>→ High-End Landing Page</li>
+                        <li>→ Full Mobile Adaptation</li>
+                        <li>→ Core Animation Suite</li>
                     </ul>
                 </div>
-                <button class="btn-pro w-full plan-btn" data-plan="Standard Presence">Select Plan</button>
+                <button class="btn-pro w-full plan-btn" data-plan="Essential Presence">Select Tier</button>
             </div>
 
-            <div class="bg-white text-black p-10 rounded-lg reveal flex flex-col justify-between md:-translate-y-4 shadow-2xl shadow-white/5">
+            <div class="bg-white text-black p-12 rounded reveal flex flex-col justify-between md:-translate-y-6 shadow-2xl">
                 <div>
-                    <p class="font-mono text-[9px] text-zinc-500 mb-2 uppercase">Tier 02 // Cinematic</p>
-                    <h3 class="text-4xl font-bold mb-6">₹1999</h3>
-                    <ul class="font-mono text-[11px] text-zinc-700 space-y-4 mb-10">
-                        <li>→ Multi-Page Experience</li>
-                        <li>→ Custom Motion & 3D Effects</li>
-                        <li>→ Priority Development</li>
-                        <li>→ Advanced Interactivity</li>
+                    <p class="font-mono text-[9px] text-zinc-400 mb-2 uppercase">Lvl 02 // Cinematic</p>
+                    <h3 class="text-4xl font-bold mb-8">₹1999</h3>
+                    <ul class="font-mono text-[11px] text-zinc-700 space-y-4 mb-12">
+                        <li>→ Multi-Page Ecosystem</li>
+                        <li>→ Custom 3D & WebGL Effects</li>
+                        <li>→ Advanced Motion Logic</li>
+                        <li>→ Priority Dev Support</li>
                     </ul>
                 </div>
-                <button class="btn-pro w-full plan-btn !bg-black !text-white" data-plan="Cinematic Experience">Choose Most Popular</button>
+                <button class="btn-pro w-full plan-btn !bg-black !text-white" data-plan="Cinematic Experience">Choose Tier</button>
             </div>
 
-            <div class="bg-zinc-900/40 border border-zinc-800 p-10 rounded-lg reveal flex flex-col justify-between">
+            <div class="bg-zinc-900/30 border border-zinc-800 p-12 rounded reveal flex flex-col justify-between">
                 <div>
-                    <p class="font-mono text-[9px] text-zinc-500 mb-2 uppercase">Tier 03 // Bespoke</p>
-                    <h3 class="text-4xl font-bold mb-6">Custom</h3>
-                    <ul class="font-mono text-[11px] text-zinc-400 space-y-4 mb-10">
-                        <li>→ Full Brand Ecosystem</li>
-                        <li>→ Complex WebGL Integration</li>
-                        <li>→ 24/7 Technical Support</li>
+                    <p class="font-mono text-[9px] text-zinc-600 mb-2 uppercase">Lvl 03 // Custom</p>
+                    <h3 class="text-4xl font-bold mb-8">Bespoke</h3>
+                    <ul class="font-mono text-[11px] text-zinc-500 space-y-4 mb-12">
+                        <li>→ Full Brand Identity Build</li>
+                        <li>→ Complex Technical Systems</li>
+                        <li>→ Ongoing Partnership</li>
                     </ul>
                 </div>
-                <button class="btn-pro w-full plan-btn" data-plan="Custom Enterprise">Inquire Now</button>
+                <button class="btn-pro w-full plan-btn" data-plan="Custom Enterprise">Initialize</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding max-w-4xl mx-auto">
+        <div class="mb-16 reveal">
+            <p class="font-mono text-[10px] text-zinc-600 uppercase tracking-widest mb-4">/ 03 Inquiries</p>
+            <h2 class="text-5xl font-bold tracking-tighter">Common Questions</h2>
+        </div>
+        <div class="reveal">
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-question text-lg font-bold flex justify-between items-center">
+                    HOW LONG DOES A PROJECT TAKE?
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                </div>
+                <div class="faq-answer mt-4">Standard projects typically span 7-14 business days, depending on the complexity of motion and architectural requirements.</div>
+            </div>
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-question text-lg font-bold flex justify-between items-center">
+                    DO YOU PROVIDE MAINTENANCE?
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                </div>
+                <div class="faq-answer mt-4">Yes, I provide 30 days of post-launch technical support to ensure your cinematic experience remains fluid and functional.</div>
+            </div>
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-question text-lg font-bold flex justify-between items-center">
+                    CAN I CHANGE THE SMOKE BACKGROUND?
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                </div>
+                <div class="faq-answer mt-4">The background is modular. We can adjust density, speed, and color or replace it with cinematic video assets as per your brand guidelines.</div>
             </div>
         </div>
     </section>
@@ -189,27 +269,23 @@
     <section id="contact" class="section-padding bg-zinc-950">
         <div class="max-w-4xl mx-auto">
             <div class="text-center mb-16 reveal">
-                <h2 class="text-5xl font-bold tracking-tighter">Connect</h2>
-                <p class="font-mono text-zinc-500 text-[10px] uppercase tracking-widest mt-2">Available for Global Projects</p>
+                <h2 class="text-6xl font-bold tracking-tighter">Connect</h2>
+                <p class="font-mono text-zinc-500 text-[10px] uppercase tracking-widest mt-2">Available for Worldwide Partnership</p>
             </div>
             
             <form id="contactForm" class="grid gap-10 reveal">
                 <div class="grid md:grid-cols-2 gap-10">
                     <input type="text" id="name" placeholder="YOUR NAME" class="bg-transparent border-b border-zinc-800 p-4 focus:border-white outline-none font-mono text-xs uppercase" required>
-                    <input type="text" id="role" placeholder="OCCUPATION" class="bg-transparent border-b border-zinc-800 p-4 focus:border-white outline-none font-mono text-xs uppercase" required>
-                </div>
-                <div class="grid md:grid-cols-2 gap-10">
                     <select id="type" class="bg-transparent border-b border-zinc-800 p-4 focus:border-white outline-none font-mono text-xs text-zinc-500" required>
-                        <option value="" disabled selected>SERVICE TYPE</option>
-                        <option value="Standard Presence">Standard Presence (₹1499)</option>
+                        <option value="" disabled selected>SERVICE SELECTION</option>
+                        <option value="Essential Presence">Essential Presence (₹1499)</option>
                         <option value="Cinematic Experience">Cinematic Experience (₹1999)</option>
                         <option value="Custom Enterprise">Custom / Enterprise</option>
                     </select>
-                    <input type="text" id="budget" placeholder="APPROX BUDGET" class="bg-transparent border-b border-zinc-800 p-4 focus:border-white outline-none font-mono text-xs uppercase">
                 </div>
-                <textarea id="message" rows="3" placeholder="BRIEF DESCRIPTION" class="bg-transparent border-b border-zinc-800 p-4 focus:border-white outline-none font-mono text-xs" required></textarea>
+                <textarea id="message" rows="3" placeholder="PROJECT BRIEF" class="bg-transparent border-b border-zinc-800 p-4 focus:border-white outline-none font-mono text-xs" required></textarea>
                 <div class="text-center">
-                    <button type="submit" class="btn-pro btn-magnetic">Send WhatsApp</button>
+                    <button type="submit" class="btn-pro">Initialize WhatsApp</button>
                 </div>
             </form>
         </div>
@@ -217,8 +293,8 @@
 
   </main>
 
-  <footer class="p-10 text-center border-t border-zinc-900 font-mono text-[9px] text-zinc-600 uppercase tracking-widest">
-      © 2026 CODE101 // Engineered by Yuga
+  <footer class="p-12 text-center border-t border-zinc-900 text-zinc-600 font-mono text-[9px] uppercase tracking-[0.4em]">
+      © 2026 CODE101 // Engineered by Yuga // Coimbatore, IN
   </footer>
 
   <script>
@@ -236,24 +312,36 @@
         });
     }
 
-    // --- Cursor & Magnetic Effect ---
+    // --- Cursor & Interactivity ---
     const cursor = document.getElementById('cursor');
     if (!isMobile) {
         window.addEventListener('mousemove', (e) => {
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
         });
-        document.querySelectorAll('a, button, .work-card, input, select, textarea').forEach(el => {
-            el.addEventListener('mouseenter', () => { cursor.style.width = '50px'; cursor.style.height = '50px'; });
-            el.addEventListener('mouseleave', () => { cursor.style.width = '10px'; cursor.style.height = '10px'; });
+        document.querySelectorAll('a, button, .work-card, .faq-item, input, select, textarea').forEach(el => {
+            el.addEventListener('mouseenter', () => { cursor.style.width = '60px'; cursor.style.height = '60px'; });
+            el.addEventListener('mouseleave', () => { cursor.style.width = '8px'; cursor.style.height = '8px'; });
         });
     }
 
-    // --- Pricing Choice Logic ---
+    // --- FAQ Logic ---
+    function toggleFaq(el) {
+        const answer = el.querySelector('.faq-answer');
+        const icon = el.querySelector('i');
+        if (answer.style.maxHeight) {
+            answer.style.maxHeight = null;
+            icon.style.transform = 'rotate(0deg)';
+        } else {
+            answer.style.maxHeight = answer.scrollHeight + "px";
+            icon.style.transform = 'rotate(45deg)';
+        }
+    }
+
+    // --- Pricing Choice ---
     document.querySelectorAll('.plan-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-            const plan = btn.getAttribute('data-plan');
-            document.getElementById('type').value = plan;
+            document.getElementById('type').value = btn.getAttribute('data-plan');
             document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
         });
     });
@@ -273,7 +361,7 @@
             this.y = canvas.height + 100;
             this.size = Math.random() * 250 + 100;
             this.alpha = Math.random() * 0.3;
-            this.vy = -Math.random() * 0.7 - 0.2;
+            this.vy = -Math.random() * 0.5 - 0.2;
         }
         update() { this.y += this.vy; this.alpha -= 0.0006; if (this.alpha <= 0) this.reset(); }
         draw() {
@@ -286,21 +374,21 @@
             ctx.fill();
         }
     }
-    for(let i=0; i< (isMobile ? 12 : 35); i++) particles.push(new Smoke());
+    for(let i=0; i< (isMobile ? 12 : 30); i++) particles.push(new Smoke());
     function anim() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(anim); }
     anim();
 
-    // --- Reveal On Scroll ---
+    // --- Reveal ---
     const observer = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }), {threshold: 0.1});
     document.querySelectorAll('.reveal').forEach(r => observer.observe(r));
 
-    // --- Form WhatsApp ---
+    // --- WhatsApp ---
     document.getElementById('contactForm').addEventListener('submit', (e) => {
         e.preventDefault();
         const n = document.getElementById('name').value;
         const t = document.getElementById('type').value;
-        const msg = `*CODE101 INQUIRY*%0A*Name:* ${n}%0A*Tier:* ${t}%0A*Message:* ${document.getElementById('message').value}`;
-        window.open(`https://wa.me/919843487386?text=${msg}`, '_blank');
+        const m = document.getElementById('message').value;
+        window.open(`https://wa.me/919843487386?text=*CODE101 INQUIRY*%0A*Name:* ${n}%0A*Tier:* ${t}%0A*Brief:* ${m}`, '_blank');
     });
   </script>
  </body>
