@@ -3,193 +3,292 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CODE101 | Digital Portfolio</title>
+  <title>CODE101 | Digital Experience Lab</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-color: #0a0a0a;
-      --surface-color: #111111;
-      --text-color: #ffffff;
-      --secondary-action: #707070;
+      --bg: #050505;
+      --surface: #0f0f0f;
+      --text: #ffffff;
       --accent: #ffffff;
+      --zinc-800: #27272a;
     }
     
-    html, body { height: 100%; margin: 0; background: var(--bg-color); color: var(--text-color); scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
-    
-    /* 3D Perspective Setup */
-    .hero-perspective { perspective: 1000px; transition: transform 0.1s ease-out; }
-    .magnetic-text { 
-        display: inline-block; 
-        transition: transform 0.4s cubic-bezier(0.1, 0.5, 0.2, 1); 
-        transform-style: preserve-3d;
+    html, body { height: 100%; margin: 0; background: var(--bg); color: var(--text); scroll-behavior: smooth; overflow-x: hidden; }
+
+    /* --- ADVANCED BUTTON EFFECTS --- */
+    .btn-pro {
+        position: relative;
+        padding: 1rem 2.5rem;
+        background: transparent;
+        color: white;
+        border: 1px solid rgba(255,255,255,0.2);
+        font-family: 'Space Mono', monospace;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        border-radius: 4px;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        display: inline-block;
+        z-index: 1;
+    }
+
+    .btn-pro::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: white;
+        transform: translate(-50%, -50%);
+        transition: width 0.6s ease, height 0.6s ease;
+        z-index: -1;
+    }
+
+    .btn-pro:hover {
+        color: black;
+        border-color: white;
+        box-shadow: 0 0 30px rgba(255,255,255,0.3); /* Glow Effect */
+    }
+
+    .btn-pro:hover::before {
+        width: 300%;
+        height: 300%;
+    }
+
+    /* --- 3D HERO TEXT --- */
+    .perspective-container { perspective: 1200px; }
+    #heroTitle { 
+        transform-style: preserve-3d; 
+        transition: transform 0.1s ease-out;
         will-change: transform;
     }
 
-    /* Cinematic Smoke */
-    #smokeCanvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.6; }
+    /* --- NIKE-INSPIRED WORK GRID --- */
+    .work-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+    .work-card { 
+        position: relative; 
+        aspect-ratio: 16/10; 
+        background: #111; 
+        overflow: hidden; 
+        border-radius: 2px;
+        cursor: pointer;
+    }
+    .work-img { 
+        width: 100%; 
+        height: 100%; 
+        object-fit: cover; 
+        transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+        filter: grayscale(100%);
+    }
+    .work-card:hover .work-img { transform: scale(1.08); filter: grayscale(0%); }
+    .work-info {
+        position: absolute;
+        bottom: 0; left: 0; width: 100%;
+        padding: 2.5rem;
+        background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+        transform: translateY(20px);
+        opacity: 0;
+        transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+    .work-card:hover .work-info { transform: translateY(0); opacity: 1; }
 
-    /* Custom Cursor (Desktop Only) */
-    @media (pointer: fine) {
-      body { cursor: none; }
-      .cursor { position: fixed; width: 12px; height: 12px; background: white; border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); mix-blend-mode: difference; transition: width 0.3s, height 0.3s; }
-      .cursor-follower { position: fixed; width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); transition: transform 0.1s ease-out; }
+    /* --- SMOKE CANVAS --- */
+    #smokeCanvas { position: fixed; inset: 0; pointer-events: none; opacity: 0.5; z-index: 1; }
+
+    /* --- MOBILE RESPONSIVENESS --- */
+    @media (max-width: 768px) {
+        .hero-text { font-size: clamp(4rem, 18vw, 6rem) !important; }
+        .work-grid { grid-template-columns: 1fr; gap: 1rem; }
+        .section-padding { padding: 4rem 1.25rem !important; }
+        .pricing-grid { grid-template-columns: 1fr !important; }
+        .nav-links { display: none; }
     }
 
-    /* Reveal Animations */
-    .reveal { opacity: 0; transform: translateY(30px); transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .reveal { opacity: 0; transform: translateY(40px); transition: all 1s ease-out; }
     .reveal.visible { opacity: 1; transform: translateY(0); }
 
-    /* Mobile Overrides */
-    @media (max-width: 768px) {
-      .section-padding { padding: 4rem 1.5rem !important; }
-      .mobile-center { text-align: center; justify-content: center; }
-      .hero-text { font-size: 5rem !important; }
+    /* Custom Cursor */
+    @media (pointer: fine) {
+        body { cursor: none; }
+        .cursor { 
+            position: fixed; width: 10px; height: 10px; background: white; border-radius: 50%; 
+            pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); 
+            mix-blend-mode: difference; transition: width 0.3s, height 0.3s; 
+        }
     }
-
-    .pricing-card { background: #111; border: 1px solid #222; padding: 2.5rem; border-radius: 20px; transition: all 0.4s ease; }
-    .pricing-card:hover { border-color: white; transform: translateY(-10px); }
-    
-    .nav-link { position: relative; font-family: 'Space Mono'; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; }
-    .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: white; transition: width 0.3s; }
-    .nav-link:hover::after { width: 100%; }
-
-    .work-item { position: relative; overflow: hidden; border-radius: 12px; aspect-ratio: 16/9; background: #1a1a1a; cursor: pointer; border: 1px solid #222; }
-    .work-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.4s; backdrop-filter: blur(5px); }
-    .work-item:hover .work-overlay { opacity: 1; }
   </style>
  </head>
  <body style="font-family: 'Syne', sans-serif;">
 
   <div class="cursor" id="cursor"></div>
-  <div class="cursor-follower" id="follower"></div>
-
-  <nav class="fixed top-0 w-full z-50 p-6 md:p-10 flex justify-between items-center">
-      <div class="font-bold text-xl tracking-tighter">CODE101</div>
-      <div class="hidden md:flex gap-12">
-          <a href="#work" class="nav-link">Work</a>
-          <a href="#about" class="nav-link">About</a>
-          <a href="#pricing" class="nav-link">Pricing</a>
-          <a href="#contact" class="nav-link">Connect</a>
-      </div>
-      <div class="md:hidden"><i data-lucide="menu"></i></div>
-  </nav>
-
   <canvas id="smokeCanvas"></canvas>
+
+  <nav class="fixed top-0 w-full z-50 p-6 md:p-10 flex justify-between items-center mix-blend-difference">
+      <div class="font-extrabold text-2xl tracking-tighter">CODE101</div>
+      <div class="nav-links flex gap-12 font-mono text-[10px] uppercase tracking-[0.3em]">
+          <a href="#work" class="hover:opacity-50 transition-opacity">Portfolio</a>
+          <a href="#about" class="hover:opacity-50 transition-opacity">Vision</a>
+          <a href="#pricing" class="hover:opacity-50 transition-opacity">Investment</a>
+          <a href="#contact" class="hover:opacity-50 transition-opacity">Connect</a>
+      </div>
+  </nav>
 
   <main class="relative z-10">
       
-    <section class="h-[100dvh] flex items-center justify-center overflow-hidden">
-        <div class="hero-perspective text-center">
-            <h1 class="magnetic-text hero-text text-[12vw] font-black leading-none tracking-tighter" id="heroTitle">
+    <section class="h-[100dvh] flex items-center justify-center perspective-container">
+        <div class="text-center">
+            <h1 class="hero-text text-[13vw] font-black leading-[0.8] tracking-tighter" id="heroTitle">
                 CODE<br>101
             </h1>
-            <div class="reveal mt-8">
-                <p class="font-mono text-[10px] uppercase tracking-[0.6em] text-zinc-500 mb-10">Engineering Minimalist Aesthetics</p>
-                <a href="#work" class="inline-block px-10 py-4 bg-white text-black font-bold font-mono text-xs uppercase tracking-widest rounded-full hover:scale-105 transition-transform">Explore Journey</a>
+            <div class="reveal mt-12">
+                <p class="font-mono text-[10px] uppercase tracking-[0.6em] text-zinc-500 mb-10">Minimalist Digital Architecture</p>
+                <div class="btn-magnetic-wrap">
+                    <a href="#work" class="btn-pro btn-magnetic">View Archives</a>
+                </div>
             </div>
         </div>
     </section>
 
-    <section id="work" class="max-w-7xl mx-auto py-32 px-6">
-        <div class="mb-16 reveal">
-            <p class="font-mono text-xs text-zinc-500 mb-2 uppercase tracking-widest">Case Studies</p>
+    <section id="work" class="section-padding max-w-7xl mx-auto py-32 px-6">
+        <div class="mb-20 reveal">
+            <p class="font-mono text-xs text-zinc-500 uppercase tracking-widest mb-4">01 // Selected Archives</p>
             <h2 class="text-6xl md:text-8xl font-bold tracking-tighter">Selected Works</h2>
         </div>
         
-        <div class="grid md:grid-cols-2 gap-8">
-            <div class="work-item reveal group">
-                <div class="work-overlay">
-                    <div class="text-center">
-                        <h4 class="text-2xl font-bold">Concept One</h4>
-                        <p class="font-mono text-xs mt-2">Minimalist Interface</p>
-                    </div>
+        <div class="work-grid">
+            <div class="work-card reveal">
+                <div class="work-img bg-zinc-900 flex items-center justify-center text-zinc-800 text-xs font-mono">01_PROJECT_PREVIEW</div>
+                <div class="work-info">
+                    <h3 class="text-2xl font-bold">Project Alpha</h3>
+                    <p class="font-mono text-[10px] uppercase tracking-widest mt-2 text-zinc-400">Interaction Design / 2026</p>
                 </div>
             </div>
-            <div class="work-item reveal md:mt-20 group">
-                <div class="work-overlay">
-                    <div class="text-center">
-                        <h4 class="text-2xl font-bold">Dynamic Flow</h4>
-                        <p class="font-mono text-xs mt-2">Interactive Experience</p>
-                    </div>
+            <div class="work-card reveal md:mt-24">
+                <div class="work-img bg-zinc-900 flex items-center justify-center text-zinc-800 text-xs font-mono">02_PROJECT_PREVIEW</div>
+                <div class="work-info">
+                    <h3 class="text-2xl font-bold">Minimal Studio</h3>
+                    <p class="font-mono text-[10px] uppercase tracking-widest mt-2 text-zinc-400">E-Commerce / 2026</p>
+                </div>
+            </div>
+            <div class="work-card reveal">
+                <div class="work-img bg-zinc-900 flex items-center justify-center text-zinc-800 text-xs font-mono">03_PROJECT_PREVIEW</div>
+                <div class="work-info">
+                    <h3 class="text-2xl font-bold">Cinematic Hub</h3>
+                    <p class="font-mono text-[10px] uppercase tracking-widest mt-2 text-zinc-400">Portfolio / 2026</p>
+                </div>
+            </div>
+            <div class="work-card reveal md:mt-24">
+                <div class="work-img bg-zinc-900 flex items-center justify-center text-zinc-800 text-xs font-mono">04_PROJECT_PREVIEW</div>
+                <div class="work-info">
+                    <h3 class="text-2xl font-bold">Future Flow</h3>
+                    <p class="font-mono text-[10px] uppercase tracking-widest mt-2 text-zinc-400">Identity / 2026</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="about" class="bg-white text-black py-32">
-        <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-20 items-center">
+    <section id="about" class="bg-white text-black py-40">
+        <div class="max-w-5xl mx-auto px-6">
             <div class="reveal">
-                <h2 class="text-6xl md:text-8xl font-bold tracking-tighter mb-8">The Story</h2>
-                <p class="text-xl leading-relaxed mb-6">I am Yuga, an 18-year-old designer and developer building the future of digital interactions. At CODE101, I believe that high-end design shouldn't be complicated—it should be felt.</p>
-                <div class="flex gap-4">
-                    <div class="px-4 py-2 border border-zinc-200 rounded-full font-mono text-[10px] uppercase">Design Enthusiast</div>
-                    <div class="px-4 py-2 border border-zinc-200 rounded-full font-mono text-[10px] uppercase">Web Developer</div>
+                <h2 class="text-6xl md:text-8xl font-bold tracking-tighter mb-12">The Founder</h2>
+                <div class="grid md:grid-cols-2 gap-16 items-start">
+                    <p class="text-2xl font-medium leading-tight">My name is Yuga. At 18, I am dedicated to redefining the digital interface. I don't just build websites; I engineer interactive environments that prioritize speed, aesthetics, and high-end motion.</p>
+                    <div class="border-l border-zinc-200 pl-8">
+                        <p class="font-mono text-sm text-zinc-500 leading-relaxed italic">"I believe the future of the web is invisible. Design should feel as natural as physical motion. Every project is an opportunity to push the boundaries of what a browser can do."</p>
+                    </div>
                 </div>
-            </div>
-            <div class="reveal border-l-4 border-black pl-10">
-                <p class="font-mono text-sm text-zinc-600 mb-6 italic">"My journey is just beginning. Every site is a new experiment in motion, light, and code. I don't just build pages; I build digital atmospheres."</p>
-                <h4 class="font-bold text-2xl">— Yuga, Founder</h4>
             </div>
         </div>
     </section>
 
-    <section id="pricing" class="py-32 max-w-7xl mx-auto px-6">
-        <div class="text-center mb-20 reveal">
-            <h2 class="text-6xl md:text-8xl font-bold tracking-tighter">Investment</h2>
-            <p class="font-mono text-zinc-500 mt-4 uppercase tracking-widest">Pricing & Plans</p>
+    <section id="pricing" class="py-40 max-w-7xl mx-auto px-6">
+        <div class="text-center mb-24 reveal">
+            <h2 class="text-7xl md:text-9xl font-bold tracking-tighter">Invest</h2>
+            <p class="font-mono text-zinc-500 uppercase tracking-[0.5em] text-[10px] mt-4">Professional Engagement Tiers</p>
         </div>
         
-        <div class="grid md:grid-cols-3 gap-8">
-            <div class="pricing-card reveal">
-                <p class="font-mono text-xs text-zinc-500 mb-4 uppercase">Starter</p>
-                <h3 class="text-4xl font-bold mb-6">₹499</h3>
-                <ul class="font-mono text-[11px] text-zinc-400 space-y-4 mb-10">
-                    <li>✓ One-Page Landing</li>
-                    <li>✓ Mobile Responsive</li>
-                    <li>✓ Basic Animations</li>
+        <div class="pricing-grid grid md:grid-cols-3 gap-8">
+            <div class="bg-zinc-900/40 border border-zinc-800 p-10 rounded-lg reveal flex flex-direction-column">
+                <p class="font-mono text-[10px] text-zinc-500 mb-2 uppercase">Lvl 01 // Presence</p>
+                <h3 class="text-4xl font-bold mb-6">₹15,000+</h3>
+                <ul class="font-mono text-[11px] text-zinc-400 space-y-4 mb-12 flex-grow">
+                    <li>→ High-End Landing Page</li>
+                    <li>→ Mobile Optimization</li>
+                    <li>→ Standard Motion Design</li>
                 </ul>
-                <a href="#contact" class="block text-center py-3 border border-white rounded hover:bg-white hover:text-black transition-colors font-mono text-[10px] uppercase">Get Started</a>
+                <button class="btn-pro w-full plan-btn" data-plan="Essential Presence">Select Plan</button>
             </div>
-            <div class="pricing-card reveal md:scale-110 border-white bg-zinc-900">
-                <p class="font-mono text-xs text-white mb-4 uppercase">Professional</p>
-                <h3 class="text-4xl font-bold mb-6">₹999</h3>
-                <ul class="font-mono text-[11px] text-zinc-400 space-y-4 mb-10">
-                    <li>✓ Multi-Page System</li>
-                    <li>✓ Custom 3D Motion</li>
-                    <li>✓ CMS Integration</li>
+            <div class="bg-white text-black p-10 rounded-lg reveal md:scale-105 flex flex-direction-column">
+                <p class="font-mono text-[10px] text-zinc-500 mb-2 uppercase">Lvl 02 // Cinematic</p>
+                <h3 class="text-4xl font-bold mb-6">₹45,000+</h3>
+                <ul class="font-mono text-[11px] text-zinc-700 space-y-4 mb-12 flex-grow">
+                    <li>→ Multi-Page Experience</li>
+                    <li>→ Custom WebGL / 3D Effects</li>
+                    <li>→ Advanced Interaction Design</li>
+                    <li>→ SEO & Speed Optimization</li>
                 </ul>
-                <a href="#contact" class="block text-center py-3 bg-white text-black rounded font-mono text-[10px] uppercase font-bold">Recommended</a>
+                <button class="btn-pro w-full plan-btn !bg-black !text-white" data-plan="Cinematic Experience">Choose Most Popular</button>
             </div>
-            <div class="pricing-card reveal">
-                <p class="font-mono text-xs text-zinc-500 mb-4 uppercase">Enterprise</p>
+            <div class="bg-zinc-900/40 border border-zinc-800 p-10 rounded-lg reveal flex flex-direction-column">
+                <p class="font-mono text-[10px] text-zinc-500 mb-2 uppercase">Lvl 03 // Enterprise</p>
                 <h3 class="text-4xl font-bold mb-6">Custom</h3>
-                <ul class="font-mono text-[11px] text-zinc-400 space-y-4 mb-10">
-                    <li>✓ Full Branding Suite</li>
-                    <li>✓ High-End WebGL Effects</li>
-                    <li>✓ Priority Support</li>
+                <ul class="font-mono text-[11px] text-zinc-400 space-y-4 mb-12 flex-grow">
+                    <li>→ Bespoke Digital Ecosystem</li>
+                    <li>→ Brand Identity Overhaul</li>
+                    <li>→ Priority Support & Scalability</li>
                 </ul>
-                <a href="#contact" class="block text-center py-3 border border-white rounded hover:bg-white hover:text-black transition-colors font-mono text-[10px] uppercase">Enquire Now</a>
+                <button class="btn-pro w-full plan-btn" data-plan="Enterprise / Custom Build">Inquire Now</button>
             </div>
         </div>
     </section>
 
-    <section id="contact" class="py-32 bg-zinc-900/50">
+    <section id="contact" class="py-40 bg-zinc-950">
         <div class="max-w-4xl mx-auto px-6">
             <div class="text-center mb-16 reveal">
                 <h2 class="text-6xl font-bold tracking-tighter">Connect</h2>
-                <p class="font-mono text-zinc-500 mt-2">Let's craft your vision.</p>
+                <p class="font-mono text-zinc-500 mt-2 text-xs uppercase tracking-widest">Available for Worldwide Collaborations</p>
             </div>
             
-            <form id="contactForm" class="grid gap-10 reveal">
-                <div class="grid md:grid-cols-2 gap-10">
-                    <input type="text" id="name" placeholder="YOUR NAME" class="bg-transparent border-b border-zinc-800 p-4 focus:border-white outline-none font-mono text-xs" required>
-                    <input type="text" id="role" placeholder="OCCUPATION / COMPANY" class="bg-transparent border-b border-zinc-800 p-4 focus:border-white outline-none font-mono text-xs" required>
+            <form id="contactForm" class="grid gap-12 reveal">
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div class="flex flex-col gap-2">
+                        <label class="font-mono text-[10px] text-zinc-500 uppercase">Your Name</label>
+                        <input type="text" id="name" placeholder="E.G. JOHN DOE" class="bg-transparent border-b border-zinc-800 p-2 focus:border-white outline-none font-mono text-sm" required>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="font-mono text-[10px] text-zinc-500 uppercase">Occupation / Company</label>
+                        <input type="text" id="role" placeholder="E.G. CREATIVE DIRECTOR" class="bg-transparent border-b border-zinc-800 p-2 focus:border-white outline-none font-mono text-sm" required>
+                    </div>
                 </div>
-                <textarea id="message" rows="4" placeholder="MESSAGE" class="bg-transparent border-b border-zinc-800 p-4 focus:border-white outline-none font-mono text-xs" required></textarea>
+                
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div class="flex flex-col gap-2">
+                        <label class="font-mono text-[10px] text-zinc-500 uppercase">Inquiry Type</label>
+                        <select id="type" class="bg-transparent border-b border-zinc-800 p-2 focus:border-white outline-none font-mono text-sm text-zinc-500" required>
+                            <option value="" disabled selected>Select Choice</option>
+                            <option value="Essential Presence">Essential Presence (₹15k+)</option>
+                            <option value="Cinematic Experience">Cinematic Experience (₹45k+)</option>
+                            <option value="Enterprise / Custom Build">Enterprise / Custom</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="font-mono text-[10px] text-zinc-500 uppercase">Project Budget (Approx)</label>
+                        <input type="text" id="budget" placeholder="E.G. ₹50,000" class="bg-transparent border-b border-zinc-800 p-2 focus:border-white outline-none font-mono text-sm">
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                    <label class="font-mono text-[10px] text-zinc-500 uppercase">Brief Description</label>
+                    <textarea id="message" rows="3" placeholder="DESCRIBE YOUR VISION" class="bg-transparent border-b border-zinc-800 p-2 focus:border-white outline-none font-mono text-sm" required></textarea>
+                </div>
+                
                 <div class="text-center">
-                    <button type="submit" class="px-12 py-4 border border-white rounded-full font-mono text-xs uppercase tracking-widest hover:bg-white hover:text-black transition-all">Send WhatsApp</button>
+                    <button type="submit" class="btn-pro btn-magnetic">Initialize Brief</button>
                 </div>
             </form>
         </div>
@@ -197,8 +296,8 @@
 
   </main>
 
-  <footer class="p-10 text-center border-t border-zinc-900">
-      <p class="font-mono text-[10px] text-zinc-600 uppercase tracking-widest">© 2026 CODE101 — Built by Yuga</p>
+  <footer class="p-10 text-center border-t border-zinc-900 bg-black">
+      <p class="font-mono text-[10px] text-zinc-600 uppercase tracking-widest">© 2026 CODE101 // Engineered by Yuga</p>
   </footer>
 
   <script>
@@ -206,116 +305,116 @@
 
     const isMobile = window.innerWidth < 768;
 
-    // --- 3D PERSPECTIVE MOTION ---
+    // --- 3D HERO TILT ---
     const heroTitle = document.getElementById('heroTitle');
     if (!isMobile) {
         window.addEventListener('mousemove', (e) => {
             const { clientX, clientY } = e;
-            const centerX = window.innerWidth / 2;
-            const centerY = window.innerHeight / 2;
-            
-            // Subtle rotation calculation
-            const rotateX = -(clientY - centerY) / 30;
-            const rotateY = (clientX - centerX) / 30;
-            
-            // Perspective shift
-            heroTitle.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(50px)`;
+            const x = (clientX - window.innerWidth/2) / 25;
+            const y = (clientY - window.innerHeight/2) / 25;
+            heroTitle.style.transform = `rotateY(${x}deg) rotateX(${-y}deg)`;
         });
     }
 
-    // --- CURSOR LOGIC ---
+    // --- MAGNETIC BUTTONS ---
+    const magneticBtns = document.querySelectorAll('.btn-magnetic');
+    magneticBtns.forEach(btn => {
+        btn.addEventListener('mousemove', (e) => {
+            if(isMobile) return;
+            const position = btn.getBoundingClientRect();
+            const x = e.pageX - position.left - position.width / 2;
+            const y = e.pageY - position.top - position.height / 2;
+            btn.style.transform = `translate(${x * 0.3}px, ${y * 0.5}px)`;
+        });
+        btn.addEventListener('mouseout', () => {
+            btn.style.transform = 'translate(0, 0)';
+        });
+    });
+
+    // --- PRICING FUNCTIONALITY ---
+    const planBtns = document.querySelectorAll('.plan-btn');
+    const typeSelect = document.getElementById('type');
+    planBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const plan = btn.getAttribute('data-plan');
+            typeSelect.value = plan;
+            document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+            
+            // Temporary highlight
+            typeSelect.parentElement.classList.add('border-white');
+            setTimeout(() => typeSelect.parentElement.classList.remove('border-white'), 2000);
+        });
+    });
+
+    // --- CUSTOM CURSOR ---
+    const cursor = document.getElementById('cursor');
     if (!isMobile) {
-        const cursor = document.getElementById('cursor');
-        const follower = document.getElementById('follower');
-        
         window.addEventListener('mousemove', (e) => {
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
-            setTimeout(() => {
-                follower.style.left = e.clientX + 'px';
-                follower.style.top = e.clientY + 'px';
-            }, 50);
         });
-
-        document.querySelectorAll('a, button, input, .work-item').forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                cursor.style.transform = 'translate(-50%, -50%) scale(4)';
-                cursor.style.background = 'transparent';
-                cursor.style.border = '1px solid white';
-            });
-            el.addEventListener('mouseleave', () => {
-                cursor.style.transform = 'translate(-50%, -50%) scale(1)';
-                cursor.style.background = 'white';
-                cursor.style.border = 'none';
-            });
+        document.querySelectorAll('a, button, input, select, textarea, .work-card').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.style.width = '60px');
+            el.addEventListener('mouseenter', () => cursor.style.height = '60px');
+            el.addEventListener('mouseleave', () => cursor.style.width = '10px');
+            el.addEventListener('mouseleave', () => cursor.style.height = '10px');
         });
     }
 
-    // --- SMOKE SYSTEM ---
+    // --- SMOKE ENGINE ---
     const canvas = document.getElementById('smokeCanvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
-    
-    function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
     window.addEventListener('resize', resize);
     resize();
 
-    class SmokeParticle {
+    class Smoke {
         constructor() { this.reset(); }
         reset() {
             this.x = Math.random() * canvas.width;
             this.y = canvas.height + 100;
-            this.size = Math.random() * (isMobile ? 100 : 250) + 50;
-            this.alpha = Math.random() * 0.4;
-            this.speedY = -(Math.random() * 0.5 + 0.2);
-            this.speedX = (Math.random() - 0.5) * 0.5;
+            this.size = Math.random() * 300 + 100;
+            this.alpha = Math.random() * 0.3;
+            this.vy = -Math.random() * 0.8 - 0.2;
         }
         update() {
-            this.y += this.speedY;
-            this.x += this.speedX;
-            this.alpha -= 0.001;
+            this.y += this.vy;
+            this.alpha -= 0.0005;
             if (this.alpha <= 0) this.reset();
         }
         draw() {
             ctx.beginPath();
-            const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
-            grad.addColorStop(0, `rgba(255,255,255,${this.alpha * 0.2})`);
-            grad.addColorStop(1, 'rgba(255,255,255,0)');
-            ctx.fillStyle = grad;
+            const g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
+            g.addColorStop(0, `rgba(255,255,255,${this.alpha})`);
+            g.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = g;
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
             ctx.fill();
         }
     }
-
-    for (let i = 0; i < (isMobile ? 15 : 40); i++) particles.push(new SmokeParticle());
-
-    function animate() {
+    for(let i=0; i< (isMobile ? 15 : 40); i++) particles.push(new Smoke());
+    function anim() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         particles.forEach(p => { p.update(); p.draw(); });
-        requestAnimationFrame(animate);
+        requestAnimationFrame(anim);
     }
-    animate();
+    anim();
 
-    // --- REVEAL ON SCROLL ---
-    const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) entry.target.classList.add('visible');
-        });
-    }, { threshold: 0.1 });
+    // --- REVEAL ---
+    const obs = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }), {threshold: 0.1});
+    document.querySelectorAll('.reveal').forEach(r => obs.observe(r));
 
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-    // --- WHATSAPP LOGIC ---
+    // --- WHATSAPP ---
     document.getElementById('contactForm').addEventListener('submit', (e) => {
         e.preventDefault();
         const n = document.getElementById('name').value;
         const r = document.getElementById('role').value;
+        const t = document.getElementById('type').value;
+        const b = document.getElementById('budget').value;
         const m = document.getElementById('message').value;
-        const text = `*CODE101 INQUIRY*%0A*From:* ${n}%0A*Role:* ${r}%0A*Message:* ${m}`;
-        window.open(`https://wa.me/919843487386?text=${text}`, '_blank');
+        const msg = `*CODE101 PROJECT INQUIRY*%0A*Name:* ${n}%0A*Role:* ${r}%0A*Type:* ${t}%0A*Budget:* ${b}%0A*Message:* ${m}`;
+        window.open(`https://wa.me/919843487386?text=${msg}`, '_blank');
     });
   </script>
  </body>
