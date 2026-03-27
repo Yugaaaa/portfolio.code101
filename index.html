@@ -3,11 +3,10 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cinematic Portfolio</title>
+  <title>CODE101 | Portfolio</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-color: #0a0a0a;
@@ -15,1243 +14,137 @@
       --text-color: #ffffff;
       --accent-color: #ffffff;
       --secondary-action: #707070;
-      --grey-light: #262626;
-      --grey-medium: #3a3a3a;
-      --grey-dark: #1a1a1a;
     }
-    html, body { height: 100%; margin: 0; overflow: hidden; }
-    body { cursor: none; }
-    body.no-js { cursor: auto; }
-    * { cursor: inherit; }
 
-    .custom-cursor {
-      position: fixed; width: 20px; height: 20px; border-radius: 50%;
-      border: 2px solid var(--text-color); pointer-events: none;
-      z-index: 99999; transform: translate(-50%, -50%);
-      transition: width 0.3s cubic-bezier(0.23,1,0.32,1), height 0.3s cubic-bezier(0.23,1,0.32,1),
-                  background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-      mix-blend-mode: screen;
+    html, body { height: 100%; margin: 0; overflow: hidden; background: var(--bg-color); color: var(--text-color); }
+    
+    /* Responsive Cursor: Hide on touch devices */
+    @media (pointer: fine) {
+      body { cursor: none; }
+      .custom-cursor {
+        position: fixed; width: 20px; height: 20px; border-radius: 50%;
+        border: 2px solid var(--text-color); pointer-events: none;
+        z-index: 99999; transform: translate(-50%, -50%);
+        transition: width 0.3s ease, height 0.3s ease;
+        mix-blend-mode: difference;
+      }
+      .cursor-dot {
+        position: fixed; width: 4px; height: 4px; background: var(--text-color);
+        border-radius: 50%; pointer-events: none; z-index: 99999; transform: translate(-50%, -50%);
+      }
     }
-    .custom-cursor.hovering {
-      width: 60px; height: 60px; background: rgba(255,255,255,0.1);
-      border-color: var(--text-color); box-shadow: 0 0 30px rgba(255,255,255,0.5);
+    @media (pointer: coarse) {
+      .custom-cursor, .cursor-dot { display: none; }
+      body { cursor: auto; overflow-y: auto; } /* Allow native scroll if snap fails on old mobile */
     }
-    .cursor-dot {
-      position: fixed; width: 5px; height: 5px; border-radius: 50%;
-      background: var(--text-color); pointer-events: none; z-index: 99999;
-      transform: translate(-50%, -50%); transition: opacity 0.3s;
-    }
-    .cursor-text {
-      position: fixed; pointer-events: none; z-index: 99999;
-      font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 2px;
-      text-transform: uppercase; color: var(--bg-color);
-      transform: translate(-50%, -50%); opacity: 0; transition: opacity 0.3s;
-      font-weight: 700; background: rgba(255,255,255,0.9); padding: 0.4rem 0.8rem; border-radius: 4px;
-    }
-    .cursor-text.visible { opacity: 1; }
 
     .section-container {
-      height: 100%; overflow-y: auto; overflow-x: hidden;
-      scroll-behavior: smooth; scroll-snap-type: y mandatory;
+      height: 100vh; overflow-y: auto; scroll-snap-type: y mandatory;
+      scrollbar-width: none; -ms-overflow-style: none;
     }
+    .section-container::-webkit-scrollbar { display: none; }
+    
     .section {
-      min-height: 100%; scroll-snap-align: start;
-      position: relative; display: flex; align-items: center; justify-content: center;
-    }
-
-    .video-bg {
-      position: absolute; inset: 0; overflow: hidden;
-    }
-    .video-bg::after {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.95) 100%);
-    }
-    .video-bg canvas { width: 100%; height: 100%; object-fit: cover; }
-
-    /* Fullscreen nav overlay */
-    .nav-overlay {
-      position: fixed; inset: 0; z-index: 9990;
-      background: var(--bg-color); opacity: 0; pointer-events: none;
-      transition: opacity 0.6s cubic-bezier(0.23,1,0.32,1);
+      min-height: 100vh; scroll-snap-align: start;
+      position: relative; padding: 2rem 1rem;
       display: flex; align-items: center; justify-content: center;
     }
-    .nav-overlay.open { opacity: 1; pointer-events: all; }
-    .nav-overlay a {
-      display: block; font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 5rem);
-      font-weight: 800; color: var(--text-color); text-decoration: none;
-      padding: 0.3em 0; opacity: 0; transform: translateY(40px);
-      transition: opacity 0.5s ease, transform 0.5s ease, color 0.3s ease;
-    }
-    .nav-overlay.open a {
-      opacity: 1; transform: translateY(0);
-    }
-    .nav-overlay a:nth-child(1) { transition-delay: 0.1s; }
-    .nav-overlay a:nth-child(2) { transition-delay: 0.2s; }
-    .nav-overlay a:nth-child(3) { transition-delay: 0.3s; }
-    .nav-overlay a:nth-child(4) { transition-delay: 0.4s; }
-    .nav-overlay a:hover { color: var(--accent-color); }
 
-    /* Hamburger */
-    .hamburger { position: fixed; top: 2rem; right: 2rem; z-index: 9995; width: 40px; height: 30px; background: none; border: none; padding: 0; }
-    .hamburger span {
-      display: block; width: 100%; height: 2px; background: var(--text-color);
-      transition: all 0.4s cubic-bezier(0.23,1,0.32,1); transform-origin: center;
-    }
-    .hamburger span:nth-child(1) { margin-bottom: 8px; }
-    .hamburger span:nth-child(2) { margin-bottom: 8px; width: 60%; margin-left: auto; }
-    .hamburger.open span:nth-child(1) { transform: translateY(10px) rotate(45deg); }
-    .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-    .hamburger.open span:nth-child(3) { transform: translateY(-10px) rotate(-45deg); }
-
-    /* Project cards */
-    .project-card {
-      position: relative; overflow: hidden; border-radius: 16px;
-      background: var(--surface-color); border: 1px solid rgba(255,255,255,0.1);
-      transition: transform 0.5s cubic-bezier(0.23,1,0.32,1), box-shadow 0.5s ease, background 0.5s ease;
-    }
-    .project-card:hover {
-      transform: translateY(-8px) scale(1.02);
-      box-shadow: 0 30px 60px rgba(0,0,0,0.8), inset 0 0 40px rgba(255,255,255,0.1);
-      background: var(--grey-light);
-    }
-    .project-card .card-image {
-      height: 220px; position: relative; overflow: hidden;
-    }
-    .project-card .card-image .card-gradient {
-      position: absolute; inset: 0;
-      transition: opacity 0.5s;
-    }
-    .project-card:hover .card-image .card-gradient { opacity: 0.7; }
-    .card-overlay {
-      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-      opacity: 0; transition: opacity 0.4s ease;
-    }
-    .project-card:hover .card-overlay { opacity: 1; }
-
-    /* Floating labels */
-    .float-group { position: relative; margin-bottom: 2rem; }
-    .float-group input, .float-group textarea {
-      width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--secondary-action);
-      color: var(--text-color); font-family: 'Space Mono', monospace; font-size: 14px;
-      padding: 1.2rem 0 0.5rem; outline: none;
-      transition: border-color 0.3s;
-    }
-    .float-group input:focus, .float-group textarea:focus { border-color: var(--text-color); }
-    .float-group label {
-      position: absolute; left: 0; top: 1.2rem; font-family: 'Space Mono', monospace;
-      font-size: 13px; color: var(--secondary-action); pointer-events: none;
-      transition: all 0.3s cubic-bezier(0.23,1,0.32,1); letter-spacing: 1px; text-transform: uppercase;
-    }
-    .float-group input:focus ~ label, .float-group input:not(:placeholder-shown) ~ label,
-    .float-group textarea:focus ~ label, .float-group textarea:not(:placeholder-shown) ~ label {
-      top: -0.4rem; font-size: 10px; color: var(--text-color);
-    }
-
-    /* Reveal animations */
-    .reveal { opacity: 0; transform: translateY(60px); transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.23,1,0.32,1); }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-
-    /* Skill cards */
-    .skill-card {
-      position: relative; padding: 2rem; border-radius: 12px;
-      background: rgba(45, 45, 45, 0.6); border: 1px solid rgba(255, 255, 255, 0.15);
-      overflow: hidden; cursor: pointer;
-      transition: all 0.5s cubic-bezier(0.23,1,0.32,1);
-    }
-    .skill-card::before {
-      content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
-      opacity: 0; transition: opacity 0.5s ease;
-    }
-    .skill-card:hover::before { opacity: 1; }
-    .skill-card:hover {
-      background: rgba(45, 45, 45, 0.95);
-      border-color: rgba(255, 255, 255, 0.3);
-      transform: translateY(-12px) scale(1.05);
-      box-shadow: 0 20px 50px rgba(255, 255, 255, 0.1), inset 0 0 40px rgba(255, 255, 255, 0.05);
-    }
-    .skill-icon {
-      font-size: 2.5rem; margin-bottom: 1rem;
-      transition: transform 0.5s cubic-bezier(0.23,1,0.32,1);
-    }
-    .skill-card:hover .skill-icon {
-      transform: scale(1.3) rotate(10deg);
-    }
-    .skill-title {
-      font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem;
-      color: var(--text-color);
-    }
-    .skill-desc {
-      font-family: 'Space Mono', monospace; font-size: 12px;
-      color: var(--secondary-action); line-height: 1.5;
-    }
-
-    /* Pricing cards */
-    .pricing-card {
-      position: relative; padding: 2.5rem; border-radius: 12px;
-      background: rgba(45, 45, 45, 0.6); border: 1px solid rgba(255, 255, 255, 0.15);
-      overflow: hidden; display: flex; flex-direction: column;
-      transition: all 0.6s cubic-bezier(0.23,1,0.32,1);
-    }
-    .pricing-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
-      opacity: 0; transition: opacity 0.6s ease;
-    }
-    .pricing-card:hover::before { opacity: 1; }
-    .pricing-card:hover {
-      background: rgba(45, 45, 45, 0.95);
-      border-color: rgba(255, 255, 255, 0.3);
-      transform: translateY(-15px) scale(1.02);
-      box-shadow: 0 30px 60px rgba(255, 255, 255, 0.12);
-    }
-    .pricing-badge {
-      position: absolute; top: 1.5rem; right: 1.5rem;
-      background: var(--text-color); color: var(--bg-color);
-      padding: 0.3rem 0.8rem; border-radius: 999px;
-      font-family: 'Space Mono', monospace; font-size: 10px;
-      font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-      opacity: 0; transform: translateX(20px);
-      transition: all 0.5s cubic-bezier(0.23,1,0.32,1);
-    }
-    .pricing-card:hover .pricing-badge { opacity: 1; transform: translateX(0); }
-    .pricing-title {
-      font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem;
-      color: var(--text-color);
-    }
-    .pricing-desc {
-      font-family: 'Space Mono', monospace; font-size: 12px;
-      color: var(--secondary-action); margin-bottom: 1.5rem; flex-grow: 1;
-    }
-    .pricing-amount {
-      font-size: 2.5rem; font-weight: 800; color: var(--text-color);
-      margin-bottom: 1.5rem;
-    }
-    .pricing-features {
-      list-style: none; padding: 0; margin: 1.5rem 0; font-family: 'Space Mono', monospace;
-      font-size: 12px; color: var(--secondary-action);
-    }
-    .pricing-features li {
-      padding: 0.5rem 0; display: flex; align-items: center;
-    }
-    .pricing-features li::before {
-      content: '✓'; color: var(--text-color); margin-right: 0.8rem; font-weight: 700;
-    }
-    .pricing-btn {
-      margin-top: auto; padding: 0.9rem 1.5rem;
-      background: transparent; border: 1.5px solid var(--text-color);
-      color: var(--text-color); border-radius: 8px;
-      font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700;
-      letter-spacing: 2px; text-transform: uppercase; cursor: pointer;
-      transition: all 0.4s cubic-bezier(0.23,1,0.32,1);
-    }
-    .pricing-btn:hover {
-      background: var(--text-color); color: var(--bg-color);
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
-    }
-
-    /* Glitch effect */
-    @keyframes glitch {
-      0% { transform: translate(0); }
-      20% { transform: translate(-2px, 2px); }
-      40% { transform: translate(-2px, -2px); }
-      60% { transform: translate(2px, 2px); }
-      80% { transform: translate(2px, -2px); }
-      100% { transform: translate(0); }
-    }
-    
-    .glitch-text {
-      position: relative;
-      display: inline-block;
-    }
-    
-    .glitch-text::before,
-    .glitch-text::after {
-      content: attr(data-text);
-      position: absolute;
-      left: 0;
-      top: 0;
+    /* Mobile-optimized Grid */
+    .responsive-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
       width: 100%;
-      height: 100%;
-    }
-    
-    .glitch-text::before {
-      animation: glitch 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
-      color: #fff;
-      z-index: -1;
-      text-shadow: -2px 0 #ff00ff;
-      clip: rect(0, 900px, 0, 0);
-    }
-    
-    .glitch-text::after {
-      animation: glitch 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite reverse;
-      color: #fff;
-      z-index: -2;
-      text-shadow: -2px 0 #00ffff;
-      clip: rect(0, 0, 0, 900px);
-    }
-    
-    .glitch-text.active::before {
-      animation: glitch 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
-    }
-    
-    .glitch-text.active::after {
-      animation: glitch 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite reverse;
+      max-width: 1100px;
     }
 
-    /* Smoke effect canvas */
-    .smoke-canvas {
-      position: fixed; inset: 0; z-index: 5; pointer-events: none; opacity: 0.85; top: 0; left: 0; width: 100%; height: 100%;
-    }
+    .video-bg { position: absolute; inset: 0; z-index: -1; }
+    .video-bg canvas { width: 100%; height: 100%; object-fit: cover; opacity: 0.4; }
 
-    /* Scroll indicator */
-    .scroll-indicator {
-      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
-      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    /* Hamburger & Nav */
+    .hamburger { position: fixed; top: 1.5rem; right: 1.5rem; z-index: 100; background: none; border: none; }
+    .nav-overlay {
+      position: fixed; inset: 0; background: var(--bg-color);
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      z-index: 90; gap: 2rem;
     }
-    .scroll-line {
-      width: 1px; height: 50px; background: linear-gradient(to bottom, var(--text-color), transparent);
-      animation: scrollPulse 2s ease-in-out infinite;
-    }
-    @keyframes scrollPulse {
-      0%, 100% { opacity: 0.3; transform: scaleY(0.5); }
-      50% { opacity: 1; transform: scaleY(1); }
-    }
+    .nav-overlay.active { display: flex; }
 
-    /* Section counter */
-    .section-counter {
-      position: fixed; right: 2rem; top: 50%; transform: translateY(-50%);
-      z-index: 100; display: flex; flex-direction: column; gap: 12px;
-    }
-    .section-dot {
-      width: 8px; height: 8px; border-radius: 50%; background: var(--secondary-action);
-      transition: all 0.4s ease; border: none; padding: 0;
-    }
-    .section-dot.active {
-      background: var(--text-color); box-shadow: 0 0 12px rgba(255,255,255,0.5);
-      transform: scale(1.4);
-    }
-
-    .project-card-link {
-      cursor: pointer;
-    }
-    .project-card-link:active .project-card {
-      transform: translateY(-8px) scale(1.02);
-      box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 0 40px rgba(201,247,49,0.08);
-    }
-
-    /* Toast */
-    .toast {
-      position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px);
-      background: var(--text-color); color: var(--bg-color); padding: 1rem 2rem;
-      border-radius: 8px; font-family: 'Space Mono', monospace; font-size: 13px;
-      z-index: 99999; opacity: 0; transition: all 0.5s cubic-bezier(0.23,1,0.32,1);
-      letter-spacing: 1px; font-weight: 700;
-    }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-    /* Noise overlay for cinematic effect */
-    .noise {
-      position: fixed; inset: 0; z-index: 9980; pointer-events: none; opacity: 0.03;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    }
-
-    @media (max-width: 768px) {
-      .hamburger { top: 1rem; right: 1rem; width: 32px; height: 24px; }
-      .hamburger span { height: 1.5px; }
-      .section-counter { display: none; }
-      .project-card .card-image { height: 160px; }
-      .section { min-height: 100%; }
-      .section-container { height: 100%; }
-      
-      /* Mobile nav overlay adjustments */
-      .nav-overlay a {
-        font-size: clamp(1.5rem, 4vw, 2.5rem);
-        padding: 0.2em 0;
-      }
-      
-      /* Mobile card spacing */
-      .project-card { border-radius: 12px; }
-      .skill-card { padding: 1.5rem; }
-      .pricing-card { padding: 1.5rem; }
-      
-      /* Mobile text sizing */
-      h1, h2 { font-size: clamp(1.8rem, 5vw, 2.8rem); }
-      p { font-size: clamp(13px, 2.5vw, 15px); }
-      
-      /* Mobile form adjustments */
-      .float-group { margin-bottom: 1.5rem; }
-      .float-group label { font-size: 11px; }
-      
-      /* Mobile pricing badges */
-      .pricing-badge { 
-        font-size: 8px; 
-        padding: 0.25rem 0.6rem;
-        top: 1rem;
-        right: 1rem;
-      }
-      
-      /* Mobile skill icons */
-      .skill-icon { font-size: 2rem; margin-bottom: 0.8rem; }
-      
-      /* Mobile pricing title */
-      .pricing-title { font-size: 1.2rem; }
-      .pricing-amount { font-size: 1.8rem; }
-      
-      /* Mobile section padding */
-      .section { padding: 3rem 0; }
-      #work { padding-top: 4rem; }
-      #pricing { padding-top: 4rem; }
-      
-      /* Mobile grid adjustments */
-      .grid { gap: 4px; }
-      
-      /* Mobile social links */
-      .social-link { width: 36px; height: 36px; font-size: 14px; }
-      
-      /* Mobile footer */
-      .footer-text { font-size: 10px; }
-    }
-    
-    @media (max-width: 480px) {
-      .hamburger { top: 0.75rem; right: 0.75rem; }
-      .section-counter { display: none; }
-      
-      /* Smaller hero on very small screens */
-      #heroTitle { font-size: clamp(2rem, 6vw, 3rem) !important; line-height: 0.9; }
-      
-      /* Stack sections more tightly */
-      .section { min-height: 100%; }
-      
-      /* Reduce card gaps */
-      .grid { gap: 2px; }
-      
-      /* Smaller project cards */
-      .project-card .card-image { height: 120px; }
-      
-      /* Smaller pricing cards */
-      .pricing-card { padding: 1.2rem; gap: 0.8rem; }
-      .pricing-features { margin: 1rem 0; }
-      .pricing-features li { padding: 0.3rem 0; font-size: 11px; }
-      .pricing-btn { padding: 0.8rem 1.2rem; font-size: 10px; }
-      
-      /* Mobile form */
-      .float-group input, .float-group textarea { font-size: 13px; padding: 1rem 0 0.4rem; }
-      .float-group label { font-size: 10px; top: 1rem; }
-      
-      /* Reduce scroll indicator on small screens */
-      .scroll-indicator { bottom: 1rem; }
-      .scroll-line { height: 30px; }
-      
-      /* Contact info adjustments */
-      .contact-info { padding: 1.5rem; }
-      
-      /* Social links smaller */
-      .social-link { width: 32px; height: 32px; font-size: 12px; }
-      
-      /* Footer text */
-      .footer-text { font-size: 9px; }
-    }
+    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
   </style>
-  <style>body { box-sizing: border-box; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
  </head>
- <body class="h-full" style="background: var(--bg-color); color: var(--text-color); font-family: 'Syne', sans-serif;">
-  <script>
-    // Set no-js class as fallback
-    document.documentElement.classList.add('js');
-  </script><!-- Custom Cursor -->
+ <body>
   <div class="custom-cursor" id="cursor"></div>
-  <div class="cursor-dot" id="cursorDot"></div>
-  <div class="cursor-text" id="cursorText"></div><!-- Noise Overlay -->
-  <div class="noise"></div><!-- Section Dots -->
-  <nav class="section-counter" id="sectionCounter" aria-label="Section navigation"><button class="section-dot active" data-section="0" aria-label="Go to hero section"></button> <button class="section-dot" data-section="1" aria-label="Go to work section"></button> <button class="section-dot" data-section="2" aria-label="Go to about section"></button> <button class="section-dot" data-section="3" aria-label="Go to contact section"></button>
-  </nav><!-- Hamburger --> <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu" data-hover="true" data-hover-text="MENU"> <span></span><span></span><span></span> </button> <!-- Fullscreen Nav Overlay -->
-  <div class="nav-overlay" id="navOverlay" role="navigation" aria-label="Main navigation">
-   <div class="text-center"><a href="#hero" data-nav="0" data-hover="true" data-hover-text="HOME">Home</a> <a href="#work" data-nav="1" data-hover="true" data-hover-text="PROJECTS">Work</a> <a href="#about" data-nav="2" data-hover="true" data-hover-text="BIO">About</a> <a href="#contact" data-nav="3" data-hover="true" data-hover-text="SAY HI">Contact</a>
-   </div>
-  </div><!-- Main Content -->
-  <div class="section-container" id="sectionContainer"><!-- Hero Section -->
-   <section class="section" id="hero">
-    <div class="video-bg">
-     <canvas id="heroCanvas"></canvas>
-    </div>
-    <canvas id="smokeCanvasHero" class="smoke-canvas"></canvas>
-    <div class="relative z-10 text-center px-6 w-full" style="max-width: 1000px;">
-     <p class="reveal" style="font-family: 'Space Mono', monospace; font-size: clamp(11px,1.2vw,13px); letter-spacing: 6px; text-transform: uppercase; color: var(--accent-color); margin-bottom: 1.5rem;" id="heroTag">Digital Creator &amp; Designer</p>
-     <h1 class="reveal" style="font-size: clamp(3rem,8vw,8rem); font-weight: 800; line-height: 0.95; letter-spacing: -3px; margin-bottom: 1.5rem;" id="heroTitle">CODE<br>
-       101</h1>
-     <p class="reveal" style="font-family: 'Space Mono', monospace; font-size: clamp(12px,1.2vw,15px); color: var(--secondary-action); max-width: 500px; margin: 0 auto;" id="heroSubtitle">Crafting immersive digital experiences at the intersection of design and technology</p>
-     <div class="scroll-indicator reveal"><span style="font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--secondary-action);">Scroll</span>
-      <div class="scroll-line"></div>
-     </div>
-    </div>
-   </section><!-- Work Section -->
-   <section class="section" id="work" style="align-items: flex-start; padding-top: 6rem;">
-    <div class="video-bg">
-     <canvas id="workCanvas"></canvas>
-    </div>
-    <div class="relative z-10 w-full px-6" style="max-width: 1100px; margin: 0 auto;">
-     <div class="reveal" style="margin-bottom: 3rem;">
-      <p style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--accent-color); margin-bottom: 0.5rem;">Portfolio</p>
-      <h2 style="font-size: clamp(2.5rem,5vw,4.5rem); font-weight: 800; letter-spacing: -2px;" id="workTitle">Selected Work</h2>
-     </div>
-     <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="projectGrid"><a href="#" class="project-card-link reveal" data-hover="true" data-hover-text="VISIT" data-project="0" style="text-decoration: none;">
-       <div class="project-card">
-        <div class="card-image">
-         <div class="card-gradient" style="background: linear-gradient(135deg, #ffffff 0%, #0a0a0f 100%); opacity: 0.4;"></div>
-         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><span class="project-icon" style="font-size: 3rem;">→</span>
-         </div>
-         <div class="card-overlay">
-          <span style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 3px; color: var(--accent-color);">EXPLORE →</span>
-         </div>
+  <div class="cursor-dot" id="dot"></div>
+
+  <button class="hamburger" id="menuBtn">
+    <i data-lucide="menu" class="w-8 h-8"></i>
+  </button>
+
+  <nav class="nav-overlay" id="nav">
+    <a href="#hero" class="text-4xl font-bold">HOME</a>
+    <a href="#work" class="text-4xl font-bold">SOLUTIONS</a>
+    <a href="#pricing" class="text-4xl font-bold">INVESTMENTS</a>
+    <a href="#contact" class="text-4xl font-bold">CONNECT</a>
+  </nav>
+
+  <div class="section-container" id="container">
+    <section class="section" id="hero">
+      <div class="video-bg"><canvas id="heroCanvas"></canvas></div>
+      <div class="text-center z-10">
+        <h1 class="reveal font-extrabold leading-none" style="font-size: clamp(4rem, 15vw, 10rem);">CODE101</h1>
+        <p class="reveal mt-4 opacity-60 font-mono">MINIMALIST DESIGN SOLUTIONS</p>
+      </div>
+    </section>
+
+    <section class="section" id="work">
+      <div class="w-full max-w-6xl">
+        <h2 class="text-4xl font-bold mb-8 reveal">SOLUTIONS</h2>
+        <div class="responsive-grid">
+          <div class="bg-zinc-900 p-6 rounded-xl border border-zinc-800 reveal">
+            <h3 class="text-xl font-bold">Web Design</h3>
+            <p class="text-sm opacity-50 mt-2">Minimalist & Monochromatic</p>
+          </div>
+          <div class="bg-zinc-900 p-6 rounded-xl border border-zinc-800 reveal">
+            <h3 class="text-xl font-bold">UI/UX</h3>
+            <p class="text-sm opacity-50 mt-2">Interactive Experiences</p>
+          </div>
         </div>
-        <div class="p-5">
-         <p class="project-category" style="font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--secondary-action); margin-bottom: 0.3rem;">BRAND IDENTITY</p>
-         <h3 class="project-title" style="font-size: 1.3rem; font-weight: 700;">Minimal Studio</h3>
-        </div>
-       </div></a> <a href="#" class="project-card-link reveal" data-hover="true" data-hover-text="VISIT" data-project="1" style="text-decoration: none; transform: translateY(40px);">
-       <div class="project-card">
-        <div class="card-image">
-         <div class="card-gradient" style="background: linear-gradient(135deg, #e0e0e0 0%, #0a0a0f 100%); opacity: 0.4;"></div>
-         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><span class="project-icon" style="font-size: 3rem;">→</span>
-         </div>
-         <div class="card-overlay">
-          <span style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 3px; color: var(--accent-color);">EXPLORE →</span>
-         </div>
-        </div>
-        <div class="p-5">
-         <p class="project-category" style="font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--secondary-action); margin-bottom: 0.3rem;">WEB DESIGN</p>
-         <h3 class="project-title" style="font-size: 1.3rem; font-weight: 700;">Digital Agency</h3>
-        </div>
-       </div></a> <a href="#" class="project-card-link reveal" data-hover="true" data-hover-text="VISIT" data-project="2" style="text-decoration: none;">
-       <div class="project-card">
-        <div class="card-image">
-         <div class="card-gradient" style="background: linear-gradient(135deg, #d4d4d4 0%, #0a0a0f 100%); opacity: 0.4;"></div>
-         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><span class="project-icon" style="font-size: 3rem;">→</span>
-         </div>
-         <div class="card-overlay">
-          <span style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 3px; color: var(--accent-color);">EXPLORE →</span>
-         </div>
-        </div>
-        <div class="p-5">
-         <p class="project-category" style="font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--secondary-action); margin-bottom: 0.3rem;">MOTION DESIGN</p>
-         <h3 class="project-title" style="font-size: 1.3rem; font-weight: 700;">Tech Startup</h3>
-        </div>
-       </div></a> <a href="#" class="project-card-link reveal" data-hover="true" data-hover-text="VISIT" data-project="3" style="text-decoration: none; transform: translateY(40px);">
-       <div class="project-card">
-        <div class="card-image">
-         <div class="card-gradient" style="background: linear-gradient(135deg, #c8c8c8 0%, #0a0a0f 100%); opacity: 0.4;"></div>
-         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><span class="project-icon" style="font-size: 3rem;">→</span>
-         </div>
-         <div class="card-overlay">
-          <span style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 3px; color: var(--accent-color);">EXPLORE →</span>
-         </div>
-        </div>
-        <div class="p-5">
-         <p class="project-category" style="font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--secondary-action); margin-bottom: 0.3rem;">UI/UX DESIGN</p>
-         <h3 class="project-title" style="font-size: 1.3rem; font-weight: 700;">Mobile App</h3>
-        </div>
-       </div></a>
-     </div>
-    </div>
-   </section><!-- About Section -->
-   <section class="section" id="about">
-    <div class="video-bg">
-     <canvas id="aboutCanvas"></canvas>
-    </div>
-    <canvas id="smokeCanvasAbout" class="smoke-canvas"></canvas>
-    <div class="relative z-10 w-full px-6" style="max-width: 1200px; margin: 0 auto;">
-     <p class="reveal" style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--accent-color); margin-bottom: 0.5rem;">About</p>
-     <h2 class="reveal" style="font-size: clamp(2.5rem,5vw,4.5rem); font-weight: 800; letter-spacing: -2px; margin-bottom: 0.5rem;" id="aboutTitle">The Story</h2>
-     <p class="reveal" style="font-family: 'Space Mono', monospace; font-size: 13px; color: var(--secondary-action); margin-bottom: 2.5rem;">I'm <span id="ageDisplay">18</span> years old, just starting my journey in digital design and development. Fresh perspective, boundless creativity.</p><!-- Skills Grid -->
-     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" style="margin-bottom: 4rem;">
-      <div class="skill-card reveal" data-hover="true" data-hover-text="EXPLORE">
-       <div class="skill-icon">
-        🎬
-       </div>
-       <div class="skill-title">
-        Motion Design
-       </div>
-       <div class="skill-desc">
-        Cinematic animations and dynamic visual storytelling that captivates audiences.
-       </div>
       </div>
-      <div class="skill-card reveal" data-hover="true" data-hover-text="BUILD" style="transform: translateY(20px);">
-       <div class="skill-icon">
-        💻
-       </div>
-       <div class="skill-title">
-        Web Development
-       </div>
-       <div class="skill-desc">
-        Creating interactive, responsive experiences with modern web technologies.
-       </div>
-      </div>
-      <div class="skill-card reveal" data-hover="true" data-hover-text="DESIGN">
-       <div class="skill-icon">
-        🎨
-       </div>
-       <div class="skill-title">
-        Brand Identity
-       </div>
-       <div class="skill-desc">
-        Crafting unique visual identities that tell compelling brand stories.
-       </div>
-      </div>
-      <div class="skill-card reveal" data-hover="true" data-hover-text="CREATE" style="transform: translateY(20px);">
-       <div class="skill-icon">
-        🌐
-       </div>
-       <div class="skill-title">
-        3D / WebGL
-       </div>
-       <div class="skill-desc">
-        Immersive 3D experiences and advanced graphics for the web.
-       </div>
-      </div>
-     </div><!-- Bio section -->
-     <div class="reveal" style="padding: 2rem; border-left: 2px solid var(--accent-color); margin-bottom: 3rem;">
-      <p id="aboutDesc" style="font-family: 'Space Mono', monospace; font-size: 14px; line-height: 1.8; color: var(--secondary-action); margin: 0;">I'm a passionate digital creator and designer with a strong foundation in motion design, web development, and brand identity. With expertise in modern web technologies and a keen eye for aesthetic detail, I create immersive digital experiences that blend creativity with functionality. My work focuses on delivering innovative solutions that engage audiences and drive measurable results.</p>
-     </div>
-    </div>
-   </section><!-- Pricing Section -->
-   <section class="section" id="pricing" style="align-items: flex-start; padding-top: 6rem;">
-    <div class="video-bg">
-     <canvas id="pricingCanvas"></canvas>
-    </div>
-    <canvas id="smokeCanvasPricing" class="smoke-canvas"></canvas>
-    <div class="relative z-10 w-full px-6" style="max-width: 1200px; margin: 0 auto;">
-     <p class="reveal" style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--accent-color); margin-bottom: 0.5rem;">Services</p>
-     <h2 class="reveal" style="font-size: clamp(2.5rem,5vw,4.5rem); font-weight: 800; letter-spacing: -2px; margin-bottom: 3rem;" id="pricingTitle">Pricing Plans</h2>
-     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <!-- Basic -->
-      <div class="pricing-card reveal" data-hover="true" data-hover-text="SELECT">
-       <div class="pricing-badge">
-        Entry
-       </div>
-       <div class="pricing-title">
-        Starter
-       </div>
-       <div class="pricing-desc">
-        Perfect for small projects and learning
-       </div>
-       <div class="pricing-amount">
-        ₹499
-       </div>
-       <ul class="pricing-features">
-        <li>Single Page Design</li>
-        <li>Basic Animation</li>
-        <li>Mobile Responsive</li>
-        <li>Email Support</li>
-       </ul><button class="pricing-btn magnetic-btn" data-hover="true" data-hover-text="INQUIRE">Choose Plan</button>
-      </div><!-- Pro -->
-      <div class="pricing-card reveal" style="transform: scale(1.02);" data-hover="true" data-hover-text="SELECT">
-       <div class="pricing-badge">
-        Popular
-       </div>
-       <div class="pricing-title">
-        Professional
-       </div>
-       <div class="pricing-desc">
-        For serious web projects and portfolios
-       </div>
-       <div class="pricing-amount">
-        ₹999
-       </div>
-       <ul class="pricing-features">
-        <li>Multi-Page Design</li>
-        <li>Advanced Animation</li>
-        <li>Custom Interactions</li>
-        <li>CMS Integration</li>
-        <li>Priority Support</li>
-       </ul><button class="pricing-btn magnetic-btn" data-hover="true" data-hover-text="INQUIRE">Choose Plan</button>
-      </div><!-- Enterprise -->
-      <div class="pricing-card reveal" data-hover="true" data-hover-text="SELECT">
-       <div class="pricing-badge">
-        Premium
-       </div>
-       <div class="pricing-title">
-        Enterprise
-       </div>
-       <div class="pricing-desc">
-        Fully customized digital experiences
-       </div>
-       <div class="pricing-amount">
-        Custom
-       </div>
-       <ul class="pricing-features">
-        <li>Full Custom Build</li>
-        <li>Motion &amp; 3D Graphics</li>
-        <li>Backend Integration</li>
-        <li>Performance Optimization</li>
-        <li>Dedicated Support</li>
-       </ul><button class="pricing-btn magnetic-btn" data-hover="true" data-hover-text="INQUIRE">Get Quote</button>
-      </div>
-     </div>
-    </div>
-    <div class="video-bg">
-     <canvas id="contactCanvas"></canvas>
-    </div>
-    <div class="relative z-10 w-full px-6" style="max-width: 600px; margin: 0 auto;">
-     <p class="reveal" style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--accent-color); margin-bottom: 0.5rem;">Get in Touch</p>
-     <h2 class="reveal" style="font-size: clamp(2.5rem,5vw,4.5rem); font-weight: 800; letter-spacing: -2px; margin-bottom: 2.5rem;" id="contactTitle">Let's Talk</h2><!-- Contact Info -->
-     <div class="reveal" style="margin-bottom: 3rem; padding: 2rem; border-radius: 12px; background: rgba(45, 45, 45, 0.4); border: 1px solid rgba(255, 255, 255, 0.1);">
-      <div style="margin-bottom: 1.5rem;">
-       <p style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent-color); margin-bottom: 0.5rem;">Email</p><a href="mailto:tagg602@gmail.com" style="font-size: 1.1rem; color: var(--text-color); text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='var(--accent-color)'" onmouseout="this.style.color='var(--text-color)'">tagg602@gmail.com</a>
-      </div>
-      <div style="margin-bottom: 1.5rem;">
-       <p style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent-color); margin-bottom: 0.5rem;">Phone</p><a href="tel:+91-9843487386" style="font-size: 1.1rem; color: var(--text-color); text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='var(--accent-color)'" onmouseout="this.style.color='var(--text-color)'">+91 9843487386</a>
-      </div>
-      <div>
-       <p style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent-color); margin-bottom: 0.5rem;">Location</p>
-       <p style="font-size: 1.1rem; color: var(--text-color); margin: 0;">Coimbatore, India</p>
-      </div>
-     </div><!-- Social Links -->
-     <div class="reveal" style="margin-bottom: 3rem; display: flex; gap: 1rem; justify-content: center;"><a href="#" target="_blank" rel="noopener noreferrer" style="width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-color); text-decoration: none; transition: all 0.3s; cursor: pointer;" data-hover="true" data-hover-text="LinkedIn" onmouseover="this.style.borderColor='var(--accent-color)'; this.style.background='rgba(201, 247, 49, 0.1)';" onmouseout="this.style.borderColor='rgba(255,255,255,0.3)'; this.style.background='transparent';">in</a> <a href="#" target="_blank" rel="noopener noreferrer" style="width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-color); text-decoration: none; transition: all 0.3s; cursor: pointer;" data-hover="true" data-hover-text="Twitter" onmouseover="this.style.borderColor='var(--accent-color)'; this.style.background='rgba(201, 247, 49, 0.1)';" onmouseout="this.style.borderColor='rgba(255,255,255,0.3)'; this.style.background='transparent';">𝕏</a> <a href="#" target="_blank" rel="noopener noreferrer" style="width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-color); text-decoration: none; transition: all 0.3s; cursor: pointer;" data-hover="true" data-hover-text="GitHub" onmouseover="this.style.borderColor='var(--accent-color)'; this.style.background='rgba(201, 247, 49, 0.1)';" onmouseout="this.style.borderColor='rgba(255,255,255,0.3)'; this.style.background='transparent';">⚙</a> <a href="#" target="_blank" rel="noopener noreferrer" style="width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-color); text-decoration: none; transition: all 0.3s; cursor: pointer;" data-hover="true" data-hover-text="Instagram" onmouseover="this.style.borderColor='var(--accent-color)'; this.style.background='rgba(201, 247, 49, 0.1)';" onmouseout="this.style.borderColor='rgba(255,255,255,0.3)'; this.style.background='transparent';">📷</a>
-     </div>
-     <form id="contactForm" class="reveal">
-      <div class="float-group"><input type="text" id="nameInput" placeholder=" " required autocomplete="off"> <label for="nameInput">Your Name</label>
-      </div>
-      <div class="float-group"><input type="email" id="emailInput" placeholder=" " required autocomplete="off"> <label for="emailInput">Email Address</label>
-      </div>
-      <div class="float-group"><textarea id="messageInput" rows="3" placeholder=" " required style="resize: none;"></textarea> <label for="messageInput">Your Message</label>
-      </div><button type="submit" class="magnetic-btn" data-hover="true" data-hover-text="SEND" style="background: var(--accent-color); color: var(--bg-color); font-family: 'Space Mono', monospace;
-                   font-size: 12px; letter-spacing: 3px; text-transform: uppercase; font-weight: 700;
-                   padding: 1rem 2.5rem; border: none; border-radius: 8px; margin-top: 1rem;
-                   transition: all 0.4s cubic-bezier(0.23,1,0.32,1);"> Send Message </button>
-     </form><!-- Footer -->
-     <div class="reveal" style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--grey-light); text-align: center;">
-      <p style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 1px; color: var(--secondary-action); margin: 0;">© 2026 CODE101. All rights reserved.</p>
-      <p style="font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 1px; color: var(--grey-medium); margin-top: 0.5rem;">Designed &amp; developed with care.</p>
-     </div>
-    </div>
-   </section>
-  </div><!-- Toast -->
-  <div class="toast" id="toast"></div>
+    </section>
+  </div>
+
   <script>
-    // ── Animated Canvas Backgrounds ──
-    function initCanvas(canvasId, hue) {
-      const canvas = document.getElementById(canvasId);
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      const particles = [];
-      const count = 40;
-      let animationId = null;
-      let lastFrameTime = 0;
-      const frameInterval = 1000 / 30; // 30 FPS
+    // Lucide Icons
+    lucide.createIcons();
 
-      function resize() {
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
-      }
-      resize();
-      
-      const resizeHandler = () => resize();
-      window.addEventListener('resize', resizeHandler);
-
-      for (let i = 0; i < count; i++) {
-        particles.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          vx: (Math.random() - 0.5) * 0.4,
-          vy: (Math.random() - 0.5) * 0.4,
-          r: Math.random() * 2 + 0.5,
-          alpha: Math.random() * 0.3 + 0.1
-        });
-      }
-
-      function draw(currentTime) {
-        if (currentTime - lastFrameTime < frameInterval) {
-          animationId = requestAnimationFrame(draw);
-          return;
-        }
-        lastFrameTime = currentTime;
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => {
-          p.x += p.vx; p.y += p.vy;
-          if (p.x < 0) p.x = canvas.width;
-          if (p.x > canvas.width) p.x = 0;
-          if (p.y < 0) p.y = canvas.height;
-          if (p.y > canvas.height) p.y = 0;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
-          ctx.fill();
-        });
-        
-        // Draw connections
-        for (let i = 0; i < particles.length; i++) {
-          for (let j = i + 1; j < particles.length; j++) {
-            const dx = particles[i].x - particles[j].x;
-            const dy = particles[i].y - particles[j].y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < 150) {
-              ctx.beginPath();
-              ctx.moveTo(particles[i].x, particles[i].y);
-              ctx.lineTo(particles[j].x, particles[j].y);
-              ctx.strokeStyle = `rgba(255, 255, 255, ${0.06 * (1 - dist / 150)})`;
-              ctx.lineWidth = 0.5;
-              ctx.stroke();
-            }
-          }
-        }
-        animationId = requestAnimationFrame(draw);
-      }
-      animationId = requestAnimationFrame(draw);
-
-      // Return cleanup function
-      return () => {
-        if (animationId) cancelAnimationFrame(animationId);
-        window.removeEventListener('resize', resizeHandler);
-      };
-    }
-    
-    const canvasCleanups = [
-      initCanvas('heroCanvas', 0),
-      initCanvas('workCanvas', 0),
-      initCanvas('aboutCanvas', 0),
-      initCanvas('contactCanvas', 0)
-    ];
-
-    // ── Smoke Effect ──
-    function initSmokeEffect(canvasId) {
-      const canvas = document.getElementById(canvasId);
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      let smokeParticles = [];
-      const maxSmoke = 30;
-      let animationId = null;
-      let lastFrameTime = 0;
-      const frameInterval = 1000 / 30; // 30 FPS
-
-      function resize() {
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
-      }
-      resize();
-      
-      const resizeHandler = () => resize();
-      window.addEventListener('resize', resizeHandler);
-
-      for (let i = 0; i < maxSmoke; i++) {
-        smokeParticles.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          vx: (Math.random() - 0.5) * 0.3,
-          vy: (Math.random() - 0.5) * 0.2 - 0.1,
-          r: Math.random() * 80 + 40,
-          alpha: Math.random() * 0.4,
-          decay: Math.random() * 0.003 + 0.001
-        });
-      }
-
-      function draw(currentTime) {
-        if (currentTime - lastFrameTime < frameInterval) {
-          animationId = requestAnimationFrame(draw);
-          return;
-        }
-        lastFrameTime = currentTime;
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        smokeParticles.forEach((p, idx) => {
-          p.x += p.vx;
-          p.y += p.vy;
-          p.alpha -= p.decay;
-          if (p.alpha <= 0) {
-            smokeParticles[idx] = {
-              x: Math.random() * canvas.width,
-              y: canvas.height + 20,
-              vx: (Math.random() - 0.5) * 0.3,
-              vy: (Math.random() - 0.5) * 0.2 - 0.1,
-              r: Math.random() * 80 + 40,
-              alpha: Math.random() * 0.4,
-              decay: Math.random() * 0.003 + 0.001
-            };
-          }
-          const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
-          grad.addColorStop(0, `rgba(255, 255, 255, ${p.alpha * 0.3})`);
-          grad.addColorStop(0.5, `rgba(255, 255, 255, ${p.alpha * 0.1})`);
-          grad.addColorStop(1, `rgba(255, 255, 255, 0)`);
-          ctx.fillStyle = grad;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-          ctx.fill();
-        });
-        animationId = requestAnimationFrame(draw);
-      }
-      animationId = requestAnimationFrame(draw);
-
-      // Return cleanup function
-      return () => {
-        if (animationId) cancelAnimationFrame(animationId);
-        window.removeEventListener('resize', resizeHandler);
-      };
-    }
-    
-    const smokeCleanups = [
-      initSmokeEffect('smokeCanvasAbout'),
-      initSmokeEffect('smokeCanvasPricing'),
-      initSmokeEffect('smokeCanvasHero')
-    ];
-
-    // ── Custom Cursor ──
+    // Custom Cursor Logic
     const cursor = document.getElementById('cursor');
-    const cursorDot = document.getElementById('cursorDot');
-    const cursorText = document.getElementById('cursorText');
-    let mouseX = 0, mouseY = 0, cursorX = 0, cursorY = 0;
-    let cursorAnimId = null;
-
-    const mouseMoveHandler = e => {
-      mouseX = e.clientX; mouseY = e.clientY;
-      cursorDot.style.left = mouseX + 'px';
-      cursorDot.style.top = mouseY + 'px';
-      
-      // Interactive hero title follow
-      const heroTitle = document.getElementById('heroTitle');
-      if (heroTitle) {
-        const rect = heroTitle.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        const angle = Math.atan2(mouseY - centerY, mouseX - centerX);
-        const distance = 15;
-        heroTitle.style.transform = `rotateX(${(mouseY - centerY) * 0.05}deg) rotateY(${-(mouseX - centerX) * 0.05}deg) perspective(1000px)`;
-      }
-    };
-
-    document.addEventListener('mousemove', mouseMoveHandler);
-
-    function animateCursor() {
-      cursorX += (mouseX - cursorX) * 0.15;
-      cursorY += (mouseY - cursorY) * 0.15;
-      cursor.style.left = cursorX + 'px';
-      cursor.style.top = cursorY + 'px';
-      cursorText.style.left = cursorX + 'px';
-      cursorText.style.top = cursorY + 'px';
-      cursorAnimId = requestAnimationFrame(animateCursor);
-    }
-    cursorAnimId = requestAnimationFrame(animateCursor);
-
-    const hoverElements = document.querySelectorAll('[data-hover="true"]');
-    hoverElements.forEach(el => {
-      const hoverEnter = () => {
-        cursor.classList.add('hovering');
-        cursorDot.style.opacity = '0';
-        const text = el.getAttribute('data-hover-text');
-        if (text) { cursorText.textContent = text; cursorText.classList.add('visible'); }
-      };
-      const hoverLeave = () => {
-        cursor.classList.remove('hovering');
-        cursorDot.style.opacity = '1';
-        cursorText.classList.remove('visible');
-      };
-      el.addEventListener('mouseenter', hoverEnter);
-      el.addEventListener('mouseleave', hoverLeave);
-    });
-
-    // ── Magnetic Buttons ──
-    const magneticButtons = document.querySelectorAll('.magnetic-btn');
-    magneticButtons.forEach(btn => {
-      const handleMouseMove = e => {
-        const rect = btn.getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
-        btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px) scale(1.05)`;
-      };
-      const handleMouseLeave = () => {
-        btn.style.transform = 'translate(0, 0) scale(1)';
-      };
-      btn.addEventListener('mousemove', handleMouseMove);
-      btn.addEventListener('mouseleave', handleMouseLeave);
-    });
-
-    // ── Hamburger / Nav ──
-    const hamburger = document.getElementById('hamburger');
-    const navOverlay = document.getElementById('navOverlay');
-    hamburger.addEventListener('click', () => {
-      hamburger.classList.toggle('open');
-      navOverlay.classList.toggle('open');
-    });
-    navOverlay.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', e => {
-        e.preventDefault();
-        hamburger.classList.remove('open');
-        navOverlay.classList.remove('open');
-        const idx = parseInt(a.getAttribute('data-nav'));
-        scrollToSection(idx);
-      });
-    });
-
-    // ── Section Navigation ──
-    const container = document.getElementById('sectionContainer');
-    const sections = container.querySelectorAll('.section');
-    const dots = document.querySelectorAll('.section-dot');
-
-    function scrollToSection(idx) {
-      sections[idx].scrollIntoView({ behavior: 'smooth' });
-    }
+    const dot = document.getElementById('dot');
     
-    dots.forEach(dot => {
-      dot.addEventListener('click', () => scrollToSection(parseInt(dot.getAttribute('data-section'))));
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+      dot.style.left = e.clientX + 'px';
+      dot.style.top = e.clientY + 'px';
     });
 
-    // Update active dot on scroll
-    let activeSection = 0;
-    const handleScroll = () => {
-      const scrollPos = container.scrollTop;
-      const h = container.clientHeight;
-      const newActive = Math.round(scrollPos / h);
-      if (newActive !== activeSection && newActive < sections.length) {
-        activeSection = newActive;
-        dots.forEach((d, i) => d.classList.toggle('active', i === activeSection));
-      }
-    };
-    container.addEventListener('scroll', handleScroll, { passive: true });
+    // Mobile Menu
+    const menuBtn = document.getElementById('menuBtn');
+    const nav = document.getElementById('nav');
+    menuBtn.onclick = () => nav.classList.toggle('active');
+    nav.onclick = () => nav.classList.remove('active');
 
-    // ── Scroll Reveal ──
-    const observer = new IntersectionObserver(entries => {
+    // Scroll Observer
+    const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) entry.target.classList.add('visible');
       });
-    }, { threshold: 0.15, root: container });
-    
+    }, { threshold: 0.1 });
+
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-    // ── Contact Form ──
-    const contactForm = document.getElementById('contactForm');
-    contactForm.addEventListener('submit', e => {
-      e.preventDefault();
-      showToast('Message sent! I\'ll be in touch soon.');
-      e.target.reset();
-    });
-
-    // ── Pricing Buttons ──
-    const pricingButtons = document.querySelectorAll('.pricing-card .pricing-btn');
-    pricingButtons.forEach(btn => {
-      btn.addEventListener('click', e => {
-        e.preventDefault();
-        const planName = btn.closest('.pricing-card').querySelector('.pricing-title').textContent;
-        showToast(`Great! Let's discuss the ${planName} plan.`);
-      });
-    });
-
-    // Interactive card text scramble effect
-    function scrambleText(element, callback) {
-      const originalText = element.textContent;
-      const chars = '!@#$%^&*()_+-=[]{}|;:,.<>?/ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      let iteration = 0;
-      let intervalId = null;
-      
-      intervalId = setInterval(() => {
-        element.textContent = originalText.split('').map((char, idx) => {
-          if (idx < iteration) return originalText[idx];
-          return chars[Math.floor(Math.random() * chars.length)];
-        }).join('');
-        
-        iteration += 1/3;
-        if (iteration >= originalText.length) {
-          clearInterval(intervalId);
-          element.textContent = originalText;
-          if (callback) callback();
-        }
-      }, 30);
-    }
-
-    // Add scramble effect to project cards on hover
-    const projectTitles = document.querySelectorAll('.project-title');
-    projectTitles.forEach(el => {
-      el.addEventListener('mouseenter', () => {
-        scrambleText(el);
-      });
-    });
-
-    // Add glitch effect to hero title on hover
-    const heroTitle = document.getElementById('heroTitle');
-    if (heroTitle) {
-      const handleHeroEnter = () => {
-        heroTitle.classList.add('glitch-active');
-      };
-      const handleHeroLeave = () => {
-        heroTitle.classList.remove('glitch-active');
-      };
-      heroTitle.addEventListener('mouseenter', handleHeroEnter);
-      heroTitle.addEventListener('mouseleave', handleHeroLeave);
-    }
-
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      toast.textContent = msg;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 3000);
-    }
-
-    // Cleanup function for page unload/cleanup (optional but good practice)
-    window.addEventListener('beforeunload', () => {
-      if (cursorAnimId) cancelAnimationFrame(cursorAnimId);
-      canvasCleanups.forEach(cleanup => cleanup && cleanup());
-      smokeCleanups.forEach(cleanup => cleanup && cleanup());
-      document.removeEventListener('mousemove', mouseMoveHandler);
-      observer.disconnect();
-    });
-
-    // ── Element SDK ──
-    const defaultConfig = {
-      hero_title: 'CODE\n101',
-      hero_subtitle: 'Crafting immersive digital experiences at the intersection of design and technology',
-      work_title: 'Selected Work',
-      project_url_1: '',
-      project_title_1: 'Legal Practice Website',
-      project_desc_1: 'LAWYER / PROFESSIONAL',
-      project_url_2: '',
-      project_title_2: 'Medical Clinic Portal',
-      project_desc_2: 'HEALTHCARE / SERVICES',
-      project_url_3: '',
-      project_title_3: 'E-Commerce Store',
-      project_desc_3: 'SHOPOWNER / RETAIL',
-      project_url_4: '',
-      project_title_4: 'Consulting Dashboard',
-      project_desc_4: 'BUSINESS / SOLUTIONS',
-      about_title: 'The Story',
-      about_age: '18',
-      about_description: "New to design and development but passionate about learning. I'm exploring motion, web tech, and creative coding. Every project is a chance to grow and push boundaries.",
-      pricing_title: 'Pricing Plans',
-      contact_title: "Let's Talk",
-      background_color: '#0a0a0f',
-      surface_color: '#14141f',
-      text_color: '#e8e6e1',
-      accent_color: '#c9f731',
-      secondary_action_color: '#4a4a5a',
-      font_family: 'Syne',
-      font_size: 16
-    };
-
-    function applyConfig(config) {
-      const c = key => config[key] || defaultConfig[key];
-
-      // Colors
-      document.documentElement.style.setProperty('--bg-color', c('background_color'));
-      document.documentElement.style.setProperty('--surface-color', c('surface_color'));
-      document.documentElement.style.setProperty('--text-color', c('text_color'));
-      document.documentElement.style.setProperty('--accent-color', c('accent_color'));
-      document.documentElement.style.setProperty('--secondary-action', c('secondary_action_color'));
-      document.body.style.background = c('background_color');
-      document.body.style.color = c('text_color');
-
-      // Font
-      const font = c('font_family');
-      const baseSize = c('font_size');
-      const stack = `${font}, sans-serif`;
-      document.body.style.fontFamily = stack;
-
-      // Text content
-      const titleText = c('hero_title');
-      const titleEl = document.getElementById('heroTitle');
-      if (titleEl) titleEl.innerHTML = titleText.replace(/\n/g, '<br>');
-
-      const subtitleEl = document.getElementById('heroSubtitle');
-      if (subtitleEl) subtitleEl.textContent = c('hero_subtitle');
-
-      const workEl = document.getElementById('workTitle');
-      if (workEl) workEl.textContent = c('work_title');
-
-      // Update projects
-      const projectLinks = document.querySelectorAll('.project-card-link');
-      projectLinks.forEach((link, idx) => {
-        const projIdx = idx + 1;
-        const url = c(`project_url_${projIdx}`);
-        const title = c(`project_title_${projIdx}`);
-        const desc = c(`project_desc_${projIdx}`);
-        
-        link.href = url || '#';
-        link.target = url ? '_blank' : '';
-        link.rel = url ? 'noopener noreferrer' : '';
-        
-        const titleEl = link.querySelector('.project-title');
-        const descEl = link.querySelector('.project-category');
-        if (titleEl) titleEl.textContent = title;
-        if (descEl) descEl.textContent = desc;
-      });
-
-      const aboutEl = document.getElementById('aboutTitle');
-      if (aboutEl) aboutEl.textContent = c('about_title');
-
-      const ageDisplay = document.getElementById('ageDisplay');
-      if (ageDisplay && c('about_age')) ageDisplay.textContent = c('about_age');
-
-      const aboutDescEl = document.getElementById('aboutDesc');
-      if (aboutDescEl) aboutDescEl.textContent = c('about_description');
-
-      const pricingEl = document.getElementById('pricingTitle');
-      if (pricingEl) pricingEl.textContent = c('pricing_title');
-
-      const contactEl = document.getElementById('contactTitle');
-      if (contactEl) contactEl.textContent = c('contact_title');
-
-      // Font sizes
-      if (titleEl) titleEl.style.fontSize = `clamp(3rem, 8vw, ${baseSize * 5}px)`;
-      if (subtitleEl) subtitleEl.style.fontSize = `${baseSize * 0.85}px`;
-
-      // Update card text color
-      document.querySelectorAll('.project-card h3').forEach(h => h.style.fontFamily = stack);
-    }
-
-    if (window.elementSdk) {
-      window.elementSdk.init({
-        defaultConfig,
-        onConfigChange: async (config) => applyConfig(config),
-        mapToCapabilities: (config) => {
-          const c = key => config[key] || defaultConfig[key];
-          function mut(key) {
-            return {
-              get: () => c(key),
-              set: (v) => { config[key] = v; window.elementSdk.setConfig({ [key]: v }); }
-            };
-          }
-          return {
-            recolorables: [
-              mut('background_color'),
-              mut('surface_color'),
-              mut('text_color'),
-              mut('accent_color'),
-              mut('secondary_action_color')
-            ],
-            borderables: [],
-            fontEditable: mut('font_family'),
-            fontSizeable: {
-              get: () => c('font_size'),
-              set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
-            }
-          };
-        },
-        mapToEditPanelValues: (config) => {
-          const c = key => config[key] || defaultConfig[key];
-          return new Map([
-            ['hero_title', c('hero_title')],
-            ['hero_subtitle', c('hero_subtitle')],
-            ['work_title', c('work_title')],
-            ['project_url_1', c('project_url_1')],
-            ['project_title_1', c('project_title_1')],
-            ['project_desc_1', c('project_desc_1')],
-            ['project_url_2', c('project_url_2')],
-            ['project_title_2', c('project_title_2')],
-            ['project_desc_2', c('project_desc_2')],
-            ['project_url_3', c('project_url_3')],
-            ['project_title_3', c('project_title_3')],
-            ['project_desc_3', c('project_desc_3')],
-            ['project_url_4', c('project_url_4')],
-            ['project_title_4', c('project_title_4')],
-            ['project_desc_4', c('project_desc_4')],
-            ['about_title', c('about_title')],
-            ['about_age', c('about_age')],
-            ['about_description', c('about_description')],
-            ['pricing_title', c('pricing_title')],
-            ['contact_title', c('contact_title')]
-          ]);
-        }
-      });
-    }
-
-    lucide.createIcons();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e1351d2e1a23de6',t:'MTc3NDMzMDYwMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ </body>
 </html>
