@@ -3,198 +3,833 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CODE101 | Web Design Bureau</title>
+  <title>Cinematic Portfolio</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
   <style>
-    :root { --bg: #0a0a0a; --fg: #ffffff; }
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    
-    body { 
-      background: var(--bg); color: var(--fg); 
-      font-family: 'Syne', sans-serif; overflow: hidden; 
+    :root {
+      --bg-color: #0a0a0a;
+      --surface-color: #141414;
+      --text-color: #ffffff;
+      --accent-color: #ffffff;
+      --secondary-action: #707070;
+      --grey-light: #262626;
+      --grey-medium: #3a3a3a;
+      --grey-dark: #1a1a1a;
     }
-
-    /* Desktop Cursor Logic */
+    html, body { height: 100%; margin: 0; overflow: hidden; }
+    
+    /* CURSOR LOGIC TWEAKED FOR DESKTOP ONLY */
     @media (pointer: fine) {
       body { cursor: none; }
-      .cursor-follower {
-        position: fixed; width: 35px; height: 35px; border: 1px solid var(--fg);
-        border-radius: 50%; pointer-events: none; z-index: 9999;
-        mix-blend-mode: difference; transition: transform 0.15s ease-out;
-      }
-      .cursor-dot {
-        position: fixed; width: 6px; height: 6px; background: var(--fg);
-        border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%);
-      }
+      body.no-js { cursor: auto; }
+      * { cursor: inherit; }
     }
-
-    /* Mobile-Specific Scrolling & Snapping */
-    .main-container {
-      height: 100vh; overflow-y: auto; 
-      scroll-snap-type: y mandatory; scroll-behavior: smooth;
-    }
-    section {
-      height: 100vh; scroll-snap-align: start;
-      position: relative; display: flex; flex-direction: column;
-      justify-content: center; padding: 2.5rem; overflow: hidden;
-    }
-
-    /* Cinematic Text */
-    .hero-title { font-size: clamp(3.5rem, 18vw, 12rem); line-height: 0.8; letter-spacing: -0.05em; }
     
-    /* Grain/Smoke Overlay */
-    .overlay-effect {
-      position: absolute; inset: 0; z-index: -1;
-      background: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #0a0a0a 100%);
-      opacity: 0.7;
+    .custom-cursor {
+      position: fixed; width: 20px; height: 20px; border-radius: 50%;
+      border: 2px solid var(--text-color); pointer-events: none;
+      z-index: 99999; transform: translate(-50%, -50%);
+      transition: width 0.3s cubic-bezier(0.23,1,0.32,1), height 0.3s cubic-bezier(0.23,1,0.32,1),
+                  background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      mix-blend-mode: screen;
+    }
+    .custom-cursor.hovering {
+      width: 60px; height: 60px; background: rgba(255,255,255,0.1);
+      border-color: var(--text-color); box-shadow: 0 0 30px rgba(255,255,255,0.5);
+    }
+    .cursor-dot {
+      position: fixed; width: 5px; height: 5px; border-radius: 50%;
+      background: var(--text-color); pointer-events: none; z-index: 99999;
+      transform: translate(-50%, -50%); transition: opacity 0.3s;
+    }
+    .cursor-text {
+      position: fixed; pointer-events: none; z-index: 99999;
+      font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--bg-color);
+      transform: translate(-50%, -50%); opacity: 0; transition: opacity 0.3s;
+      font-weight: 700; background: rgba(255,255,255,0.9); padding: 0.4rem 0.8rem; border-radius: 4px;
+    }
+    .cursor-text.visible { opacity: 1; }
+
+    /* HIDE CURSOR ON MOBILE */
+    @media (pointer: coarse) {
+      .custom-cursor, .cursor-dot, .cursor-text { display: none !important; }
+      body { overflow-y: auto; } /* Ensure mobile can scroll natively if snapping fails */
     }
 
-    /* Navigation */
-    .nav-fullscreen {
-      position: fixed; inset: 0; background: var(--bg);
-      z-index: 100; display: none; flex-direction: column;
-      align-items: center; justify-content: center; backdrop-filter: blur(15px);
+    .section-container {
+      height: 100%; overflow-y: auto; overflow-x: hidden;
+      scroll-behavior: smooth; scroll-snap-type: y mandatory;
     }
-    .nav-fullscreen.active { display: flex; }
-    .nav-item { font-size: 3rem; font-weight: 800; margin: 0.5rem; transition: 0.4s; }
-
-    /* Interactive Inputs */
-    input, textarea {
-      background: transparent; border-bottom: 1px solid #333;
-      width: 100%; padding: 1rem 0; color: white; outline: none;
-      font-family: 'Space Mono', monospace; font-size: 0.85rem;
+    .section {
+      min-height: 100%; scroll-snap-align: start;
+      position: relative; display: flex; align-items: center; justify-content: center;
     }
-    input:focus { border-bottom-color: white; }
 
-    .reveal { opacity: 0; transform: translateY(30px); transition: 0.8s ease-out; }
+    .video-bg {
+      position: absolute; inset: 0; overflow: hidden;
+    }
+    .video-bg::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.95) 100%);
+    }
+    .video-bg canvas { width: 100%; height: 100%; object-fit: cover; }
+
+    /* Fullscreen nav overlay */
+    .nav-overlay {
+      position: fixed; inset: 0; z-index: 9990;
+      background: var(--bg-color); opacity: 0; pointer-events: none;
+      transition: opacity 0.6s cubic-bezier(0.23,1,0.32,1);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .nav-overlay.open { opacity: 1; pointer-events: all; }
+    .nav-overlay a {
+      display: block; font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 5rem);
+      font-weight: 800; color: var(--text-color); text-decoration: none;
+      padding: 0.3em 0; opacity: 0; transform: translateY(40px);
+      transition: opacity 0.5s ease, transform 0.5s ease, color 0.3s ease;
+    }
+    .nav-overlay.open a {
+      opacity: 1; transform: translateY(0);
+    }
+    .nav-overlay a:nth-child(1) { transition-delay: 0.1s; }
+    .nav-overlay a:nth-child(2) { transition-delay: 0.2s; }
+    .nav-overlay a:nth-child(3) { transition-delay: 0.3s; }
+    .nav-overlay a:nth-child(4) { transition-delay: 0.4s; }
+    .nav-overlay a:hover { color: var(--accent-color); }
+
+    /* Hamburger */
+    .hamburger { position: fixed; top: 2rem; right: 2rem; z-index: 9995; width: 40px; height: 30px; background: none; border: none; padding: 0; }
+    .hamburger span {
+      display: block; width: 100%; height: 2px; background: var(--text-color);
+      transition: all 0.4s cubic-bezier(0.23,1,0.32,1); transform-origin: center;
+    }
+    .hamburger span:nth-child(1) { margin-bottom: 8px; }
+    .hamburger span:nth-child(2) { margin-bottom: 8px; width: 60%; margin-left: auto; }
+    .hamburger.open span:nth-child(1) { transform: translateY(10px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .hamburger.open span:nth-child(3) { transform: translateY(-10px) rotate(-45deg); }
+
+    /* Project cards */
+    .project-card {
+      position: relative; overflow: hidden; border-radius: 16px;
+      background: var(--surface-color); border: 1px solid rgba(255,255,255,0.1);
+      transition: transform 0.5s cubic-bezier(0.23,1,0.32,1), box-shadow 0.5s ease, background 0.5s ease;
+    }
+    .project-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.8), inset 0 0 40px rgba(255,255,255,0.1);
+      background: var(--grey-light);
+    }
+    .project-card .card-image {
+      height: 220px; position: relative; overflow: hidden;
+    }
+    .project-card .card-image .card-gradient {
+      position: absolute; inset: 0;
+      transition: opacity 0.5s;
+    }
+    .project-card:hover .card-image .card-gradient { opacity: 0.7; }
+    .card-overlay {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.4s ease;
+    }
+    .project-card:hover .card-overlay { opacity: 1; }
+
+    /* MOBILE TWEAK: Make project links visible on touch screens */
+    @media (pointer: coarse) {
+      .card-overlay { 
+        opacity: 1; 
+        background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+        align-items: flex-end;
+        padding-bottom: 1rem;
+      }
+      .project-card:active { transform: scale(0.98); border-color: var(--accent-color); }
+      .skill-card:active { transform: scale(0.98); background: rgba(45, 45, 45, 0.95); }
+      .pricing-card:active { transform: scale(0.98); border-color: var(--accent-color); }
+    }
+
+    /* Floating labels */
+    .float-group { position: relative; margin-bottom: 2rem; }
+    .float-group input, .float-group textarea {
+      width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--secondary-action);
+      color: var(--text-color); font-family: 'Space Mono', monospace; font-size: 14px;
+      padding: 1.2rem 0 0.5rem; outline: none;
+      transition: border-color 0.3s;
+    }
+    .float-group input:focus, .float-group textarea:focus { border-color: var(--text-color); }
+    .float-group label {
+      position: absolute; left: 0; top: 1.2rem; font-family: 'Space Mono', monospace;
+      font-size: 13px; color: var(--secondary-action); pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.23,1,0.32,1); letter-spacing: 1px; text-transform: uppercase;
+    }
+    .float-group input:focus ~ label, .float-group input:not(:placeholder-shown) ~ label,
+    .float-group textarea:focus ~ label, .float-group textarea:not(:placeholder-shown) ~ label {
+      top: -0.4rem; font-size: 10px; color: var(--text-color);
+    }
+
+    /* Reveal animations */
+    .reveal { opacity: 0; transform: translateY(60px); transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.23,1,0.32,1); }
     .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* Skill cards */
+    .skill-card {
+      position: relative; padding: 2rem; border-radius: 12px;
+      background: rgba(45, 45, 45, 0.6); border: 1px solid rgba(255, 255, 255, 0.15);
+      overflow: hidden; cursor: pointer;
+      transition: all 0.5s cubic-bezier(0.23,1,0.32,1);
+    }
+    .skill-card::before {
+      content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+      opacity: 0; transition: opacity 0.5s ease;
+    }
+    .skill-card:hover::before { opacity: 1; }
+    .skill-card:hover {
+      background: rgba(45, 45, 45, 0.95);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-12px) scale(1.05);
+      box-shadow: 0 20px 50px rgba(255, 255, 255, 0.1), inset 0 0 40px rgba(255, 255, 255, 0.05);
+    }
+    .skill-icon {
+      font-size: 2.5rem; margin-bottom: 1rem;
+      transition: transform 0.5s cubic-bezier(0.23,1,0.32,1);
+    }
+    .skill-card:hover .skill-icon {
+      transform: scale(1.3) rotate(10deg);
+    }
+    .skill-title {
+      font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem;
+      color: var(--text-color);
+    }
+    .skill-desc {
+      font-family: 'Space Mono', monospace; font-size: 12px;
+      color: var(--secondary-action); line-height: 1.5;
+    }
+
+    /* Pricing cards */
+    .pricing-card {
+      position: relative; padding: 2.5rem; border-radius: 12px;
+      background: rgba(45, 45, 45, 0.6); border: 1px solid rgba(255, 255, 255, 0.15);
+      overflow: hidden; display: flex; flex-direction: column;
+      transition: all 0.6s cubic-bezier(0.23,1,0.32,1);
+    }
+    .pricing-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+      opacity: 0; transition: opacity 0.6s ease;
+    }
+    .pricing-card:hover::before { opacity: 1; }
+    .pricing-card:hover {
+      background: rgba(45, 45, 45, 0.95);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-15px) scale(1.02);
+      box-shadow: 0 30px 60px rgba(255, 255, 255, 0.12);
+    }
+    .pricing-badge {
+      position: absolute; top: 1.5rem; right: 1.5rem;
+      background: var(--text-color); color: var(--bg-color);
+      padding: 0.3rem 0.8rem; border-radius: 999px;
+      font-family: 'Space Mono', monospace; font-size: 10px;
+      font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      opacity: 0; transform: translateX(20px);
+      transition: all 0.5s cubic-bezier(0.23,1,0.32,1);
+    }
+    .pricing-card:hover .pricing-badge { opacity: 1; transform: translateX(0); }
+    @media (pointer: coarse) { .pricing-badge { opacity: 1; transform: translateX(0); } } /* Show on mobile */
+
+    .pricing-title {
+      font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem;
+      color: var(--text-color);
+    }
+    .pricing-desc {
+      font-family: 'Space Mono', monospace; font-size: 12px;
+      color: var(--secondary-action); margin-bottom: 1.5rem; flex-grow: 1;
+    }
+    .pricing-amount {
+      font-size: 2.5rem; font-weight: 800; color: var(--text-color);
+      margin-bottom: 1.5rem;
+    }
+    .pricing-features {
+      list-style: none; padding: 0; margin: 1.5rem 0; font-family: 'Space Mono', monospace;
+      font-size: 12px; color: var(--secondary-action);
+    }
+    .pricing-features li {
+      padding: 0.5rem 0; display: flex; align-items: center;
+    }
+    .pricing-features li::before {
+      content: '✓'; color: var(--text-color); margin-right: 0.8rem; font-weight: 700;
+    }
+    .pricing-btn {
+      margin-top: auto; padding: 0.9rem 1.5rem;
+      background: transparent; border: 1.5px solid var(--text-color);
+      color: var(--text-color); border-radius: 8px;
+      font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase; cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.23,1,0.32,1);
+    }
+    .pricing-btn:hover {
+      background: var(--text-color); color: var(--bg-color);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+    }
+
+    /* Glitch effect */
+    @keyframes glitch {
+      0% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(-2px, -2px); }
+      60% { transform: translate(2px, 2px); }
+      80% { transform: translate(2px, -2px); }
+      100% { transform: translate(0); }
+    }
+    
+    .glitch-text { position: relative; display: inline-block; }
+    .glitch-text::before, .glitch-text::after {
+      content: attr(data-text); position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+    }
+    .glitch-text::before {
+      animation: glitch 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+      color: #fff; z-index: -1; text-shadow: -2px 0 #ff00ff; clip: rect(0, 900px, 0, 0);
+    }
+    .glitch-text::after {
+      animation: glitch 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite reverse;
+      color: #fff; z-index: -2; text-shadow: -2px 0 #00ffff; clip: rect(0, 0, 0, 900px);
+    }
+    .glitch-text.active::before { animation: glitch 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite; }
+    .glitch-text.active::after { animation: glitch 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite reverse; }
+
+    /* Smoke effect canvas */
+    .smoke-canvas {
+      position: fixed; inset: 0; z-index: 5; pointer-events: none; opacity: 0.85; top: 0; left: 0; width: 100%; height: 100%;
+    }
+
+    /* Scroll indicator */
+    .scroll-indicator {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    }
+    .scroll-line {
+      width: 1px; height: 50px; background: linear-gradient(to bottom, var(--text-color), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(0.5); }
+      50% { opacity: 1; transform: scaleY(1); }
+    }
+
+    /* Section counter */
+    .section-counter {
+      position: fixed; right: 2rem; top: 50%; transform: translateY(-50%);
+      z-index: 100; display: flex; flex-direction: column; gap: 12px;
+    }
+    .section-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: var(--secondary-action);
+      transition: all 0.4s ease; border: none; padding: 0;
+    }
+    .section-dot.active {
+      background: var(--text-color); box-shadow: 0 0 12px rgba(255,255,255,0.5);
+      transform: scale(1.4);
+    }
+
+    .project-card-link { cursor: pointer; }
+    .project-card-link:active .project-card {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 0 40px rgba(201,247,49,0.08);
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px);
+      background: var(--text-color); color: var(--bg-color); padding: 1rem 2rem;
+      border-radius: 8px; font-family: 'Space Mono', monospace; font-size: 13px;
+      z-index: 99999; opacity: 0; transition: all 0.5s cubic-bezier(0.23,1,0.32,1);
+      letter-spacing: 1px; font-weight: 700; text-align: center;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* Noise overlay for cinematic effect */
+    .noise {
+      position: fixed; inset: 0; z-index: 9980; pointer-events: none; opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* MOBILE SPECIFIC BREAKPOINTS */
+    @media (max-width: 768px) {
+      .hamburger { top: 1rem; right: 1rem; width: 32px; height: 24px; }
+      .hamburger span { height: 1.5px; }
+      .section-counter { display: none; }
+      .project-card .card-image { height: 160px; }
+      .section { min-height: 100vh; height: auto; } /* Let mobile sections breathe */
+      .section-container { scroll-snap-type: none; } /* Disable strict snap on mobile to prevent cut-off */
+      
+      .nav-overlay a { font-size: clamp(1.5rem, 4vw, 2.5rem); padding: 0.2em 0; }
+      .project-card { border-radius: 12px; }
+      .skill-card { padding: 1.5rem; }
+      .pricing-card { padding: 1.5rem; }
+      h1, h2 { font-size: clamp(1.8rem, 5vw, 2.8rem); }
+      p { font-size: clamp(13px, 2.5vw, 15px); }
+      .float-group { margin-bottom: 1.5rem; }
+      .float-group label { font-size: 11px; }
+      .pricing-badge { font-size: 8px; padding: 0.25rem 0.6rem; top: 1rem; right: 1rem; }
+      .skill-icon { font-size: 2rem; margin-bottom: 0.8rem; }
+      .pricing-title { font-size: 1.2rem; }
+      .pricing-amount { font-size: 1.8rem; }
+      .section { padding: 5rem 0; }
+      #work { padding-top: 6rem; }
+      #pricing { padding-top: 6rem; }
+      .grid { gap: 1rem; }
+      .social-link { width: 36px; height: 36px; font-size: 14px; }
+      .footer-text { font-size: 10px; }
+    }
+    
+    @media (max-width: 480px) {
+      .hamburger { top: 0.75rem; right: 0.75rem; }
+      #heroTitle { font-size: clamp(2.5rem, 10vw, 3rem) !important; line-height: 0.9; }
+      .project-card .card-image { height: 140px; }
+      .pricing-card { padding: 1.2rem; gap: 0.8rem; }
+      .pricing-features { margin: 1rem 0; }
+      .pricing-features li { padding: 0.3rem 0; font-size: 11px; }
+      .pricing-btn { padding: 0.8rem 1.2rem; font-size: 10px; }
+      .float-group input, .float-group textarea { font-size: 13px; padding: 1rem 0 0.4rem; }
+      .float-group label { font-size: 10px; top: 1rem; }
+      .scroll-indicator { bottom: 1rem; }
+      .scroll-line { height: 30px; }
+    }
   </style>
+  <style>body { box-sizing: border-box; }</style>
  </head>
- <body>
+ <body class="h-full" style="background: var(--bg-color); color: var(--text-color); font-family: 'Syne', sans-serif;">
+  <script>document.documentElement.classList.add('js');</script>
+  
+  <div class="custom-cursor" id="cursor"></div>
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-text" id="cursorText"></div>
 
-  <div class="cursor-follower" id="follower"></div>
-  <div class="cursor-dot" id="dot"></div>
+  <div class="noise"></div>
 
-  <button id="menuBtn" class="fixed top-8 right-8 z-[110] mix-blend-difference">
-    <i data-lucide="menu" class="w-8 h-8 text-white"></i>
-  </button>
-
-  <nav class="nav-fullscreen" id="nav">
-    <a href="#home" class="nav-item">HOME</a>
-    <a href="#solutions" class="nav-item">SOLUTIONS</a>
-    <a href="#investments" class="nav-item">INVESTMENTS</a>
-    <a href="#connect" class="nav-item">CONNECT</a>
+  <nav class="section-counter" id="sectionCounter" aria-label="Section navigation">
+      <button class="section-dot active" data-section="0" aria-label="Go to hero section"></button> 
+      <button class="section-dot" data-section="1" aria-label="Go to work section"></button> 
+      <button class="section-dot" data-section="2" aria-label="Go to about section"></button> 
+      <button class="section-dot" data-section="3" aria-label="Go to contact section"></button>
   </nav>
 
-  <div class="main-container">
-    
-    <section id="home">
-      <div class="overlay-effect"></div>
-      <p class="font-mono text-[10px] tracking-[0.5em] mb-6 opacity-40">ESTABLISHED 2026</p>
-      <h1 class="hero-title font-extrabold reveal">CODE<br>101</h1>
-      <div class="mt-10 flex items-center gap-6 reveal">
-        <div class="w-16 h-[1px] bg-white"></div>
-        <p class="font-mono text-[10px] uppercase opacity-60">High-End Web Design Bureau</p>
-      </div>
-    </section>
-
-    <section id="solutions">
-      <h2 class="text-5xl font-extrabold mb-12 reveal">SOLUTIONS</h2>
-      <div class="grid grid-cols-1 gap-6 w-full max-w-lg">
-        <div class="border border-zinc-800 p-6 reveal">
-          <h3 class="font-bold text-xl uppercase">Visual Architecture</h3>
-          <p class="font-mono text-[11px] opacity-40 mt-2">Monochromatic & Minimalist aesthetic designed for modern brands.</p>
-        </div>
-        <div class="border border-zinc-800 p-6 reveal">
-          <h3 class="font-bold text-xl uppercase">Motion UX</h3>
-          <p class="font-mono text-[11px] opacity-40 mt-2">Magnetic cursors, smooth reveals, and immersive video integration.</p>
-        </div>
-      </div>
-    </section>
-
-    <section id="investments">
-      <h2 class="text-5xl font-extrabold mb-12 reveal">INVESTMENTS</h2>
-      <div class="space-y-4 w-full max-w-lg">
-        <div class="flex justify-between items-center py-4 border-b border-zinc-900 reveal">
-          <span class="font-mono text-xs uppercase">Portfolio Landing</span>
-          <span class="font-bold italic">Tier 01</span>
-        </div>
-        <div class="flex justify-between items-center py-4 border-b border-zinc-900 reveal">
-          <span class="font-mono text-xs uppercase">Bespoke Enterprise</span>
-          <span class="font-bold italic">Tier 02</span>
-        </div>
-        <div class="flex justify-between items-center py-4 border-b border-zinc-900 reveal">
-          <span class="font-mono text-xs uppercase">Ongoing Strategy</span>
-          <span class="font-bold italic">Tier 03</span>
-        </div>
-      </div>
-    </section>
-
-    <section id="connect">
-      <h2 class="text-5xl font-extrabold mb-8 reveal">CONNECT</h2>
-      <div class="w-full max-w-lg reveal">
-        <div class="space-y-6">
-          <input type="text" id="name" placeholder="YOUR NAME">
-          <textarea id="msg" placeholder="YOUR PROJECT DETAILS" rows="2"></textarea>
-          
-          <button onclick="sendWhatsApp()" class="w-full py-5 bg-white text-black font-extrabold text-xs tracking-widest uppercase hover:bg-zinc-200 transition-colors">
-            Send Message
-          </button>
-        </div>
-
-        <div class="mt-12 grid grid-cols-2 gap-4">
-          <a href="https://instagram.com/yuga_._._" class="text-[10px] font-mono opacity-40 hover:opacity-100 transition-opacity uppercase">Instagram / @yuga_._._</a>
-          <p class="text-[10px] font-mono opacity-40 uppercase">WhatsApp / +91 98434 87386</p>
-        </div>
-      </div>
-    </section>
-
+  <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu" data-hover="true" data-hover-text="MENU"> <span></span><span></span><span></span> </button> 
+  
+  <div class="nav-overlay" id="navOverlay" role="navigation" aria-label="Main navigation">
+   <div class="text-center">
+       <a href="#hero" data-nav="0" data-hover="true" data-hover-text="HOME">Home</a> 
+       <a href="#work" data-nav="1" data-hover="true" data-hover-text="PROJECTS">Work</a> 
+       <a href="#about" data-nav="2" data-hover="true" data-hover-text="BIO">About</a> 
+       <a href="#contact" data-nav="3" data-hover="true" data-hover-text="SAY HI">Contact</a>
+   </div>
   </div>
 
+  <div class="section-container" id="sectionContainer">
+      
+   <section class="section" id="hero">
+    <div class="video-bg"><canvas id="heroCanvas"></canvas></div>
+    <canvas id="smokeCanvasHero" class="smoke-canvas"></canvas>
+    <div class="relative z-10 text-center px-6 w-full" style="max-width: 1000px;">
+     <p class="reveal" style="font-family: 'Space Mono', monospace; font-size: clamp(11px,1.2vw,13px); letter-spacing: 6px; text-transform: uppercase; color: var(--accent-color); margin-bottom: 1.5rem;" id="heroTag">Digital Creator &amp; Designer</p>
+     <h1 class="reveal" style="font-size: clamp(3rem,8vw,8rem); font-weight: 800; line-height: 0.95; letter-spacing: -3px; margin-bottom: 1.5rem;" id="heroTitle">CODE<br>101</h1>
+     <p class="reveal" style="font-family: 'Space Mono', monospace; font-size: clamp(12px,1.2vw,15px); color: var(--secondary-action); max-width: 500px; margin: 0 auto;" id="heroSubtitle">Crafting immersive digital experiences at the intersection of design and technology</p>
+     <div class="scroll-indicator reveal">
+         <span style="font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--secondary-action);">Scroll</span>
+         <div class="scroll-line"></div>
+     </div>
+    </div>
+   </section>
+
+   <section class="section" id="work" style="align-items: flex-start; padding-top: 6rem;">
+    <div class="video-bg"><canvas id="workCanvas"></canvas></div>
+    <div class="relative z-10 w-full px-6" style="max-width: 1100px; margin: 0 auto;">
+     <div class="reveal" style="margin-bottom: 3rem;">
+      <p style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--accent-color); margin-bottom: 0.5rem;">Portfolio</p>
+      <h2 style="font-size: clamp(2.5rem,5vw,4.5rem); font-weight: 800; letter-spacing: -2px;" id="workTitle">Selected Work</h2>
+     </div>
+     <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="projectGrid">
+         
+         <a href="#" class="project-card-link reveal" data-hover="true" data-hover-text="VISIT" data-project="0" style="text-decoration: none;">
+       <div class="project-card">
+        <div class="card-image">
+         <div class="card-gradient" style="background: linear-gradient(135deg, #ffffff 0%, #0a0a0f 100%); opacity: 0.4;"></div>
+         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><span class="project-icon" style="font-size: 3rem;">→</span></div>
+         <div class="card-overlay"><span style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 3px; color: var(--accent-color);">EXPLORE →</span></div>
+        </div>
+        <div class="p-5">
+         <p class="project-category" style="font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--secondary-action); margin-bottom: 0.3rem;">BRAND IDENTITY</p>
+         <h3 class="project-title" style="font-size: 1.3rem; font-weight: 700;">Minimal Studio</h3>
+        </div>
+       </div></a> 
+       
+       <a href="#" class="project-card-link reveal" data-hover="true" data-hover-text="VISIT" data-project="1" style="text-decoration: none; transform: translateY(40px);">
+       <div class="project-card">
+        <div class="card-image">
+         <div class="card-gradient" style="background: linear-gradient(135deg, #e0e0e0 0%, #0a0a0f 100%); opacity: 0.4;"></div>
+         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><span class="project-icon" style="font-size: 3rem;">→</span></div>
+         <div class="card-overlay"><span style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 3px; color: var(--accent-color);">EXPLORE →</span></div>
+        </div>
+        <div class="p-5">
+         <p class="project-category" style="font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--secondary-action); margin-bottom: 0.3rem;">WEB DESIGN</p>
+         <h3 class="project-title" style="font-size: 1.3rem; font-weight: 700;">Digital Agency</h3>
+        </div>
+       </div></a> 
+       
+       <a href="#" class="project-card-link reveal" data-hover="true" data-hover-text="VISIT" data-project="2" style="text-decoration: none;">
+       <div class="project-card">
+        <div class="card-image">
+         <div class="card-gradient" style="background: linear-gradient(135deg, #d4d4d4 0%, #0a0a0f 100%); opacity: 0.4;"></div>
+         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><span class="project-icon" style="font-size: 3rem;">→</span></div>
+         <div class="card-overlay"><span style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 3px; color: var(--accent-color);">EXPLORE →</span></div>
+        </div>
+        <div class="p-5">
+         <p class="project-category" style="font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--secondary-action); margin-bottom: 0.3rem;">MOTION DESIGN</p>
+         <h3 class="project-title" style="font-size: 1.3rem; font-weight: 700;">Tech Startup</h3>
+        </div>
+       </div></a> 
+       
+       <a href="#" class="project-card-link reveal" data-hover="true" data-hover-text="VISIT" data-project="3" style="text-decoration: none; transform: translateY(40px);">
+       <div class="project-card">
+        <div class="card-image">
+         <div class="card-gradient" style="background: linear-gradient(135deg, #c8c8c8 0%, #0a0a0f 100%); opacity: 0.4;"></div>
+         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><span class="project-icon" style="font-size: 3rem;">→</span></div>
+         <div class="card-overlay"><span style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 3px; color: var(--accent-color);">EXPLORE →</span></div>
+        </div>
+        <div class="p-5">
+         <p class="project-category" style="font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--secondary-action); margin-bottom: 0.3rem;">UI/UX DESIGN</p>
+         <h3 class="project-title" style="font-size: 1.3rem; font-weight: 700;">Mobile App</h3>
+        </div>
+       </div></a>
+     </div>
+    </div>
+   </section>
+
+   <section class="section" id="about">
+    <div class="video-bg"><canvas id="aboutCanvas"></canvas></div>
+    <canvas id="smokeCanvasAbout" class="smoke-canvas"></canvas>
+    <div class="relative z-10 w-full px-6" style="max-width: 1200px; margin: 0 auto;">
+     <p class="reveal" style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--accent-color); margin-bottom: 0.5rem;">About</p>
+     <h2 class="reveal" style="font-size: clamp(2.5rem,5vw,4.5rem); font-weight: 800; letter-spacing: -2px; margin-bottom: 0.5rem;" id="aboutTitle">The Story</h2>
+     <p class="reveal" style="font-family: 'Space Mono', monospace; font-size: 13px; color: var(--secondary-action); margin-bottom: 2.5rem;">I'm <span id="ageDisplay">18</span> years old, just starting my journey in digital design and development. Fresh perspective, boundless creativity.</p>
+     
+     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" style="margin-bottom: 4rem;">
+      <div class="skill-card reveal" data-hover="true" data-hover-text="EXPLORE">
+       <div class="skill-icon">🎬</div>
+       <div class="skill-title">Motion Design</div>
+       <div class="skill-desc">Cinematic animations and dynamic visual storytelling that captivates audiences.</div>
+      </div>
+      <div class="skill-card reveal" data-hover="true" data-hover-text="BUILD" style="transform: translateY(20px);">
+       <div class="skill-icon">💻</div>
+       <div class="skill-title">Web Development</div>
+       <div class="skill-desc">Creating interactive, responsive experiences with modern web technologies.</div>
+      </div>
+      <div class="skill-card reveal" data-hover="true" data-hover-text="DESIGN">
+       <div class="skill-icon">🎨</div>
+       <div class="skill-title">Brand Identity</div>
+       <div class="skill-desc">Crafting unique visual identities that tell compelling brand stories.</div>
+      </div>
+      <div class="skill-card reveal" data-hover="true" data-hover-text="CREATE" style="transform: translateY(20px);">
+       <div class="skill-icon">🌐</div>
+       <div class="skill-title">3D / WebGL</div>
+       <div class="skill-desc">Immersive 3D experiences and advanced graphics for the web.</div>
+      </div>
+     </div>
+     
+     <div class="reveal" style="padding: 2rem; border-left: 2px solid var(--accent-color); margin-bottom: 3rem;">
+      <p id="aboutDesc" style="font-family: 'Space Mono', monospace; font-size: 14px; line-height: 1.8; color: var(--secondary-action); margin: 0;">I'm a passionate digital creator and designer with a strong foundation in motion design, web development, and brand identity. With expertise in modern web technologies and a keen eye for aesthetic detail, I create immersive digital experiences that blend creativity with functionality. My work focuses on delivering innovative solutions that engage audiences and drive measurable results.</p>
+     </div>
+    </div>
+   </section>
+
+   <section class="section" id="pricing" style="align-items: flex-start; padding-top: 6rem;">
+    <div class="video-bg"><canvas id="pricingCanvas"></canvas></div>
+    <canvas id="smokeCanvasPricing" class="smoke-canvas"></canvas>
+    <div class="relative z-10 w-full px-6" style="max-width: 1200px; margin: 0 auto;">
+     <p class="reveal" style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--accent-color); margin-bottom: 0.5rem;">Services</p>
+     <h2 class="reveal" style="font-size: clamp(2.5rem,5vw,4.5rem); font-weight: 800; letter-spacing: -2px; margin-bottom: 3rem;" id="pricingTitle">Pricing Plans</h2>
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+         
+      <div class="pricing-card reveal" data-hover="true" data-hover-text="SELECT">
+       <div class="pricing-badge">Entry</div>
+       <div class="pricing-title">Starter</div>
+       <div class="pricing-desc">Perfect for small projects and learning</div>
+       <div class="pricing-amount">₹499</div>
+       <ul class="pricing-features">
+        <li>Single Page Design</li>
+        <li>Basic Animation</li>
+        <li>Mobile Responsive</li>
+        <li>Email Support</li>
+       </ul><button class="pricing-btn magnetic-btn" data-hover="true" data-hover-text="INQUIRE">Choose Plan</button>
+      </div>
+      
+      <div class="pricing-card reveal" style="transform: scale(1.02);" data-hover="true" data-hover-text="SELECT">
+       <div class="pricing-badge">Popular</div>
+       <div class="pricing-title">Professional</div>
+       <div class="pricing-desc">For serious web projects and portfolios</div>
+       <div class="pricing-amount">₹999</div>
+       <ul class="pricing-features">
+        <li>Multi-Page Design</li>
+        <li>Advanced Animation</li>
+        <li>Custom Interactions</li>
+        <li>CMS Integration</li>
+        <li>Priority Support</li>
+       </ul><button class="pricing-btn magnetic-btn" data-hover="true" data-hover-text="INQUIRE">Choose Plan</button>
+      </div>
+      
+      <div class="pricing-card reveal" data-hover="true" data-hover-text="SELECT">
+       <div class="pricing-badge">Premium</div>
+       <div class="pricing-title">Enterprise</div>
+       <div class="pricing-desc">Fully customized digital experiences</div>
+       <div class="pricing-amount">Custom</div>
+       <ul class="pricing-features">
+        <li>Full Custom Build</li>
+        <li>Motion &amp; 3D Graphics</li>
+        <li>Backend Integration</li>
+        <li>Performance Optimization</li>
+        <li>Dedicated Support</li>
+       </ul><button class="pricing-btn magnetic-btn" data-hover="true" data-hover-text="INQUIRE">Get Quote</button>
+      </div>
+     </div>
+    </div>
+    
+    <div class="video-bg" id="contact"><canvas id="contactCanvas"></canvas></div>
+    <div class="relative z-10 w-full px-6" style="max-width: 600px; margin: 4rem auto 0 auto;">
+     <p class="reveal" style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--accent-color); margin-bottom: 0.5rem;">Get in Touch</p>
+     <h2 class="reveal" style="font-size: clamp(2.5rem,5vw,4.5rem); font-weight: 800; letter-spacing: -2px; margin-bottom: 2.5rem;" id="contactTitle">Let's Talk</h2>
+     
+     <div class="reveal" style="margin-bottom: 3rem; padding: 2rem; border-radius: 12px; background: rgba(45, 45, 45, 0.4); border: 1px solid rgba(255, 255, 255, 0.1);">
+      <div style="margin-bottom: 1.5rem;">
+       <p style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent-color); margin-bottom: 0.5rem;">Email</p>
+       <a href="mailto:tagg602@gmail.com" style="font-size: 1.1rem; color: var(--text-color); text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='var(--accent-color)'" onmouseout="this.style.color='var(--text-color)'">tagg602@gmail.com</a>
+      </div>
+      <div style="margin-bottom: 1.5rem;">
+       <p style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent-color); margin-bottom: 0.5rem;">Phone</p>
+       <a href="tel:+91-9843487386" style="font-size: 1.1rem; color: var(--text-color); text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='var(--accent-color)'" onmouseout="this.style.color='var(--text-color)'">+91 9843487386</a>
+      </div>
+      <div>
+       <p style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent-color); margin-bottom: 0.5rem;">Location</p>
+       <p style="font-size: 1.1rem; color: var(--text-color); margin: 0;">Coimbatore, India</p>
+      </div>
+     </div>
+     
+     <div class="reveal" style="margin-bottom: 3rem; display: flex; gap: 1rem; justify-content: center;">
+         <a href="#" style="width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-color); text-decoration: none; transition: all 0.3s; cursor: pointer;">in</a> 
+         <a href="#" style="width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-color); text-decoration: none; transition: all 0.3s; cursor: pointer;">𝕏</a> 
+         <a href="#" style="width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-color); text-decoration: none; transition: all 0.3s; cursor: pointer;">⚙</a> 
+         <a href="https://instagram.com/yuga_._._" style="width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-color); text-decoration: none; transition: all 0.3s; cursor: pointer;">📷</a>
+     </div>
+     
+     <form id="contactForm" class="reveal">
+      <div class="float-group"><input type="text" id="nameInput" placeholder=" " required autocomplete="off"> <label for="nameInput">Your Name</label></div>
+      <div class="float-group"><input type="email" id="emailInput" placeholder=" " required autocomplete="off"> <label for="emailInput">Email Address</label></div>
+      <div class="float-group"><textarea id="messageInput" rows="3" placeholder=" " required style="resize: none;"></textarea> <label for="messageInput">Your Message</label></div>
+      
+      <button type="submit" class="magnetic-btn" data-hover="true" data-hover-text="SEND" style="background: var(--accent-color); color: var(--bg-color); font-family: 'Space Mono', monospace; font-size: 12px; letter-spacing: 3px; text-transform: uppercase; font-weight: 700; padding: 1rem 2.5rem; border: none; border-radius: 8px; margin-top: 1rem; transition: all 0.4s cubic-bezier(0.23,1,0.32,1);"> 
+          Send Message to WhatsApp 
+      </button>
+     </form>
+     
+     <div class="reveal" style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--grey-light); text-align: center;">
+      <p style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 1px; color: var(--secondary-action); margin: 0;">© 2026 CODE101. All rights reserved.</p>
+      <p style="font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 1px; color: var(--grey-medium); margin-top: 0.5rem;">Designed &amp; developed with care in Coimbatore.</p>
+     </div>
+    </div>
+   </section>
+  </div>
+  
+  <div class="toast" id="toast"></div>
+
   <script>
-    lucide.createIcons();
+    // ── Animated Canvas Backgrounds ──
+    function initCanvas(canvasId, hue) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const particles = [];
+      const count = 40;
+      let animationId = null;
+      let lastFrameTime = 0;
+      const frameInterval = 1000 / 30;
 
-    // Menu Toggle Logic
-    const menuBtn = document.getElementById('menuBtn');
-    const nav = document.getElementById('nav');
-    menuBtn.onclick = () => nav.classList.toggle('active');
-    nav.onclick = () => nav.classList.remove('active');
+      function resize() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
+      resize(); window.addEventListener('resize', resize);
 
-    // Smooth reveal animation
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('visible');
+      for (let i = 0; i < count; i++) {
+        particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4, r: Math.random() * 2 + 0.5, alpha: Math.random() * 0.3 + 0.1 });
+      }
+
+      function draw(currentTime) {
+        if (currentTime - lastFrameTime < frameInterval) { animationId = requestAnimationFrame(draw); return; }
+        lastFrameTime = currentTime;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+          p.x += p.vx; p.y += p.vy;
+          if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+          if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`; ctx.fill();
+        });
+        
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x; const dy = particles[i].y - particles[j].y; const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 150) {
+              ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.strokeStyle = `rgba(255, 255, 255, ${0.06 * (1 - dist / 150)})`; ctx.lineWidth = 0.5; ctx.stroke();
+            }
+          }
+        }
+        animationId = requestAnimationFrame(draw);
+      }
+      animationId = requestAnimationFrame(draw);
+    }
+    
+    initCanvas('heroCanvas', 0); initCanvas('workCanvas', 0); initCanvas('aboutCanvas', 0); initCanvas('contactCanvas', 0);
+
+    // ── Smoke Effect ──
+    function initSmokeEffect(canvasId) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let smokeParticles = [];
+      const maxSmoke = 30;
+      let animationId = null;
+      let lastFrameTime = 0;
+      const frameInterval = 1000 / 30;
+
+      function resize() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
+      resize(); window.addEventListener('resize', resize);
+
+      for (let i = 0; i < maxSmoke; i++) {
+        smokeParticles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.2 - 0.1, r: Math.random() * 80 + 40, alpha: Math.random() * 0.4, decay: Math.random() * 0.003 + 0.001 });
+      }
+
+      function draw(currentTime) {
+        if (currentTime - lastFrameTime < frameInterval) { animationId = requestAnimationFrame(draw); return; }
+        lastFrameTime = currentTime;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        smokeParticles.forEach((p, idx) => {
+          p.x += p.vx; p.y += p.vy; p.alpha -= p.decay;
+          if (p.alpha <= 0) {
+            smokeParticles[idx] = { x: Math.random() * canvas.width, y: canvas.height + 20, vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.2 - 0.1, r: Math.random() * 80 + 40, alpha: Math.random() * 0.4, decay: Math.random() * 0.003 + 0.001 };
+          }
+          const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
+          grad.addColorStop(0, `rgba(255, 255, 255, ${p.alpha * 0.3})`); grad.addColorStop(0.5, `rgba(255, 255, 255, ${p.alpha * 0.1})`); grad.addColorStop(1, `rgba(255, 255, 255, 0)`);
+          ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+        });
+        animationId = requestAnimationFrame(draw);
+      }
+      animationId = requestAnimationFrame(draw);
+    }
+    
+    initSmokeEffect('smokeCanvasAbout'); initSmokeEffect('smokeCanvasPricing'); initSmokeEffect('smokeCanvasHero');
+
+    // ── Custom Cursor (DESKTOP ONLY LOGIC) ──
+    const cursor = document.getElementById('cursor');
+    const cursorDot = document.getElementById('cursorDot');
+    const cursorText = document.getElementById('cursorText');
+    let mouseX = 0, mouseY = 0, cursorX = 0, cursorY = 0;
+    
+    if (window.matchMedia("(pointer: fine)").matches) {
+        const mouseMoveHandler = e => {
+          mouseX = e.clientX; mouseY = e.clientY;
+          cursorDot.style.left = mouseX + 'px'; cursorDot.style.top = mouseY + 'px';
+          
+          const heroTitle = document.getElementById('heroTitle');
+          if (heroTitle) {
+            const rect = heroTitle.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2; const centerY = rect.top + rect.height / 2;
+            heroTitle.style.transform = `rotateX(${(mouseY - centerY) * 0.05}deg) rotateY(${-(mouseX - centerX) * 0.05}deg) perspective(1000px)`;
+          }
+        };
+        document.addEventListener('mousemove', mouseMoveHandler);
+
+        function animateCursor() {
+          cursorX += (mouseX - cursorX) * 0.15; cursorY += (mouseY - cursorY) * 0.15;
+          cursor.style.left = cursorX + 'px'; cursor.style.top = cursorY + 'px';
+          cursorText.style.left = cursorX + 'px'; cursorText.style.top = cursorY + 'px';
+          requestAnimationFrame(animateCursor);
+        }
+        requestAnimationFrame(animateCursor);
+
+        const hoverElements = document.querySelectorAll('[data-hover="true"]');
+        hoverElements.forEach(el => {
+          el.addEventListener('mouseenter', () => {
+            cursor.classList.add('hovering'); cursorDot.style.opacity = '0';
+            const text = el.getAttribute('data-hover-text');
+            if (text) { cursorText.textContent = text; cursorText.classList.add('visible'); }
+          });
+          el.addEventListener('mouseleave', () => {
+            cursor.classList.remove('hovering'); cursorDot.style.opacity = '1'; cursorText.classList.remove('visible');
+          });
+        });
+        
+        // Magnetic Buttons Logic (Desktop Only)
+        document.querySelectorAll('.magnetic-btn').forEach(btn => {
+          btn.addEventListener('mousemove', e => {
+            const rect = btn.getBoundingClientRect(); const x = e.clientX - rect.left - rect.width / 2; const y = e.clientY - rect.top - rect.height / 2;
+            btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px) scale(1.05)`;
+          });
+          btn.addEventListener('mouseleave', () => btn.style.transform = 'translate(0, 0) scale(1)');
+        });
+    }
+
+    // ── Hamburger / Nav ──
+    const hamburger = document.getElementById('hamburger');
+    const navOverlay = document.getElementById('navOverlay');
+    hamburger.addEventListener('click', () => { hamburger.classList.toggle('open'); navOverlay.classList.toggle('open'); });
+    navOverlay.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault(); hamburger.classList.remove('open'); navOverlay.classList.remove('open');
+        scrollToSection(parseInt(a.getAttribute('data-nav')));
       });
-    }, { threshold: 0.1 });
+    });
 
+    // ── Section Navigation ──
+    const container = document.getElementById('sectionContainer');
+    const sections = container.querySelectorAll('.section');
+    const dots = document.querySelectorAll('.section-dot');
+    function scrollToSection(idx) { sections[idx].scrollIntoView({ behavior: 'smooth' }); }
+    dots.forEach(dot => dot.addEventListener('click', () => scrollToSection(parseInt(dot.getAttribute('data-section')))));
+
+    let activeSection = 0;
+    container.addEventListener('scroll', () => {
+      const scrollPos = container.scrollTop; const h = container.clientHeight; const newActive = Math.round(scrollPos / h);
+      if (newActive !== activeSection && newActive < sections.length) {
+        activeSection = newActive; dots.forEach((d, i) => d.classList.toggle('active', i === activeSection));
+      }
+    }, { passive: true });
+
+    // ── Scroll Reveal (Works perfectly on Mobile and PC) ──
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.15, root: container });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    // Working WhatsApp Messaging Logic
-    function sendWhatsApp() {
-      const name = document.getElementById('name').value;
-      const message = document.getElementById('msg').value;
-      const phoneNumber = "919843487386"; // International format
+    // ── WORKING WHATSAPP CONTACT FORM ──
+    const contactForm = document.getElementById('contactForm');
+    contactForm.addEventListener('submit', e => {
+      e.preventDefault();
       
-      const text = `Hello CODE101! My name is ${name}. %0A%0AProject Details: ${message}`;
-      const url = `https://wa.me/${phoneNumber}?text=${text}`;
+      const name = document.getElementById('nameInput').value;
+      const email = document.getElementById('emailInput').value;
+      const msg = document.getElementById('messageInput').value;
+      const phone = "919843487386"; 
       
+      const text = `Hi CODE101,%0A%0AI'm ${name} (${email}).%0A%0A${msg}`;
+      const url = `https://wa.me/${phone}?text=${text}`;
+      
+      showToast('Opening WhatsApp...');
       window.open(url, '_blank').focus();
+      e.target.reset();
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast'); toast.textContent = msg; toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
     }
 
-    // Cursor Logic (Disabled on touch)
-    const follower = document.getElementById('follower');
-    const dot = document.getElementById('dot');
-
-    if (window.matchMedia("(pointer: fine)").matches) {
-      document.addEventListener('mousemove', (e) => {
-        follower.style.left = e.clientX + 'px';
-        follower.style.top = e.clientY + 'px';
-        dot.style.left = e.clientX + 'px';
-        dot.style.top = e.clientY + 'px';
-      });
-    }
+    lucide.createIcons();
   </script>
  </body>
 </html>
