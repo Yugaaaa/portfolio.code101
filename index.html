@@ -6,7 +6,7 @@
   <title>CODE101 | Digital Architecture</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #050505;
@@ -19,88 +19,8 @@
 
     /* Fluid Typography */
     :root { font-size: clamp(14px, 1vw, 18px); }
-    .hero-text { font-size: clamp(3.5rem, 18vw, 15rem); }
+    .hero-text { font-size: clamp(5rem, 18vw, 15rem); }
     .section-padding { padding: clamp(5rem, 12vh, 12rem) clamp(1.5rem, 6vw, 5rem); }
-
-    /* Hero Section with Ink Background */
-    .hero-section {
-      position: relative;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      background: white;
-      transition: background-color 0.1s ease;
-    }
-
-    #inkCanvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      color: white;
-      mix-blend-mode: normal;
-      transition: color 0.3s ease;
-    }
-
-    .hero-section .hero-text {
-      color: white;
-      transition: color 0.3s ease;
-    }
-
-    .hero-section .btn-pro {
-      border-color: rgba(255, 255, 255, 0.3);
-      color: white;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1), inset 0 0 20px rgba(255, 255, 255, 0.05);
-      transition: all 0.3s ease;
-    }
-
-    .hero-section .btn-pro::before {
-      background: white;
-    }
-
-    .hero-section .btn-pro:hover {
-      color: black;
-      border-color: white;
-      box-shadow: 0 0 40px rgba(255, 255, 255, 0.3), inset 0 0 30px rgba(255, 255, 255, 0.1);
-    }
-
-    .hero-section .btn-pro:focus {
-      box-shadow: 0 0 0 2px black, 0 0 0 4px white, 0 0 20px rgba(255, 255, 255, 0.2);
-    }
-
-    .hero-section p {
-      color: #ccc;
-      transition: color 0.3s ease;
-    }
-
-    /* Dark state - inverse colors */
-    .hero-section.dark-mode .hero-text {
-      color: white;
-    }
-
-    .hero-section.dark-mode p {
-      color: #aaa;
-    }
-
-    .hero-section.dark-mode .btn-pro {
-      border-color: rgba(255, 255, 255, 0.5);
-      color: white;
-    }
-
-    .hero-section.dark-mode .btn-pro:hover {
-      color: black;
-    }
 
     /* Professional Button - Magnetic + Glow + Inversion */
     .btn-pro {
@@ -119,8 +39,6 @@
         display: inline-block;
         z-index: 1;
         cursor: pointer;
-        outline: none;
-        box-shadow: 0 0 20px rgba(255,255,255,0.1), inset 0 0 20px rgba(255,255,255,0.05);
     }
     .btn-pro::before {
         content: '';
@@ -132,51 +50,13 @@
         transition: width 0.6s ease, height 0.6s ease;
         z-index: -1;
     }
-    .btn-pro::after {
-        content: '';
-        position: absolute;
-        inset: -1px;
-        background: radial-gradient(circle at center, rgba(255,255,255,0.3), transparent 70%);
-        border-radius: 2px;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        z-index: -2;
-        pointer-events: none;
-    }
-    .btn-pro:hover { color: black; border-color: white; box-shadow: 0 0 40px rgba(255,255,255,0.3), inset 0 0 30px rgba(255,255,255,0.1); }
+    .btn-pro:hover { color: black; border-color: white; box-shadow: 0 0 30px rgba(255,255,255,0.15); }
     .btn-pro:hover::before { width: 350%; height: 350%; }
-    .btn-pro:hover::after { opacity: 1; }
-    .btn-pro:focus { box-shadow: 0 0 0 2px #050505, 0 0 0 4px white, 0 0 20px rgba(255,255,255,0.2); }
 
     /* Advanced Work Grid (Asymmetric) */
     .work-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 2rem; }
-    .work-card { 
-        position: relative; 
-        background: #0d0d0d; 
-        overflow: hidden; 
-        border: 1px solid #1a1a1a; 
-        transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-        cursor: pointer;
-        outline: none;
-        box-shadow: 0 0 30px rgba(255,255,255,0), inset 0 0 0 1px rgba(255,255,255,0);
-    }
-    .work-card::before {
-        content: '';
-        position: absolute;
-        inset: -100%;
-        background: radial-gradient(circle at center, rgba(255,255,255,0.15), transparent 70%);
-        opacity: 0;
-        transition: opacity 0.4s ease;
-        pointer-events: none;
-        z-index: 2;
-    }
-    .work-card:hover { 
-        border-color: #444; 
-        transform: translateY(-8px);
-        box-shadow: 0 20px 50px rgba(255,255,255,0.15), inset 0 0 20px rgba(255,255,255,0.08);
-    }
-    .work-card:hover::before { opacity: 1; }
-    .work-card:focus { box-shadow: 0 0 0 2px #050505, 0 0 0 4px white, 0 0 30px rgba(255,255,255,0.2); }
+    .work-card { position: relative; background: #0d0d0d; overflow: hidden; border: 1px solid #1a1a1a; transition: border 0.4s; }
+    .work-card:hover { border-color: #444; }
     
     .slot-1 { grid-column: span 7; aspect-ratio: 16/9; }
     .slot-2 { grid-column: span 5; aspect-ratio: 1/1; margin-top: 4rem; }
@@ -191,502 +71,251 @@
     .work-img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.5s cubic-bezier(0.19, 1, 0.22, 1); filter: saturate(0); opacity: 0.6; }
     .work-card:hover .work-img { transform: scale(1.05); filter: saturate(1); opacity: 0.9; }
     
-    .work-meta {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        padding: 1.5rem;
-        background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.4) 60%, transparent);
-        transform: translateY(20px);
-        transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-        opacity: 0;
-    }
-    
-    .work-card:hover .work-meta {
-        transform: translateY(0);
-        opacity: 1;
-    }
-
-    .work-icon {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 36px;
-        height: 36px;
-        background: rgba(255,255,255,0.1);
-        border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 4px;
-        margin-bottom: 0.75rem;
-        animation: iconPulse 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
-    }
-
-    @keyframes iconPulse {
-        from {
-            opacity: 0;
-            transform: scale(0.8);
-        }
-        to {
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
-
-    .work-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .work-desc { font-family: 'Space Mono'; font-size: 0.75rem; color: #a1a1a1; line-height: 1.4; }
-    
     /* FAQ Accordion */
-    .faq-item { 
-        border-bottom: 1px solid #1a1a1a; 
-        padding: 2rem 0; 
-        cursor: pointer; 
-        transition: all 0.3s ease; 
-        outline: none;
-        box-shadow: inset 0 0 20px rgba(255,255,255,0);
-    }
-    .faq-item:focus { box-shadow: inset 0 0 0 1px white; padding: 2rem; }
-    .faq-item:hover { box-shadow: inset 0 0 20px rgba(255,255,255,0.03); }
-    .faq-answer { 
-        max-height: 0; 
-        overflow: hidden; 
-        transition: max-height 0.5s cubic-bezier(0.19, 1, 0.22, 1); 
-        color: #71717a; 
-        font-family: 'Space Mono'; 
-        font-size: 0.8rem; 
-    }
+    .faq-item { border-bottom: 1px solid #1a1a1a; padding: 2rem 0; cursor: pointer; }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.5s ease; color: #71717a; font-family: 'Space Mono'; font-size: 0.8rem; }
     .faq-item:hover .faq-question { padding-left: 1rem; color: #fff; }
-    .faq-question { transition: all 0.3s ease; display: flex; justify-between; align-items: center; }
-    .faq-icon { transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1); }
+    .faq-question { transition: all 0.3s ease; }
+
+    /* Smoke Canvas */
+    #smokeCanvas { position: fixed; inset: 0; pointer-events: none; opacity: 0.35; z-index: 1; }
 
     /* Reveal */
     .reveal { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.19, 1, 0.22, 1); }
     .reveal.visible { opacity: 1; transform: translateY(0); }
 
-    /* Staggered reveals */
-    .reveal:nth-child(1) { transition-delay: 0s; }
-    .reveal:nth-child(2) { transition-delay: 0.1s; }
-    .reveal:nth-child(3) { transition-delay: 0.2s; }
-    .reveal:nth-child(4) { transition-delay: 0.3s; }
-
-    /* Nav hover effects */
-    nav a { position: relative; transition: color 0.3s ease; }
-    nav a::after { 
-        content: ''; 
-        position: absolute; 
-        bottom: -2px; 
-        left: 0; 
-        width: 0; 
-        height: 1px; 
-        background: white; 
-        transition: width 0.3s cubic-bezier(0.19, 1, 0.22, 1); 
-    }
-    nav a:hover::after { width: 100%; }
-    nav a:focus { outline: 1px solid white; outline-offset: 4px; }
-
-    /* Logo interaction */
-    .logo {
-        cursor: pointer;
-        transition: all 0.3s ease;
-        position: relative;
-        display: inline-block;
-        padding: 0.5rem;
-        margin: -0.5rem;
-    }
-    .logo::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(circle at center, rgba(255,255,255,0.1), transparent 80%);
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        border-radius: 2px;
-    }
-    .logo:hover {
-        opacity: 0.7;
-        transform: scale(0.95);
-    }
-    .logo:hover::before { opacity: 1; }
-    .logo:active { transform: scale(0.9); }
-
-    /* Form field focus states */
-    input, select, textarea {
-        transition: all 0.3s ease;
-    }
-    input:focus, select:focus, textarea:focus {
-        border-color: white !important;
-        box-shadow: 0 2px 10px rgba(255,255,255,0.1) !important;
-    }
-    input::placeholder, textarea::placeholder {
-        color: #555;
-    }
-
-    /* Pricing card interactions */
-    .pricing-card {
-        transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-        outline: none;
-        box-shadow: 0 0 30px rgba(255,255,255,0.05), inset 0 0 20px rgba(255,255,255,0.02);
-    }
-    .pricing-card::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(circle at center, rgba(255,255,255,0.1), transparent 80%);
-        opacity: 0;
-        transition: opacity 0.4s ease;
-        pointer-events: none;
-        border-radius: inherit;
-    }
-    .pricing-card:hover {
-        transform: translateY(-12px);
-        box-shadow: 0 30px 60px rgba(255,255,255,0.12), inset 0 0 30px rgba(255,255,255,0.08);
-    }
-    .pricing-card:hover::after { opacity: 1; }
-    .pricing-card:focus {
-        box-shadow: 0 0 0 2px #050505, 0 0 0 4px white, 0 0 30px rgba(255,255,255,0.2);
-    }
-
-    /* Process step animations */
-    .process-step {
-        transition: all 0.4s ease;
-        padding: 1.5rem;
-        border-radius: 4px;
-        border: 1px solid transparent;
-        box-shadow: 0 0 20px rgba(255,255,255,0.02), inset 0 0 15px rgba(255,255,255,0.01);
-    }
-    .process-step::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(circle at center, rgba(255,255,255,0.08), transparent 80%);
-        opacity: 0;
-        transition: opacity 0.4s ease;
-        pointer-events: none;
-        border-radius: 4px;
-    }
-    .process-step:hover {
-        transform: translateX(8px);
-        border-color: rgba(255,255,255,0.1);
-        box-shadow: 0 10px 40px rgba(255,255,255,0.08), inset 0 0 20px rgba(255,255,255,0.05);
-    }
-    .process-step:hover::before { opacity: 1; }
-
     @media (pointer: fine) {
         body { cursor: none; }
-        .cursor { 
-            position: fixed; 
-            width: 8px; 
-            height: 8px; 
-            background: white; 
-            border-radius: 50%; 
-            pointer-events: none; 
-            z-index: 9999; 
-            transform: translate(-50%, -50%); 
-            mix-blend-mode: difference; 
-            transition: width 0.3s, height 0.3s; 
-            box-shadow: 0 0 15px rgba(255,255,255,0.3);
-        }
-    }
-
-    @media (max-width: 768px) {
-        .hero-text { line-height: 0.9; }
-        nav a { font-size: 8px !important; gap: 6px !important; }
-        
-        /* Mobile Glow Effects */
-        .btn-pro {
-            box-shadow: 0 0 15px rgba(255,255,255,0.08), inset 0 0 15px rgba(255,255,255,0.03);
-        }
-        .btn-pro:active {
-            transform: scale(0.95);
-            box-shadow: 0 0 30px rgba(255,255,255,0.2), inset 0 0 25px rgba(255,255,255,0.1);
-        }
-        .work-card {
-            box-shadow: 0 0 20px rgba(255,255,255,0.03);
-        }
-        .work-card:active {
-            transform: translateY(-5px) scale(0.98);
-            box-shadow: 0 15px 40px rgba(255,255,255,0.1), inset 0 0 15px rgba(255,255,255,0.06);
-        }
-        .pricing-card {
-            box-shadow: 0 0 20px rgba(255,255,255,0.04), inset 0 0 15px rgba(255,255,255,0.01);
-            position: relative;
-        }
-        .pricing-card:active {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 50px rgba(255,255,255,0.1), inset 0 0 25px rgba(255,255,255,0.06);
-        }
-        .faq-item:active {
-            background: rgba(255,255,255,0.02);
-            box-shadow: inset 0 0 15px rgba(255,255,255,0.04);
-        }
-        .process-step:active {
-            transform: translateX(4px) scale(0.98);
-            box-shadow: 0 8px 30px rgba(255,255,255,0.06), inset 0 0 15px rgba(255,255,255,0.04);
-        }
+        .cursor { position: fixed; width: 8px; height: 8px; background: white; border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); mix-blend-mode: difference; transition: width 0.3s, height 0.3s; }
     }
   </style>
-  <style>body { box-sizing: border-box; }</style>
-  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
  </head>
  <body style="font-family: 'Syne', sans-serif;">
+
   <div class="cursor" id="cursor"></div>
-  <nav class="fixed top-0 w-full z-50 p-6 md:p-10 flex justify-between items-center mix-blend-difference" id="navbar" style="background: transparent;">
-   <div class="logo font-extrabold text-2xl tracking-tighter" tabindex="0" role="button" aria-label="Back to top">
-    CODE101
-   </div>
-   <div class="hidden md:flex gap-12 font-mono text-[9px] uppercase tracking-[0.4em]">
-    <a href="#work" class="hover:opacity-50 transition-opacity" tabindex="0">Portfolio</a> <a href="#process" class="hover:opacity-50 transition-opacity" tabindex="0">Process</a> <a href="#about" class="hover:opacity-50 transition-opacity" tabindex="0">Vision</a> <a href="#pricing" class="hover:opacity-50 transition-opacity" tabindex="0">Invest</a>
-   </div>
+  <canvas id="smokeCanvas"></canvas>
+
+  <nav class="fixed top-0 w-full z-50 p-6 md:p-10 flex justify-between items-center mix-blend-difference">
+      <div class="font-extrabold text-2xl tracking-tighter">CODE101</div>
+      <div class="hidden md:flex gap-12 font-mono text-[9px] uppercase tracking-[0.4em]">
+          <a href="#work" class="hover:opacity-50 transition-opacity">Portfolio</a>
+          <a href="#process" class="hover:opacity-50 transition-opacity">Process</a>
+          <a href="#about" class="hover:opacity-50 transition-opacity">Vision</a>
+          <a href="#pricing" class="hover:opacity-50 transition-opacity">Invest</a>
+      </div>
   </nav>
+
   <main class="relative z-10">
-   <section class="hero-section px-4">
-    <canvas id="inkCanvas"></canvas>
-    <div class="hero-content" style="perspective: 1000px;">
-     <h1 class="hero-text font-black leading-[0.8] tracking-tighter" id="heroTitle">CODE<br>
-       101</h1>
-     <div class="reveal mt-12">
-      <p class="font-mono text-[9px] uppercase tracking-[0.8em] text-zinc-600 mb-10">Premium Digital Experiences</p><a href="#work" class="btn-pro" tabindex="0">Enter Archive</a>
-     </div>
-    </div>
-   </section>
-   <section id="work" class="section-padding max-w-7xl mx-auto">
-    <div class="mb-24 reveal">
-     <p class="font-mono text-[10px] text-zinc-600 uppercase tracking-widest mb-4">/ 01 Selected Works</p>
-     <h2 class="text-6xl md:text-9xl font-bold tracking-tighter">The Gallery</h2>
-    </div>
-    <div class="work-grid">
-     <a href="https://lawfirm-site.vercel.app/" target="_blank" rel="noopener noreferrer" class="work-card slot-1 reveal block" tabindex="0">
-      <div class="work-img bg-gradient-to-br from-slate-900 to-zinc-900"></div>
-      <div class="work-meta">
-       <div class="work-icon">
-        <i data-lucide="briefcase" style="width: 18px; height: 18px;"></i>
-       </div>
-       <h3 class="work-title">LawFirm Portal</h3>
-       <p class="work-desc">Professional legal services platform with sophisticated case management and client interaction system. Built for modern law practices.</p>
-      </div></a> <a href="https://tagg602.wixsite.com/my-site" target="_blank" rel="noopener noreferrer" class="work-card slot-2 reveal block" tabindex="0">
-      <div class="work-img bg-gradient-to-br from-amber-950 to-zinc-900"></div>
-      <div class="work-meta">
-       <div class="work-icon">
-        <i data-lucide="hammer" style="width: 18px; height: 18px;"></i>
-       </div>
-       <h3 class="work-title">Construction Hub</h3>
-       <p class="work-desc">Industry-leading project showcase for builders and contractors with portfolio management.</p>
-      </div></a> <a href="https://photo-site-black.vercel.app/" target="_blank" rel="noopener noreferrer" class="work-card slot-3 reveal block" tabindex="0">
-      <div class="work-img bg-gradient-to-br from-slate-950 to-zinc-900"></div>
-      <div class="work-meta">
-       <div class="work-icon">
-        <i data-lucide="camera" style="width: 18px; height: 18px;"></i>
-       </div>
-       <h3 class="work-title">Photography Lens</h3>
-       <p class="work-desc">Elegant visual storytelling platform for photographers showcasing their finest work with seamless galleries.</p>
-      </div></a>
-     <div class="work-card slot-4 reveal" tabindex="0">
-      <div class="work-img bg-gradient-to-br from-zinc-950 to-black"></div>
-      <div class="work-meta">
-       <div class="work-icon">
-        <i data-lucide="zap" style="width: 18px; height: 18px;"></i>
-       </div>
-       <h3 class="work-title">Future Flow</h3>
-       <p class="work-desc">Next-generation interactive platform combining real-time data visualization with predictive analytics. Coming soon.</p>
-      </div>
-     </div>
-    </div>
-   </section>
-   <section id="process" class="section-padding bg-zinc-900/20">
-    <div class="max-w-7xl mx-auto">
-     <div class="mb-24 reveal">
-      <p class="font-mono text-[10px] text-zinc-600 uppercase tracking-widest mb-4">/ 02 Methodology</p>
-      <h2 class="text-6xl md:text-8xl font-bold tracking-tighter">The Workflow</h2>
-     </div>
-     <div class="grid md:grid-cols-4 gap-12">
-      <div class="reveal process-step">
-       <div class="flex items-center gap-3 mb-6">
-        <i data-lucide="search" style="width: 24px; height: 24px;"></i> <span class="font-mono text-zinc-700 text-2xl">01</span>
-       </div>
-       <h4 class="text-xl font-bold mb-4 uppercase tracking-tight">Discovery</h4>
-       <p class="font-mono text-[11px] text-zinc-500 leading-relaxed">Defining the core vision, objectives, and user demographics to establish a solid foundation.</p>
-      </div>
-      <div class="reveal process-step" style="transition-delay: 0.1s;">
-       <div class="flex items-center gap-3 mb-6">
-        <i data-lucide="layers" style="width: 24px; height: 24px;"></i> <span class="font-mono text-zinc-700 text-2xl">02</span>
-       </div>
-       <h4 class="text-xl font-bold mb-4 uppercase tracking-tight">Architecture</h4>
-       <p class="font-mono text-[11px] text-zinc-500 leading-relaxed">Mapping user flows and wireframes to ensure seamless digital navigation.</p>
-      </div>
-      <div class="reveal process-step" style="transition-delay: 0.2s;">
-       <div class="flex items-center gap-3 mb-6">
-        <i data-lucide="palette" style="width: 24px; height: 24px;"></i> <span class="font-mono text-zinc-700 text-2xl">03</span>
-       </div>
-       <h4 class="text-xl font-bold mb-4 uppercase tracking-tight">Visual Dev</h4>
-       <p class="font-mono text-[11px] text-zinc-500 leading-relaxed">Engineering high-end motion design and minimalist aesthetics tailored to the brand.</p>
-      </div>
-      <div class="reveal process-step" style="transition-delay: 0.3s;">
-       <div class="flex items-center gap-3 mb-6">
-        <i data-lucide="rocket" style="width: 24px; height: 24px;"></i> <span class="font-mono text-zinc-700 text-2xl">04</span>
-       </div>
-       <h4 class="text-xl font-bold mb-4 uppercase tracking-tight">Deployment</h4>
-       <p class="font-mono text-[11px] text-zinc-500 leading-relaxed">Rigorous performance optimization followed by a precision-led global launch.</p>
-      </div>
-     </div>
-    </div>
-   </section>
-   <section id="about" class="bg-white text-black section-padding">
-    <div class="max-w-5xl mx-auto">
-     <div class="reveal">
-      <h2 class="text-6xl md:text-9xl font-bold tracking-tighter mb-12">Yuga.</h2>
-      <div class="grid md:grid-cols-2 gap-20 items-start">
-       <p class="text-2xl font-bold leading-[1.1] tracking-tight">At 18, I specialize in the intersection of code and cinematic art. CODE101 is my laboratory for digital interaction.</p>
-       <div class="space-y-8">
-        <p class="font-mono text-sm text-zinc-500">I build high-performance environments for brands that value silence over noise and precision over clutter.</p>
-        <div class="pt-8 border-t border-zinc-200">
-         <p class="font-mono text-[10px] uppercase tracking-widest text-zinc-400 mb-4">Core Stack</p>
-         <div class="flex flex-wrap gap-3">
-          <span class="px-4 py-2 bg-zinc-100 rounded text-[10px] font-mono hover:bg-zinc-200 transition-colors cursor-pointer" tabindex="0">React / Next.js</span> <span class="px-4 py-2 bg-zinc-100 rounded text-[10px] font-mono hover:bg-zinc-200 transition-colors cursor-pointer" tabindex="0">Tailwind CSS</span> <span class="px-4 py-2 bg-zinc-100 rounded text-[10px] font-mono hover:bg-zinc-200 transition-colors cursor-pointer" tabindex="0">Three.js</span> <span class="px-4 py-2 bg-zinc-100 rounded text-[10px] font-mono hover:bg-zinc-200 transition-colors cursor-pointer" tabindex="0">GSAP</span>
-         </div>
+      
+    <section class="h-[100dvh] flex items-center justify-center px-4">
+        <div class="text-center" style="perspective: 1000px;">
+            <h1 class="hero-text font-black leading-[0.8] tracking-tighter" id="heroTitle">
+                CODE<br>101
+            </h1>
+            <div class="reveal mt-12">
+                <p class="font-mono text-[9px] uppercase tracking-[0.8em] text-zinc-600 mb-10">Premium Digital Experiences</p>
+                <a href="#work" class="btn-pro">Enter Archive</a>
+            </div>
         </div>
-       </div>
-      </div>
-     </div>
-    </div>
-   </section>
-   <section id="pricing" class="section-padding max-w-7xl mx-auto">
-    <div class="text-center mb-24 reveal">
-     <h2 class="text-6xl md:text-9xl font-bold tracking-tighter">Invest</h2>
-     <p class="font-mono text-zinc-600 uppercase tracking-[0.5em] text-[10px] mt-4">Transparent Professional Tiers</p>
-    </div>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-     <div class="bg-zinc-900/30 border border-zinc-800 p-12 rounded reveal flex flex-col justify-between pricing-card" tabindex="0">
-      <div>
-       <div class="flex items-center gap-3 mb-4">
-        <i data-lucide="star" style="width: 20px; height: 20px;"></i>
-        <p class="font-mono text-[9px] text-zinc-600 uppercase">Lvl 01 // Essential</p>
-       </div>
-       <h3 class="text-4xl font-bold mb-8">₹1499</h3>
-       <ul class="font-mono text-[11px] text-zinc-500 space-y-4 mb-12">
-        <li class="flex items-center gap-2"><i data-lucide="check" style="width: 14px; height: 14px;"></i>High-End Landing Page</li>
-        <li class="flex items-center gap-2"><i data-lucide="check" style="width: 14px; height: 14px;"></i>Full Mobile Adaptation</li>
-        <li class="flex items-center gap-2"><i data-lucide="check" style="width: 14px; height: 14px;"></i>Core Animation Suite</li>
-       </ul>
-      </div><button class="btn-pro w-full plan-btn" data-plan="Essential Presence" tabindex="0">Select Tier</button>
-     </div>
-     <div class="bg-white text-black p-12 rounded reveal flex flex-col justify-between md:-translate-y-6 shadow-2xl pricing-card" tabindex="0">
-      <div>
-       <div class="flex items-center gap-3 mb-4">
-        <i data-lucide="flame" style="width: 20px; height: 20px; color: #ff6b35;"></i>
-        <p class="font-mono text-[9px] text-zinc-400 uppercase">Lvl 02 // Cinematic</p>
-       </div>
-       <h3 class="text-4xl font-bold mb-8">₹1999</h3>
-       <ul class="font-mono text-[11px] text-zinc-700 space-y-4 mb-12">
-        <li class="flex items-center gap-2"><i data-lucide="check" style="width: 14px; height: 14px; color: #ff6b35;"></i>Multi-Page Ecosystem</li>
-        <li class="flex items-center gap-2"><i data-lucide="check" style="width: 14px; height: 14px; color: #ff6b35;"></i>Custom 3D &amp; WebGL Effects</li>
-        <li class="flex items-center gap-2"><i data-lucide="check" style="width: 14px; height: 14px; color: #ff6b35;"></i>Advanced Motion Logic</li>
-        <li class="flex items-center gap-2"><i data-lucide="check" style="width: 14px; height: 14px; color: #ff6b35;"></i>Priority Dev Support</li>
-       </ul>
-      </div><button class="btn-pro w-full plan-btn !bg-black !text-white" data-plan="Cinematic Experience" tabindex="0">Choose Tier</button>
-     </div>
-     <div class="bg-zinc-900/30 border border-zinc-800 p-12 rounded reveal flex flex-col justify-between pricing-card" tabindex="0">
-      <div>
-       <div class="flex items-center gap-3 mb-4">
-        <i data-lucide="crown" style="width: 20px; height: 20px;"></i>
-        <p class="font-mono text-[9px] text-zinc-600 uppercase">Lvl 03 // Custom</p>
-       </div>
-       <h3 class="text-4xl font-bold mb-8">Bespoke</h3>
-       <ul class="font-mono text-[11px] text-zinc-500 space-y-4 mb-12">
-        <li class="flex items-center gap-2"><i data-lucide="check" style="width: 14px; height: 14px;"></i>Full Brand Identity Build</li>
-        <li class="flex items-center gap-2"><i data-lucide="check" style="width: 14px; height: 14px;"></i>Complex Technical Systems</li>
-        <li class="flex items-center gap-2"><i data-lucide="check" style="width: 14px; height: 14px;"></i>Ongoing Partnership</li>
-       </ul>
-      </div><button class="btn-pro w-full plan-btn" data-plan="Custom Enterprise" tabindex="0">Initialize</button>
-     </div>
-    </div>
-   </section>
-   <section class="section-padding max-w-4xl mx-auto">
-    <div class="mb-16 reveal">
-     <p class="font-mono text-[10px] text-zinc-600 uppercase tracking-widest mb-4">/ 03 Inquiries</p>
-     <h2 class="text-5xl font-bold tracking-tighter">Common Questions</h2>
-    </div>
-    <div class="reveal">
-     <div class="faq-item" onclick="toggleFaq(this)" tabindex="0" role="button" aria-expanded="false">
-      <div class="faq-question text-lg font-bold flex justify-between items-center">
-       HOW LONG DOES A PROJECT TAKE? <i data-lucide="plus" class="w-4 h-4 faq-icon"></i>
-      </div>
-      <div class="faq-answer mt-4">
-       Standard projects typically span 7-14 business days, depending on the complexity of motion and architectural requirements.
-      </div>
-     </div>
-     <div class="faq-item" onclick="toggleFaq(this)" tabindex="0" role="button" aria-expanded="false">
-      <div class="faq-question text-lg font-bold flex justify-between items-center">
-       DO YOU PROVIDE MAINTENANCE? <i data-lucide="plus" class="w-4 h-4 faq-icon"></i>
-      </div>
-      <div class="faq-answer mt-4">
-       Yes, I provide 30 days of post-launch technical support to ensure your cinematic experience remains fluid and functional.
-      </div>
-     </div>
-     <div class="faq-item" onclick="toggleFaq(this)" tabindex="0" role="button" aria-expanded="false">
-      <div class="faq-question text-lg font-bold flex justify-between items-center">
-       CAN I CHANGE THE INK BACKGROUND? <i data-lucide="plus" class="w-4 h-4 faq-icon"></i>
-      </div>
-      <div class="faq-answer mt-4">
-       The background is fully modular. We can adjust ink density, flow speed, bloom intensity, or adjust colors as per your brand guidelines.
-      </div>
-     </div>
-    </div>
-   </section>
-   <section id="contact" class="section-padding bg-zinc-950">
-    <div class="max-w-4xl mx-auto">
-     <div class="text-center mb-16 reveal">
-      <h2 class="text-6xl font-bold tracking-tighter">Connect</h2>
-      <p class="font-mono text-zinc-500 text-[10px] uppercase tracking-widest mt-2">Available for Worldwide Partnership</p>
-     </div>
-     <form id="contactForm" class="grid gap-10 reveal">
-      <div class="grid md:grid-cols-2 gap-10">
-       <div class="relative">
-        <label for="name" class="font-mono text-[8px] text-zinc-600 uppercase tracking-widest mb-2 block">Full Name</label> <input type="text" id="name" placeholder="YOUR NAME" class="bg-transparent border-b border-zinc-800 p-4 focus:border-white outline-none font-mono text-xs uppercase w-full" required aria-label="Full Name">
-       </div>
-       <div class="relative">
-        <label for="type" class="font-mono text-[8px] text-zinc-600 uppercase tracking-widest mb-2 block">Service Selection</label> <select id="type" class="bg-transparent border-b border-zinc-800 p-4 focus:border-white outline-none font-mono text-xs text-zinc-500 w-full" required aria-label="Service Selection"> <option value="" disabled selected>SERVICE SELECTION</option> <option value="Essential Presence">Essential Presence (₹1499)</option> <option value="Cinematic Experience">Cinematic Experience (₹1999)</option> <option value="Custom Enterprise">Custom / Enterprise</option> </select>
-       </div>
-      </div>
-      <div class="relative">
-       <label for="message" class="font-mono text-[8px] text-zinc-600 uppercase tracking-widest mb-2 block">Project Brief</label> <textarea id="message" rows="3" placeholder="PROJECT BRIEF" class="bg-transparent border-b border-zinc-800 p-4 focus:border-white outline-none font-mono text-xs w-full" required aria-label="Project Brief"></textarea>
-      </div>
-      <div class="text-center">
-       <button type="submit" class="btn-pro" tabindex="0">Initialize WhatsApp</button>
-      </div>
-      <div id="formSuccess" class="hidden text-center font-mono text-[10px] text-green-400 animate-pulse">
-       Opening WhatsApp... Thank you for connecting!
-      </div>
-     </form>
-    </div>
-   </section>
+    </section>
+
+    <section id="work" class="section-padding max-w-7xl mx-auto">
+        <div class="mb-24 reveal">
+            <p class="font-mono text-[10px] text-zinc-600 uppercase tracking-widest mb-4">/ 01 Selected Works</p>
+            <h2 class="text-6xl md:text-9xl font-bold tracking-tighter">The Gallery</h2>
+        </div>
+        
+        <div class="work-grid">
+            <a href="https://lawfirm-site.vercel.app/" target="_blank" class="work-card slot-1 reveal block">
+  <div class="absolute bottom-6 left-6 z-20 font-mono text-[10px] uppercase">
+    LawFirm Site // 2026
+  </div>
+  <div class="work-img bg-zinc-900"></div>
+</a>
+            <a href="https://conssite.vercel.app/" target="_blank" class="work-card slot-2 reveal block">
+  <div class="absolute bottom-6 left-6 z-20 font-mono text-[10px] uppercase">
+    Construction Site // 2026
+  </div>
+  <div class="work-img bg-zinc-800"></div>
+</a>
+            <a href="https://photo-site-black.vercel.app/" target="_blank" class="work-card slot-3 reveal block">
+  <div class="absolute bottom-6 left-6 z-20 font-mono text-[10px] uppercase">
+    Photography Portfolio // 2026
+  </div>
+  <div class="work-img bg-zinc-900"></div>
+</a>
+            <div class="work-card slot-4 reveal"><div class="absolute bottom-6 left-6 z-20 font-mono text-[10px] uppercase">Future Flow // 2026</div><div class="work-img bg-zinc-800"></div></div>
+        </div>
+    </section>
+
+    <section id="process" class="section-padding bg-zinc-900/20">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-24 reveal">
+                <p class="font-mono text-[10px] text-zinc-600 uppercase tracking-widest mb-4">/ 02 Methodology</p>
+                <h2 class="text-6xl md:text-8xl font-bold tracking-tighter">The Workflow</h2>
+            </div>
+            <div class="grid md:grid-cols-4 gap-12">
+                <div class="reveal">
+                    <span class="font-mono text-zinc-700 text-4xl block mb-6">01</span>
+                    <h4 class="text-xl font-bold mb-4 uppercase tracking-tight">Discovery</h4>
+                    <p class="font-mono text-[11px] text-zinc-500 leading-relaxed">Defining the core vision, objectives, and user demographics to establish a solid foundation.</p>
+                </div>
+                <div class="reveal" style="transition-delay: 0.1s;">
+                    <span class="font-mono text-zinc-700 text-4xl block mb-6">02</span>
+                    <h4 class="text-xl font-bold mb-4 uppercase tracking-tight">Architecture</h4>
+                    <p class="font-mono text-[11px] text-zinc-500 leading-relaxed">Mapping user flows and wireframes to ensure seamless digital navigation.</p>
+                </div>
+                <div class="reveal" style="transition-delay: 0.2s;">
+                    <span class="font-mono text-zinc-700 text-4xl block mb-6">03</span>
+                    <h4 class="text-xl font-bold mb-4 uppercase tracking-tight">Visual Dev</h4>
+                    <p class="font-mono text-[11px] text-zinc-500 leading-relaxed">Engineering high-end motion design and minimalist aesthetics tailored to the brand.</p>
+                </div>
+                <div class="reveal" style="transition-delay: 0.3s;">
+                    <span class="font-mono text-zinc-700 text-4xl block mb-6">04</span>
+                    <h4 class="text-xl font-bold mb-4 uppercase tracking-tight">Deployment</h4>
+                    <p class="font-mono text-[11px] text-zinc-500 leading-relaxed">Rigorous performance optimization followed by a precision-led global launch.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="bg-white text-black section-padding">
+        <div class="max-w-5xl mx-auto">
+            <div class="reveal">
+                <h2 class="text-6xl md:text-9xl font-bold tracking-tighter mb-12">Yuga.</h2>
+                <div class="grid md:grid-cols-2 gap-20 items-start">
+                    <p class="text-2xl font-bold leading-[1.1] tracking-tight">At 18, I specialize in the intersection of code and cinematic art. CODE101 is my laboratory for digital interaction.</p>
+                    <div class="space-y-8">
+                        <p class="font-mono text-sm text-zinc-500">I build high-performance environments for brands that value silence over noise and precision over clutter.</p>
+                        <div class="pt-8 border-t border-zinc-200">
+                            <p class="font-mono text-[10px] uppercase tracking-widest text-zinc-400 mb-4">Core Stack</p>
+                            <div class="flex flex-wrap gap-3">
+                                <span class="px-4 py-2 bg-zinc-100 rounded text-[10px] font-mono">React / Next.js</span>
+                                <span class="px-4 py-2 bg-zinc-100 rounded text-[10px] font-mono">Tailwind CSS</span>
+                                <span class="px-4 py-2 bg-zinc-100 rounded text-[10px] font-mono">Three.js</span>
+                                <span class="px-4 py-2 bg-zinc-100 rounded text-[10px] font-mono">GSAP</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="section-padding max-w-7xl mx-auto">
+        <div class="text-center mb-24 reveal">
+            <h2 class="text-6xl md:text-9xl font-bold tracking-tighter">Invest</h2>
+            <p class="font-mono text-zinc-600 uppercase tracking-[0.5em] text-[10px] mt-4">Transparent Professional Tiers</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-zinc-900/30 border border-zinc-800 p-12 rounded reveal flex flex-col justify-between">
+                <div>
+                    <p class="font-mono text-[9px] text-zinc-600 mb-2 uppercase">Lvl 01 // Essential</p>
+                    <h3 class="text-4xl font-bold mb-8">₹1499</h3>
+                    <ul class="font-mono text-[11px] text-zinc-500 space-y-4 mb-12">
+                        <li>→ High-End Landing Page</li>
+                        <li>→ Full Mobile Adaptation</li>
+                        <li>→ Core Animation Suite</li>
+                    </ul>
+                </div>
+                <button class="btn-pro w-full plan-btn" data-plan="Essential Presence">Select Tier</button>
+            </div>
+
+            <div class="bg-white text-black p-12 rounded reveal flex flex-col justify-between md:-translate-y-6 shadow-2xl">
+                <div>
+                    <p class="font-mono text-[9px] text-zinc-400 mb-2 uppercase">Lvl 02 // Cinematic</p>
+                    <h3 class="text-4xl font-bold mb-8">₹1999</h3>
+                    <ul class="font-mono text-[11px] text-zinc-700 space-y-4 mb-12">
+                        <li>→ Multi-Page Ecosystem</li>
+                        <li>→ Custom 3D & WebGL Effects</li>
+                        <li>→ Advanced Motion Logic</li>
+                        <li>→ Priority Dev Support</li>
+                    </ul>
+                </div>
+                <button class="btn-pro w-full plan-btn !bg-black !text-white" data-plan="Cinematic Experience">Choose Tier</button>
+            </div>
+
+            <div class="bg-zinc-900/30 border border-zinc-800 p-12 rounded reveal flex flex-col justify-between">
+                <div>
+                    <p class="font-mono text-[9px] text-zinc-600 mb-2 uppercase">Lvl 03 // Custom</p>
+                    <h3 class="text-4xl font-bold mb-8">Bespoke</h3>
+                    <ul class="font-mono text-[11px] text-zinc-500 space-y-4 mb-12">
+                        <li>→ Full Brand Identity Build</li>
+                        <li>→ Complex Technical Systems</li>
+                        <li>→ Ongoing Partnership</li>
+                    </ul>
+                </div>
+                <button class="btn-pro w-full plan-btn" data-plan="Custom Enterprise">Initialize</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding max-w-4xl mx-auto">
+        <div class="mb-16 reveal">
+            <p class="font-mono text-[10px] text-zinc-600 uppercase tracking-widest mb-4">/ 03 Inquiries</p>
+            <h2 class="text-5xl font-bold tracking-tighter">Common Questions</h2>
+        </div>
+        <div class="reveal">
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-question text-lg font-bold flex justify-between items-center">
+                    HOW LONG DOES A PROJECT TAKE?
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                </div>
+                <div class="faq-answer mt-4">Standard projects typically span 7-14 business days, depending on the complexity of motion and architectural requirements.</div>
+            </div>
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-question text-lg font-bold flex justify-between items-center">
+                    DO YOU PROVIDE MAINTENANCE?
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                </div>
+                <div class="faq-answer mt-4">Yes, I provide 30 days of post-launch technical support to ensure your cinematic experience remains fluid and functional.</div>
+            </div>
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-question text-lg font-bold flex justify-between items-center">
+                    CAN I CHANGE THE SMOKE BACKGROUND?
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                </div>
+                <div class="faq-answer mt-4">The background is modular. We can adjust density, speed, and color or replace it with cinematic video assets as per your brand guidelines.</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="section-padding bg-zinc-950">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-6xl font-bold tracking-tighter">Connect</h2>
+                <p class="font-mono text-zinc-500 text-[10px] uppercase tracking-widest mt-2">Available for Worldwide Partnership</p>
+            </div>
+            
+            <form id="contactForm" class="grid gap-10 reveal">
+                <div class="grid md:grid-cols-2 gap-10">
+                    <input type="text" id="name" placeholder="YOUR NAME" class="bg-transparent border-b border-zinc-800 p-4 focus:border-white outline-none font-mono text-xs uppercase" required>
+                    <select id="type" class="bg-transparent border-b border-zinc-800 p-4 focus:border-white outline-none font-mono text-xs text-zinc-500" required>
+                        <option value="" disabled selected>SERVICE SELECTION</option>
+                        <option value="Essential Presence">Essential Presence (₹1499)</option>
+                        <option value="Cinematic Experience">Cinematic Experience (₹1999)</option>
+                        <option value="Custom Enterprise">Custom / Enterprise</option>
+                    </select>
+                </div>
+                <textarea id="message" rows="3" placeholder="PROJECT BRIEF" class="bg-transparent border-b border-zinc-800 p-4 focus:border-white outline-none font-mono text-xs" required></textarea>
+                <div class="text-center">
+                    <button type="submit" class="btn-pro">Initialize WhatsApp</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
   </main>
+
   <footer class="p-12 text-center border-t border-zinc-900 text-zinc-600 font-mono text-[9px] uppercase tracking-[0.4em]">
-   © 2026 CODE101 // Engineered by Yuga // Coimbatore, IN
+      © 2026 CODE101 // Engineered by Yuga // Coimbatore, IN
   </footer>
+
   <script>
     lucide.createIcons();
 
     const isMobile = window.innerWidth < 768;
-
-    // --- Logo click to top ---
-    document.querySelector('.logo').addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-    document.querySelector('.logo').addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
-    // --- Update navbar color on scroll ---
-    window.addEventListener('scroll', () => {
-      const navbar = document.getElementById('navbar');
-      if (window.scrollY > window.innerHeight * 0.8) {
-        navbar.style.background = 'rgba(5, 5, 5, 0.9)';
-        navbar.style.backdropFilter = 'blur(10px)';
-      } else {
-        navbar.style.background = 'transparent';
-        navbar.style.backdropFilter = 'none';
-      }
-    });
 
     // --- 3D Hero Motion ---
     const heroTitle = document.getElementById('heroTitle');
@@ -700,56 +329,29 @@
 
     // --- Cursor & Interactivity ---
     const cursor = document.getElementById('cursor');
-    const interactiveElements = document.querySelectorAll('a, button, .work-card, .faq-item, input, select, textarea, .process-step, .pricing-card');
-    
     if (!isMobile) {
         window.addEventListener('mousemove', (e) => {
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
         });
-        interactiveElements.forEach(el => {
+        document.querySelectorAll('a, button, .work-card, .faq-item, input, select, textarea').forEach(el => {
             el.addEventListener('mouseenter', () => { cursor.style.width = '60px'; cursor.style.height = '60px'; });
             el.addEventListener('mouseleave', () => { cursor.style.width = '8px'; cursor.style.height = '8px'; });
-        });
-    } else {
-        cursor.style.display = 'none';
-        interactiveElements.forEach(el => {
-            el.addEventListener('touchstart', () => {
-                if (navigator.vibrate) navigator.vibrate(10);
-                el.style.transition = 'all 0.15s ease';
-            });
-            el.addEventListener('touchend', () => {
-                el.style.transition = 'all 0.4s cubic-bezier(0.19, 1, 0.22, 1)';
-            });
         });
     }
 
     // --- FAQ Logic ---
     function toggleFaq(el) {
         const answer = el.querySelector('.faq-answer');
-        const icon = el.querySelector('.faq-icon');
-        const isExpanded = el.getAttribute('aria-expanded') === 'true';
-        
-        if (isExpanded) {
+        const icon = el.querySelector('i');
+        if (answer.style.maxHeight) {
             answer.style.maxHeight = null;
             icon.style.transform = 'rotate(0deg)';
-            el.setAttribute('aria-expanded', 'false');
         } else {
             answer.style.maxHeight = answer.scrollHeight + "px";
             icon.style.transform = 'rotate(45deg)';
-            el.setAttribute('aria-expanded', 'true');
         }
     }
-
-    // FAQ keyboard support
-    document.querySelectorAll('.faq-item').forEach(item => {
-        item.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                toggleFaq(item);
-            }
-        });
-    });
 
     // --- Pricing Choice ---
     document.querySelectorAll('.plan-btn').forEach(btn => {
@@ -759,179 +361,50 @@
         });
     });
 
-    // --- Realistic Smoke Engine with Perlin-like Turbulence ---
-    const canvas = document.getElementById('inkCanvas');
+    // --- Smoke Engine ---
+    const canvas = document.getElementById('smokeCanvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
-    let smokeField = [];
-    
-    function resizeCanvas() {
-      const heroSection = document.querySelector('.hero-section');
-      canvas.width = heroSection.offsetWidth;
-      canvas.height = heroSection.offsetHeight;
-    }
-    
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    window.addEventListener('resize', resize);
+    resize();
 
-    // Simplex-like noise for organic motion
-    function perlinNoise(x, y, z) {
-      const n = Math.sin(x * 12.9898 + y * 78.233 + z * 45.164) * 43758.5453;
-      return n - Math.floor(n);
-    }
-
-    class SmokeParticle {
-      constructor(x, y, startTime) {
-        this.x = x || Math.random() * canvas.width;
-        this.y = y || canvas.height + 50;
-        this.startTime = startTime;
-        
-        // Layered smoke for depth
-        this.layer = Math.floor(Math.random() * 3);
-        this.baseSize = Math.random() * 250 + 120;
-        this.size = this.baseSize;
-        
-        // Organic movement
-        this.vx = (Math.random() - 0.5) * 1.8;
-        this.vy = -Math.random() * 1.5 - 0.8;
-        
-        // Turbulence parameters
-        this.noiseOffsetX = Math.random() * 1000;
-        this.noiseOffsetY = Math.random() * 1000;
-        this.turbulenceStrength = Math.random() * 0.3 + 0.2;
-        
-        // Density that grows over time
-        this.maxAlpha = Math.random() * 0.7 + 0.4;
-        this.alpha = 0;
-        this.alphaGrowth = Math.random() * 0.015 + 0.008;
-        
-        // Expansion rate
-        this.expansionRate = Math.random() * 1.2 + 0.8;
-      }
-      
-      update(time) {
-        // Apply turbulent noise for organic swirling
-        const noiseFactor = 0.15;
-        const noiseX = perlinNoise(this.noiseOffsetX, time * 0.003, 0) - 0.5;
-        const noiseY = perlinNoise(this.noiseOffsetY, time * 0.002, 1) - 0.5;
-        
-        this.vx += noiseX * noiseFactor * this.turbulenceStrength;
-        this.vy += noiseY * noiseFactor * this.turbulenceStrength * 0.5;
-        
-        // Apply velocity with drag
-        this.x += this.vx;
-        this.y += this.vy;
-        this.vx *= 0.96;
-        this.vy *= 0.94;
-        
-        // Expand naturally over lifetime
-        this.size += this.baseSize * this.expansionRate * 0.005;
-        
-        // Grow alpha to max
-        if (this.alpha < this.maxAlpha) {
-          this.alpha += this.alphaGrowth;
+    class Smoke {
+        constructor() { this.reset(); }
+        reset() {
+            this.x = Math.random() * canvas.width;
+            this.y = canvas.height + 100;
+            this.size = Math.random() * 250 + 100;
+            this.alpha = Math.random() * 0.3;
+            this.vy = -Math.random() * 0.5 - 0.2;
         }
-      }
-      
-      draw() {
-        ctx.save();
-        ctx.translate(this.x, this.y);
-        
-        // Multi-stop gradient for realistic smoke falloff
-        const g = ctx.createRadialGradient(0, 0, 0, 0, 0, this.size);
-        const layerAlpha = this.alpha * (1 - this.layer * 0.15);
-        
-        g.addColorStop(0, `rgba(30, 30, 30, ${layerAlpha * 0.6})`);
-        g.addColorStop(0.35, `rgba(50, 50, 50, ${layerAlpha * 0.35})`);
-        g.addColorStop(0.65, `rgba(80, 80, 80, ${layerAlpha * 0.15})`);
-        g.addColorStop(1, `rgba(120, 120, 120, 0)`);
-        
-        ctx.fillStyle = g;
-        ctx.beginPath();
-        ctx.arc(0, 0, this.size, 0, Math.PI * 2);
-        ctx.fill();
-        
-        ctx.restore();
-      }
-    }
-
-    // Spawn multiple smoke clouds continuously
-    let lastSpawnTime = 0;
-    const spawnRate = isMobile ? 6 : 4;
-    
-    let frameCount = 0;
-    let totalCoverage = 0;
-
-    function animate() {
-      frameCount++;
-      const time = frameCount;
-      
-      // Spawn new smoke particles in clusters
-      if (frameCount % spawnRate === 0) {
-        const spawnX = Math.random() * canvas.width;
-        const clusterCount = Math.random() * 3 + 2;
-        for (let i = 0; i < clusterCount; i++) {
-          particles.push(new SmokeParticle(
-            spawnX + (Math.random() - 0.5) * 100,
-            canvas.height + Math.random() * 40,
-            time
-          ));
+        update() { this.y += this.vy; this.alpha -= 0.0006; if (this.alpha <= 0) this.reset(); }
+        draw() {
+            ctx.beginPath();
+            const g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
+            g.addColorStop(0, `rgba(255,255,255,${this.alpha})`);
+            g.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = g;
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
         }
-      }
-      
-      // Subtle background fade
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.01)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      // Update and draw all particles
-      particles.forEach((p, i) => {
-        p.update(time);
-        p.draw();
-        
-        // Remove particles that are too faded and far
-        if (p.alpha <= 0 && p.y < -200) {
-          particles.splice(i, 1);
-        }
-      });
-      
-      // Calculate coverage based on particle density and alpha
-      totalCoverage = 0;
-      particles.forEach(p => {
-        totalCoverage += p.alpha * 0.15;
-      });
-      totalCoverage = Math.min(totalCoverage, 1);
-      
-      // Update hero section colors based on real smoke coverage
-      const heroSection = document.querySelector('.hero-section');
-      if (totalCoverage > 0.4) {
-        heroSection.classList.add('dark-mode');
-      } else {
-        heroSection.classList.remove('dark-mode');
-      }
-      
-      requestAnimationFrame(animate);
     }
-    
-    animate();
+    for(let i=0; i< (isMobile ? 12 : 30); i++) particles.push(new Smoke());
+    function anim() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(anim); }
+    anim();
 
     // --- Reveal ---
     const observer = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }), {threshold: 0.1});
     document.querySelectorAll('.reveal').forEach(r => observer.observe(r));
 
-    // --- WhatsApp with Visual Feedback ---
+    // --- WhatsApp ---
     document.getElementById('contactForm').addEventListener('submit', (e) => {
         e.preventDefault();
         const n = document.getElementById('name').value;
         const t = document.getElementById('type').value;
         const m = document.getElementById('message').value;
-        const successMsg = document.getElementById('formSuccess');
-        
-        successMsg.classList.remove('hidden');
-        setTimeout(() => {
-            window.open(`https://wa.me/919843487386?text=*CODE101 INQUIRY*%0A*Name:* ${n}%0A*Tier:* ${t}%0A*Brief:* ${m}`, '_blank');
-            successMsg.classList.add('hidden');
-        }, 1000);
+        window.open(`https://wa.me/919843487386?text=*CODE101 INQUIRY*%0A*Name:* ${n}%0A*Tier:* ${t}%0A*Brief:* ${m}`, '_blank');
     });
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e58d127f1f5defc',t:'MTc3NTA1OTMzNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ </body>
 </html>
