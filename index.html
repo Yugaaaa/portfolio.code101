@@ -3,19 +3,31 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CODE101 | Digital Architecture</title>
+  <title>CODE101 | Web Design & Development</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    /* ── TOKENS ─────────────────────────────────────── */
-    :root { --bg: #050505; }
+    /* ── PALETTE ────────────────────────────────────────
+       #561C24  burgundy dark   — primary brand
+       #6D2932  burgundy mid    — hover / accents
+       #C7B7A3  taupe           — muted text / borders
+       #E8D8C4  cream           — light surfaces / about bg
+       #1A0A0D  near-black      — page background (darkened burgundy tint)
+    ─────────────────────────────────────────────────── */
+    :root {
+      --bg:       #1A0A0D;
+      --burgundy: #561C24;
+      --burg-mid: #6D2932;
+      --taupe:    #C7B7A3;
+      --cream:    #E8D8C4;
+    }
 
     html, body {
       height: 100%;
       margin: 0;
       background: var(--bg);
-      color: #ffffff;
+      color: var(--cream);
       scroll-behavior: smooth;
       overflow-x: hidden;
       box-sizing: border-box;
@@ -23,7 +35,7 @@
 
     /* ── FLUID TYPE ─────────────────────────────────── */
     :root { font-size: clamp(14px, 1vw, 18px); }
-    .hero-text { font-size: clamp(3.5rem, 18vw, 15rem); }
+    .hero-text     { font-size: clamp(3.5rem, 18vw, 15rem); }
     .section-padding { padding: clamp(5rem, 12vh, 12rem) clamp(1.5rem, 6vw, 5rem); }
 
     /* ── BUTTON ─────────────────────────────────────── */
@@ -31,8 +43,8 @@
       position: relative;
       padding: 1rem 2.5rem;
       background: transparent;
-      color: white;
-      border: 1px solid rgba(255,255,255,0.2);
+      color: var(--cream);
+      border: 1px solid rgba(199,183,163,0.3);
       font-family: 'Space Mono', monospace;
       font-size: 11px;
       text-transform: uppercase;
@@ -44,14 +56,14 @@
       z-index: 1;
       cursor: pointer;
       outline: none;
-      box-shadow: 0 0 20px rgba(255,255,255,0.1), inset 0 0 20px rgba(255,255,255,0.05);
+      box-shadow: 0 0 20px rgba(86,28,36,0.4), inset 0 0 20px rgba(86,28,36,0.1);
     }
     .btn-pro::before {
       content: '';
       position: absolute;
       top: 50%; left: 50%;
       width: 0; height: 0;
-      background: white;
+      background: var(--cream);
       transform: translate(-50%, -50%);
       transition: width 0.6s ease, height 0.6s ease;
       z-index: -1;
@@ -60,57 +72,56 @@
       content: '';
       position: absolute;
       inset: -1px;
-      background: radial-gradient(circle at center, rgba(255,255,255,0.3), transparent 70%);
+      background: radial-gradient(circle at center, rgba(199,183,163,0.25), transparent 70%);
       border-radius: 2px;
       opacity: 0;
       transition: opacity 0.3s ease;
       z-index: -2;
       pointer-events: none;
     }
-    .btn-pro:hover { color: black; border-color: white; box-shadow: 0 0 40px rgba(255,255,255,0.3), inset 0 0 30px rgba(255,255,255,0.1); }
+    .btn-pro:hover { color: var(--burgundy); border-color: var(--cream); box-shadow: 0 0 40px rgba(86,28,36,0.6), inset 0 0 30px rgba(199,183,163,0.1); }
     .btn-pro:hover::before { width: 350%; height: 350%; }
-    .btn-pro:hover::after { opacity: 1; }
-    .btn-pro:focus { box-shadow: 0 0 0 2px #050505, 0 0 0 4px white, 0 0 20px rgba(255,255,255,0.2); }
+    .btn-pro:hover::after  { opacity: 1; }
+    .btn-pro:focus { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--taupe), 0 0 20px rgba(86,28,36,0.4); }
 
     /* ── WORK GRID (desktop) ────────────────────────── */
     .work-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 2rem; }
     .work-card {
       position: relative;
-      background: #0d0d0d;
+      background: #200c0f;
       overflow: hidden;
-      border: 1px solid #1a1a1a;
+      border: 1px solid rgba(86,28,36,0.4);
       transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
       cursor: pointer;
       outline: none;
-      box-shadow: 0 0 30px rgba(255,255,255,0), inset 0 0 0 1px rgba(255,255,255,0);
     }
     .work-card::before {
       content: '';
       position: absolute;
       inset: -100%;
-      background: radial-gradient(circle at center, rgba(255,255,255,0.15), transparent 70%);
+      background: radial-gradient(circle at center, rgba(109,41,50,0.2), transparent 70%);
       opacity: 0;
       transition: opacity 0.4s ease;
       pointer-events: none;
       z-index: 2;
     }
-    .work-card:hover { border-color: #444; transform: translateY(-8px); box-shadow: 0 20px 50px rgba(255,255,255,0.15), inset 0 0 20px rgba(255,255,255,0.08); }
+    .work-card:hover { border-color: var(--burg-mid); transform: translateY(-8px); box-shadow: 0 20px 50px rgba(86,28,36,0.5), inset 0 0 20px rgba(86,28,36,0.15); }
     .work-card:hover::before { opacity: 1; }
-    .work-card:focus { box-shadow: 0 0 0 2px #050505, 0 0 0 4px white, 0 0 30px rgba(255,255,255,0.2); }
+    .work-card:focus { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--taupe); }
 
     .slot-1 { grid-column: span 7; aspect-ratio: 16/9; }
     .slot-2 { grid-column: span 5; aspect-ratio: 1/1;  margin-top: 4rem; }
     .slot-3 { grid-column: span 5; aspect-ratio: 4/5;  margin-top: -4rem; }
     .slot-4 { grid-column: span 7; aspect-ratio: 16/10; }
 
-    .work-img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.5s cubic-bezier(0.19, 1, 0.22, 1); filter: saturate(0); opacity: 0.6; }
-    .work-card:hover .work-img { transform: scale(1.05); filter: saturate(1); opacity: 0.9; }
+    .work-img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.5s cubic-bezier(0.19, 1, 0.22, 1); filter: saturate(0); opacity: 0.5; }
+    .work-card:hover .work-img { transform: scale(1.05); filter: saturate(0.6) sepia(0.3); opacity: 0.85; }
 
     .work-meta {
       position: absolute;
       bottom: 0; left: 0; right: 0;
       padding: 1.5rem;
-      background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.4) 60%, transparent);
+      background: linear-gradient(to top, rgba(26,10,13,0.97), rgba(26,10,13,0.5) 60%, transparent);
       transform: translateY(20px);
       transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
       opacity: 0;
@@ -122,8 +133,8 @@
       align-items: center;
       justify-content: center;
       width: 36px; height: 36px;
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(86,28,36,0.4);
+      border: 1px solid rgba(199,183,163,0.2);
       border-radius: 4px;
       margin-bottom: 0.75rem;
       animation: iconPulse 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
@@ -132,33 +143,33 @@
       from { opacity: 0; transform: scale(0.8); }
       to   { opacity: 1; transform: scale(1); }
     }
-    .work-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .work-desc  { font-family: 'Space Mono'; font-size: 0.75rem; color: #a1a1a1; line-height: 1.4; }
+    .work-title { font-size: 1.1rem; font-weight: 700; color: var(--cream); margin-bottom: 0.5rem; }
+    .work-desc  { font-family: 'Space Mono'; font-size: 0.75rem; color: var(--taupe); line-height: 1.4; }
 
     /* ── FAQ ────────────────────────────────────────── */
     .faq-item {
-      border-bottom: 1px solid #1a1a1a;
+      border-bottom: 1px solid rgba(86,28,36,0.35);
       padding: 2rem 0;
       cursor: pointer;
       transition: all 0.3s ease;
       outline: none;
     }
-    .faq-item:focus { box-shadow: inset 0 0 0 1px white; padding: 2rem; }
-    .faq-item:hover { box-shadow: inset 0 0 20px rgba(255,255,255,0.03); }
+    .faq-item:focus  { box-shadow: inset 0 0 0 1px var(--taupe); padding: 2rem; }
+    .faq-item:hover  { box-shadow: inset 0 0 20px rgba(86,28,36,0.08); }
     .faq-answer {
       max-height: 0;
       overflow: hidden;
       transition: max-height 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-      color: #71717a;
+      color: var(--taupe);
       font-family: 'Space Mono';
       font-size: 0.8rem;
     }
-    .faq-item:hover .faq-question { padding-left: 1rem; color: #fff; }
-    .faq-question { transition: all 0.3s ease; display: flex; justify-content: space-between; align-items: center; }
+    .faq-item:hover .faq-question { padding-left: 1rem; color: var(--cream); }
+    .faq-question { transition: all 0.3s ease; display: flex; justify-content: space-between; align-items: center; color: var(--cream); }
     .faq-icon { transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1); }
 
     /* ── SMOKE CANVAS ───────────────────────────────── */
-    #smokeCanvas { position: fixed; inset: 0; pointer-events: none; opacity: 0.35; z-index: 1; }
+    #smokeCanvas { position: fixed; inset: 0; pointer-events: none; opacity: 0.25; z-index: 1; }
 
     /* ── SCROLL REVEAL ──────────────────────────────── */
     .reveal { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.19, 1, 0.22, 1); }
@@ -169,17 +180,18 @@
     .reveal:nth-child(4) { transition-delay: 0.3s; }
 
     /* ── NAV ────────────────────────────────────────── */
-    nav a { position: relative; transition: color 0.3s ease; }
+    nav a { position: relative; transition: color 0.3s ease; color: var(--taupe); }
     nav a::after {
       content: '';
       position: absolute;
       bottom: -2px; left: 0;
       width: 0; height: 1px;
-      background: white;
+      background: var(--taupe);
       transition: width 0.3s cubic-bezier(0.19, 1, 0.22, 1);
     }
+    nav a:hover { color: var(--cream); }
     nav a:hover::after { width: 100%; }
-    nav a:focus { outline: 1px solid white; outline-offset: 4px; }
+    nav a:focus { outline: 1px solid var(--taupe); outline-offset: 4px; }
 
     /* ── LOGO ───────────────────────────────────────── */
     .logo {
@@ -189,47 +201,48 @@
       display: inline-block;
       padding: 0.5rem;
       margin: -0.5rem;
+      color: var(--cream);
     }
     .logo::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at center, rgba(255,255,255,0.1), transparent 80%);
+      background: radial-gradient(circle at center, rgba(86,28,36,0.3), transparent 80%);
       opacity: 0;
       transition: opacity 0.3s ease;
       border-radius: 2px;
     }
-    .logo:hover { opacity: 0.7; transform: scale(0.95); }
+    .logo:hover { opacity: 0.75; transform: scale(0.95); }
     .logo:hover::before { opacity: 1; }
     .logo:active { transform: scale(0.9); }
 
     /* ── FORM FIELDS ────────────────────────────────── */
-    input, select, textarea { transition: all 0.3s ease; }
+    input, select, textarea { transition: all 0.3s ease; color: var(--cream); }
     input:focus, select:focus, textarea:focus {
-      border-color: white !important;
-      box-shadow: 0 2px 10px rgba(255,255,255,0.1) !important;
+      border-color: var(--taupe) !important;
+      box-shadow: 0 2px 10px rgba(199,183,163,0.1) !important;
     }
-    input::placeholder, textarea::placeholder { color: #555; }
+    input::placeholder, textarea::placeholder { color: rgba(199,183,163,0.35); }
+    select option { background: var(--bg); color: var(--cream); }
 
     /* ── PRICING CARDS ──────────────────────────────── */
     .pricing-card {
       transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
       outline: none;
-      box-shadow: 0 0 30px rgba(255,255,255,0.05), inset 0 0 20px rgba(255,255,255,0.02);
     }
     .pricing-card::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at center, rgba(255,255,255,0.1), transparent 80%);
+      background: radial-gradient(circle at center, rgba(109,41,50,0.15), transparent 80%);
       opacity: 0;
       transition: opacity 0.4s ease;
       pointer-events: none;
       border-radius: inherit;
     }
-    .pricing-card:hover { transform: translateY(-12px); box-shadow: 0 30px 60px rgba(255,255,255,0.12), inset 0 0 30px rgba(255,255,255,0.08); }
+    .pricing-card:hover { transform: translateY(-12px); box-shadow: 0 30px 60px rgba(86,28,36,0.45), inset 0 0 30px rgba(86,28,36,0.1); }
     .pricing-card:hover::after { opacity: 1; }
-    .pricing-card:focus { box-shadow: 0 0 0 2px #050505, 0 0 0 4px white, 0 0 30px rgba(255,255,255,0.2); }
+    .pricing-card:focus { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--taupe); }
 
     /* ── PROCESS STEPS ──────────────────────────────── */
     .process-step {
@@ -238,19 +251,18 @@
       padding: 1.5rem;
       border-radius: 4px;
       border: 1px solid transparent;
-      box-shadow: 0 0 20px rgba(255,255,255,0.02), inset 0 0 15px rgba(255,255,255,0.01);
     }
     .process-step::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at center, rgba(255,255,255,0.08), transparent 80%);
+      background: radial-gradient(circle at center, rgba(86,28,36,0.12), transparent 80%);
       opacity: 0;
       transition: opacity 0.4s ease;
       pointer-events: none;
       border-radius: 4px;
     }
-    .process-step:hover { transform: translateX(8px); border-color: rgba(255,255,255,0.1); box-shadow: 0 10px 40px rgba(255,255,255,0.08), inset 0 0 20px rgba(255,255,255,0.05); }
+    .process-step:hover { transform: translateX(8px); border-color: rgba(86,28,36,0.5); box-shadow: 0 10px 40px rgba(86,28,36,0.2); }
     .process-step:hover::before { opacity: 1; }
 
     /* ── CUSTOM CURSOR (mouse only) ─────────────────── */
@@ -259,24 +271,23 @@
       .cursor {
         position: fixed;
         width: 8px; height: 8px;
-        background: white;
+        background: var(--taupe);
         border-radius: 50%;
         pointer-events: none;
         z-index: 9999;
         transform: translate(-50%, -50%);
-        mix-blend-mode: difference;
-        transition: width 0.3s, height 0.3s;
-        box-shadow: 0 0 15px rgba(255,255,255,0.3);
+        mix-blend-mode: normal;
+        transition: width 0.3s, height 0.3s, opacity 0.3s;
+        box-shadow: 0 0 15px rgba(199,183,163,0.4);
       }
     }
 
     /* ════════════════════════════════════════════════
        MOBILE ENHANCEMENTS — max-width: 768px
-       Desktop above is untouched.
     ════════════════════════════════════════════════ */
     @media (max-width: 768px) {
 
-      /* ── 1. HAMBURGER MENU ──────────────────────── */
+      /* ── 1. HAMBURGER ───────────────────────────── */
       .mob-hamburger {
         display: flex;
         flex-direction: column;
@@ -286,25 +297,25 @@
         z-index: 10001;
         padding: 4px;
         position: relative;
+        background: none;
+        border: none;
       }
       .mob-hamburger span {
         display: block;
         height: 1.5px;
-        background: white;
+        background: var(--taupe);
         border-radius: 2px;
         transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
         transform-origin: center;
       }
-      /* Animate into X when open */
-      .mob-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+      .mob-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); background: var(--cream); }
       .mob-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-      .mob-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+      .mob-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); background: var(--cream); }
 
-      /* Full-screen overlay menu */
       .mob-menu {
         position: fixed;
         inset: 0;
-        background: #000;
+        background: #0d0407;
         z-index: 10000;
         display: flex;
         flex-direction: column;
@@ -315,15 +326,12 @@
         pointer-events: none;
         transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1);
       }
-      .mob-menu.open {
-        opacity: 1;
-        pointer-events: all;
-      }
+      .mob-menu.open { opacity: 1; pointer-events: all; }
       .mob-menu a {
         font-family: 'Syne', sans-serif;
         font-size: clamp(2.5rem, 12vw, 4rem);
         font-weight: 800;
-        color: white;
+        color: var(--taupe);
         text-decoration: none;
         text-transform: uppercase;
         letter-spacing: -0.02em;
@@ -336,13 +344,13 @@
       .mob-menu.open a:nth-child(2) { transition-delay: 0.18s; }
       .mob-menu.open a:nth-child(3) { transition-delay: 0.26s; }
       .mob-menu.open a:nth-child(4) { transition-delay: 0.34s; }
-      .mob-menu a:active { color: #888; }
+      .mob-menu a:active { color: var(--cream); }
       .mob-menu-footer {
         position: absolute;
         bottom: 2.5rem;
         font-family: 'Space Mono', monospace;
         font-size: 9px;
-        color: #333;
+        color: rgba(199,183,163,0.25);
         letter-spacing: 0.3em;
         text-transform: uppercase;
         opacity: 0;
@@ -350,15 +358,11 @@
       }
       .mob-menu.open .mob-menu-footer { opacity: 1; }
 
-      /* Hide desktop nav links, show hamburger */
       .desktop-nav-links { display: none !important; }
       .mob-hamburger { display: flex; }
 
-      /* ── 2. WORK CAROUSEL ───────────────────────── */
-      /* Hide the desktop grid, show carousel wrapper */
-      .work-grid {
-        display: none !important;
-      }
+      /* ── 2. CAROUSEL ────────────────────────────── */
+      .work-grid { display: none !important; }
       .mob-carousel-wrap {
         display: block;
         position: relative;
@@ -370,6 +374,7 @@
         display: flex;
         transition: transform 0.45s cubic-bezier(0.19, 1, 0.22, 1);
         will-change: transform;
+        padding-left: 6%;
       }
       .mob-carousel-slide {
         flex: 0 0 88%;
@@ -377,84 +382,52 @@
         position: relative;
         border-radius: 4px;
         overflow: hidden;
-        border: 1px solid #1a1a1a;
+        border: 1px solid rgba(86,28,36,0.4);
         aspect-ratio: 4/5;
-        background: #0d0d0d;
+        background: #200c0f;
         transition: transform 0.4s ease, box-shadow 0.4s ease;
       }
-      /* First slide offset so you see peek of next */
-      .mob-carousel-track { padding-left: 6%; }
-      .mob-carousel-slide.active {
-        box-shadow: 0 20px 50px rgba(255,255,255,0.12);
-        border-color: #333;
-      }
-      .mob-carousel-slide .mob-slide-bg {
-        width: 100%; height: 100%;
-        object-fit: cover;
-        filter: saturate(0);
-        opacity: 0.6;
-        transition: filter 0.5s ease, opacity 0.5s ease;
-      }
-      .mob-carousel-slide.active .mob-slide-bg {
-        filter: saturate(0.4);
-        opacity: 0.75;
-      }
+      .mob-carousel-slide.active { box-shadow: 0 20px 50px rgba(86,28,36,0.45); border-color: var(--burg-mid); }
+      .mob-carousel-slide .mob-slide-bg { width: 100%; height: 100%; object-fit: cover; filter: saturate(0); opacity: 0.5; transition: filter 0.5s ease, opacity 0.5s ease; }
+      .mob-carousel-slide.active .mob-slide-bg { filter: saturate(0.4) sepia(0.3); opacity: 0.7; }
       .mob-slide-meta {
         position: absolute;
         bottom: 0; left: 0; right: 0;
         padding: 1.5rem;
-        background: linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.5) 60%, transparent);
+        background: linear-gradient(to top, rgba(26,10,13,0.97), rgba(26,10,13,0.55) 60%, transparent);
       }
       .mob-slide-icon {
         display: inline-flex;
         align-items: center;
         justify-content: center;
         width: 32px; height: 32px;
-        background: rgba(255,255,255,0.1);
-        border: 1px solid rgba(255,255,255,0.2);
+        background: rgba(86,28,36,0.4);
+        border: 1px solid rgba(199,183,163,0.2);
         border-radius: 4px;
         margin-bottom: 0.6rem;
       }
-      .mob-slide-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; }
-      .mob-slide-desc  { font-family: 'Space Mono'; font-size: 0.7rem; color: #a1a1a1; line-height: 1.4; margin-bottom: 0.8rem; }
+      .mob-slide-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--cream); }
+      .mob-slide-desc  { font-family: 'Space Mono'; font-size: 0.7rem; color: var(--taupe); line-height: 1.4; margin-bottom: 0.8rem; }
       .mob-slide-link  {
         display: inline-block;
         font-family: 'Space Mono';
         font-size: 9px;
         letter-spacing: 0.15em;
         text-transform: uppercase;
-        color: white;
-        border-bottom: 1px solid rgba(255,255,255,0.4);
+        color: var(--taupe);
+        border-bottom: 1px solid rgba(199,183,163,0.35);
         padding-bottom: 2px;
         text-decoration: none;
-        transition: border-color 0.2s;
+        transition: border-color 0.2s, color 0.2s;
       }
-      .mob-slide-link:active { border-color: white; }
+      .mob-slide-link:active { color: var(--cream); border-color: var(--cream); }
 
-      /* Dot indicators */
-      .mob-carousel-dots {
-        display: flex;
-        justify-content: center;
-        gap: 8px;
-        margin-top: 1.5rem;
-      }
-      .mob-dot {
-        width: 5px; height: 5px;
-        border-radius: 50%;
-        background: #333;
-        transition: all 0.3s ease;
-        cursor: pointer;
-      }
-      .mob-dot.active {
-        background: white;
-        transform: scale(1.3);
-      }
+      .mob-carousel-dots { display: flex; justify-content: center; gap: 8px; margin-top: 1.5rem; }
+      .mob-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(86,28,36,0.5); transition: all 0.3s ease; cursor: pointer; }
+      .mob-dot.active { background: var(--taupe); transform: scale(1.3); }
 
-      /* ── 3. PROCESS — BIG WATERMARK NUMBER ─────── */
-      .process-step {
-        position: relative;
-        overflow: hidden;
-      }
+      /* ── 3. PROCESS WATERMARK ───────────────────── */
+      .process-step { overflow: hidden; }
       .process-step .watermark-num {
         position: absolute;
         top: 50%;
@@ -463,47 +436,33 @@
         font-family: 'Syne', sans-serif;
         font-size: 8rem;
         font-weight: 800;
-        color: rgba(255,255,255,0.04);
+        color: rgba(86,28,36,0.12);
         line-height: 1;
         pointer-events: none;
         user-select: none;
         z-index: 0;
         transition: color 0.4s ease;
       }
-      .process-step:active .watermark-num { color: rgba(255,255,255,0.07); }
+      .process-step:active .watermark-num { color: rgba(86,28,36,0.22); }
       .process-step > *:not(.watermark-num) { position: relative; z-index: 1; }
-      /* Vertical flow on mobile */
-      .process-step:active { transform: translateX(4px) scale(0.98); box-shadow: 0 8px 30px rgba(255,255,255,0.06), inset 0 0 15px rgba(255,255,255,0.04); }
+      .process-step:active { transform: translateX(4px) scale(0.98); }
 
-      /* ── 4. FAQ — SMOOTH SLIDE ANIMATION ────────── */
-      /* Already uses max-height trick — enhance with border glow on active */
-      .faq-item[aria-expanded="true"] {
-        border-bottom-color: rgba(255,255,255,0.08);
-        box-shadow: inset 0 0 20px rgba(255,255,255,0.04);
-      }
-      .faq-item[aria-expanded="true"] .faq-question {
-        color: #fff;
-        padding-left: 0.5rem;
-      }
-      .faq-answer {
-        /* Slightly faster on mobile for snappier feel */
-        transition: max-height 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-      }
+      /* ── 4. FAQ ACTIVE STATE ────────────────────── */
+      .faq-item[aria-expanded="true"] { border-bottom-color: rgba(86,28,36,0.5); box-shadow: inset 0 0 20px rgba(86,28,36,0.08); }
+      .faq-item[aria-expanded="true"] .faq-question { color: var(--cream); padding-left: 0.5rem; }
+      .faq-answer { transition: max-height 0.4s cubic-bezier(0.19, 1, 0.22, 1); }
 
-      /* ── 5. PRICING RIPPLE + SCROLL ─────────────── */
-      .ripple-container {
-        position: relative;
-        overflow: hidden;
-      }
+      /* ── 5. RIPPLE ──────────────────────────────── */
+      .ripple-container { position: relative; overflow: hidden; }
       @keyframes rippleOut {
-        0%   { transform: translate(-50%, -50%) scale(0); opacity: 0.5; }
+        0%   { transform: translate(-50%, -50%) scale(0); opacity: 0.4; }
         100% { transform: translate(-50%, -50%) scale(4); opacity: 0; }
       }
       .ripple-circle {
         position: absolute;
         width: 80px; height: 80px;
         border-radius: 50%;
-        background: rgba(255,255,255,0.25);
+        background: rgba(199,183,163,0.2);
         pointer-events: none;
         animation: rippleOut 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
         z-index: 10;
@@ -511,31 +470,15 @@
 
       /* ── 6. GENERAL MOBILE ──────────────────────── */
       .hero-text { line-height: 0.9; }
-      nav a { font-size: 8px !important; gap: 6px !important; }
-      .btn-pro {
-        box-shadow: 0 0 15px rgba(255,255,255,0.08), inset 0 0 15px rgba(255,255,255,0.03);
-      }
-      .btn-pro:active {
-        transform: scale(0.95);
-        box-shadow: 0 0 30px rgba(255,255,255,0.2), inset 0 0 25px rgba(255,255,255,0.1);
-      }
-      .pricing-card {
-        box-shadow: 0 0 20px rgba(255,255,255,0.04), inset 0 0 15px rgba(255,255,255,0.01);
-        position: relative;
-      }
-      .pricing-card:active {
-        transform: translateY(-8px);
-        box-shadow: 0 20px 50px rgba(255,255,255,0.1), inset 0 0 25px rgba(255,255,255,0.06);
-      }
-      .faq-item:active {
-        background: rgba(255,255,255,0.02);
-      }
+      .btn-pro:active { transform: scale(0.95); box-shadow: 0 0 30px rgba(86,28,36,0.5); }
+      .pricing-card:active { transform: translateY(-8px); }
+      .faq-item:active { background: rgba(86,28,36,0.05); }
     }
 
     /* ── Hide mob-only elements on desktop ──────────── */
     @media (min-width: 769px) {
-      .mob-hamburger  { display: none !important; }
-      .mob-menu       { display: none !important; }
+      .mob-hamburger     { display: none !important; }
+      .mob-menu          { display: none !important; }
       .mob-carousel-wrap { display: none !important; }
     }
   </style>
@@ -543,7 +486,7 @@
 
  <body style="font-family: 'Syne', sans-serif;">
 
-  <!-- MOBILE FULLSCREEN MENU OVERLAY -->
+  <!-- MOBILE FULLSCREEN MENU -->
   <div class="mob-menu" id="mobMenu" role="dialog" aria-modal="true" aria-label="Navigation menu">
     <a href="#work"    onclick="closeMobMenu()">Portfolio</a>
     <a href="#process" onclick="closeMobMenu()">Process</a>
@@ -556,22 +499,18 @@
   <canvas id="smokeCanvas"></canvas>
 
   <!-- NAV -->
-  <nav class="fixed top-0 w-full z-50 p-6 md:p-10 flex justify-between items-center mix-blend-difference">
+  <nav class="fixed top-0 w-full z-50 p-6 md:p-10 flex justify-between items-center" style="background: linear-gradient(to bottom, rgba(26,10,13,0.9), transparent);">
     <div class="logo font-extrabold text-2xl tracking-tighter" tabindex="0" role="button" aria-label="Back to top">CODE101</div>
 
-    <!-- Desktop links -->
     <div class="desktop-nav-links hidden md:flex gap-12 font-mono text-[9px] uppercase tracking-[0.4em]">
-      <a href="#work"    class="hover:opacity-50 transition-opacity" tabindex="0">Portfolio</a>
-      <a href="#process" class="hover:opacity-50 transition-opacity" tabindex="0">Process</a>
-      <a href="#about"   class="hover:opacity-50 transition-opacity" tabindex="0">Vision</a>
-      <a href="#pricing" class="hover:opacity-50 transition-opacity" tabindex="0">Invest</a>
+      <a href="#work"    class="hover:opacity-80 transition-opacity" tabindex="0">Portfolio</a>
+      <a href="#process" class="hover:opacity-80 transition-opacity" tabindex="0">Process</a>
+      <a href="#about"   class="hover:opacity-80 transition-opacity" tabindex="0">Vision</a>
+      <a href="#pricing" class="hover:opacity-80 transition-opacity" tabindex="0">Invest</a>
     </div>
 
-    <!-- Mobile hamburger (hidden on desktop via CSS) -->
     <button class="mob-hamburger" id="mobHamburger" aria-label="Open menu" aria-expanded="false">
-      <span></span>
-      <span></span>
-      <span></span>
+      <span></span><span></span><span></span>
     </button>
   </nav>
 
@@ -580,10 +519,10 @@
     <!-- HERO -->
     <section class="h-screen flex items-center justify-center px-4">
       <div class="text-center" style="perspective: 1000px;">
-        <h1 class="hero-text font-black leading-[0.8] tracking-tighter" id="heroTitle">CODE<br>101</h1>
+        <h1 class="hero-text font-black leading-[0.8] tracking-tighter" id="heroTitle" style="color: var(--cream);">CODE<br>101</h1>
         <div class="reveal mt-12">
-          <p class="font-mono text-[9px] uppercase tracking-[0.8em] text-zinc-600 mb-10">Premium Digital Experiences</p>
-          <a href="#work" class="btn-pro" tabindex="0">Enter Archive</a>
+          <p class="font-mono text-[9px] uppercase tracking-[0.8em] mb-10" style="color: var(--burg-mid);">Crafted Web Experiences</p>
+          <a href="#work" class="btn-pro" tabindex="0">View My Work</a>
         </div>
       </div>
     </section>
@@ -591,66 +530,66 @@
     <!-- WORK -->
     <section id="work" class="section-padding max-w-7xl mx-auto">
       <div class="mb-24 reveal">
-        <p class="font-mono text-[10px] text-zinc-600 uppercase tracking-widest mb-4">/ 01 Selected Works</p>
-        <h2 class="text-6xl md:text-9xl font-bold tracking-tighter">The Gallery</h2>
+        <p class="font-mono text-[10px] uppercase tracking-widest mb-4" style="color: var(--burg-mid);">/ 01 Selected Works</p>
+        <h2 class="text-6xl md:text-9xl font-bold tracking-tighter" style="color: var(--cream);">The Gallery</h2>
       </div>
 
-      <!-- DESKTOP GRID (hidden on mobile via CSS) -->
+      <!-- DESKTOP GRID -->
       <div class="work-grid">
         <a href="https://lawfirm-site.vercel.app/" target="_blank" rel="noopener noreferrer" class="work-card slot-1 reveal block" tabindex="0">
           <div class="work-img bg-gradient-to-br from-slate-900 to-zinc-900"></div>
           <div class="work-meta">
-            <div class="work-icon"><i data-lucide="briefcase" style="width:18px;height:18px;"></i></div>
+            <div class="work-icon"><i data-lucide="briefcase" style="width:18px;height:18px;color:var(--taupe);"></i></div>
             <h3 class="work-title">LawFirm Portal</h3>
-            <p class="work-desc">Professional legal services platform with sophisticated case management and client interaction system. Built for modern law practices.</p>
+            <p class="work-desc">A clean, trust-building platform for a modern law firm — structured for easy client navigation and professional first impressions.</p>
           </div>
         </a>
         <a href="https://conssite.vercel.app/" target="_blank" rel="noopener noreferrer" class="work-card slot-2 reveal block" tabindex="0">
-          <div class="work-img bg-gradient-to-br from-amber-950 to-zinc-900"></div>
+          <div class="work-img bg-gradient-to-br from-stone-900 to-zinc-900"></div>
           <div class="work-meta">
-            <div class="work-icon"><i data-lucide="hammer" style="width:18px;height:18px;"></i></div>
+            <div class="work-icon"><i data-lucide="hammer" style="width:18px;height:18px;color:var(--taupe);"></i></div>
             <h3 class="work-title">Construction Hub</h3>
-            <p class="work-desc">Industry-leading project showcase for builders and contractors with portfolio management.</p>
+            <p class="work-desc">A bold project showcase built for contractors — designed to communicate strength and reliability at a glance.</p>
           </div>
         </a>
         <a href="https://photo-site-black.vercel.app/" target="_blank" rel="noopener noreferrer" class="work-card slot-3 reveal block" tabindex="0">
           <div class="work-img bg-gradient-to-br from-slate-950 to-zinc-900"></div>
           <div class="work-meta">
-            <div class="work-icon"><i data-lucide="camera" style="width:18px;height:18px;"></i></div>
-            <h3 class="work-title">Photography Lens</h3>
-            <p class="work-desc">Elegant visual storytelling platform for photographers showcasing their finest work with seamless galleries.</p>
+            <div class="work-icon"><i data-lucide="camera" style="width:18px;height:18px;color:var(--taupe);"></i></div>
+            <h3 class="work-title">Photography Portfolio</h3>
+            <p class="work-desc">A minimal, image-first gallery site that lets the photographer's work breathe — zero clutter, maximum impact.</p>
           </div>
         </a>
         <div class="work-card slot-4 reveal" tabindex="0">
-          <div class="work-img bg-gradient-to-br from-zinc-950 to-black"></div>
+          <div class="work-img bg-gradient-to-br from-zinc-950 to-stone-950"></div>
           <div class="work-meta">
-            <div class="work-icon"><i data-lucide="zap" style="width:18px;height:18px;"></i></div>
+            <div class="work-icon"><i data-lucide="zap" style="width:18px;height:18px;color:var(--taupe);"></i></div>
             <h3 class="work-title">Client Portfolio</h3>
-            <p class="work-desc">Next-generation interactive platform combining real-time data visualization with predictive analytics.</p>
+            <p class="work-desc">A personal brand site for a creative professional — built to convert visitors into real conversations.</p>
           </div>
         </div>
       </div>
 
-      <!-- MOBILE CAROUSEL (hidden on desktop via CSS) -->
+      <!-- MOBILE CAROUSEL -->
       <div class="mob-carousel-wrap" id="mobCarousel">
         <div class="mob-carousel-track" id="mobCarouselTrack">
 
           <div class="mob-carousel-slide active" data-index="0">
             <div class="mob-slide-bg bg-gradient-to-br from-slate-900 to-zinc-900"></div>
             <div class="mob-slide-meta">
-              <div class="mob-slide-icon"><i data-lucide="briefcase" style="width:16px;height:16px;"></i></div>
+              <div class="mob-slide-icon"><i data-lucide="briefcase" style="width:16px;height:16px;color:var(--taupe);"></i></div>
               <h3 class="mob-slide-title">LawFirm Portal</h3>
-              <p class="mob-slide-desc">Professional legal services platform with sophisticated case management. Built for modern law practices.</p>
+              <p class="mob-slide-desc">A clean platform built to make a law firm look trustworthy and easy to work with.</p>
               <a href="https://lawfirm-site.vercel.app/" target="_blank" rel="noopener noreferrer" class="mob-slide-link">View Live ↗</a>
             </div>
           </div>
 
           <div class="mob-carousel-slide" data-index="1">
-            <div class="mob-slide-bg bg-gradient-to-br from-amber-950 to-zinc-900"></div>
+            <div class="mob-slide-bg bg-gradient-to-br from-stone-900 to-zinc-900"></div>
             <div class="mob-slide-meta">
-              <div class="mob-slide-icon"><i data-lucide="hammer" style="width:16px;height:16px;"></i></div>
+              <div class="mob-slide-icon"><i data-lucide="hammer" style="width:16px;height:16px;color:var(--taupe);"></i></div>
               <h3 class="mob-slide-title">Construction Hub</h3>
-              <p class="mob-slide-desc">Industry-leading project showcase for builders and contractors with portfolio management.</p>
+              <p class="mob-slide-desc">A bold showcase site for contractors — built to communicate strength and reliability.</p>
               <a href="https://conssite.vercel.app/" target="_blank" rel="noopener noreferrer" class="mob-slide-link">View Live ↗</a>
             </div>
           </div>
@@ -658,26 +597,24 @@
           <div class="mob-carousel-slide" data-index="2">
             <div class="mob-slide-bg bg-gradient-to-br from-slate-950 to-zinc-900"></div>
             <div class="mob-slide-meta">
-              <div class="mob-slide-icon"><i data-lucide="camera" style="width:16px;height:16px;"></i></div>
-              <h3 class="mob-slide-title">Photography Lens</h3>
-              <p class="mob-slide-desc">Elegant visual storytelling platform for photographers showcasing their finest work.</p>
+              <div class="mob-slide-icon"><i data-lucide="camera" style="width:16px;height:16px;color:var(--taupe);"></i></div>
+              <h3 class="mob-slide-title">Photography Portfolio</h3>
+              <p class="mob-slide-desc">Minimal and image-first — lets the photographer's work speak without distraction.</p>
               <a href="https://photo-site-black.vercel.app/" target="_blank" rel="noopener noreferrer" class="mob-slide-link">View Live ↗</a>
             </div>
           </div>
 
           <div class="mob-carousel-slide" data-index="3">
-            <div class="mob-slide-bg bg-gradient-to-br from-zinc-950 to-black"></div>
+            <div class="mob-slide-bg bg-gradient-to-br from-zinc-950 to-stone-950"></div>
             <div class="mob-slide-meta">
-              <div class="mob-slide-icon"><i data-lucide="zap" style="width:16px;height:16px;"></i></div>
+              <div class="mob-slide-icon"><i data-lucide="zap" style="width:16px;height:16px;color:var(--taupe);"></i></div>
               <h3 class="mob-slide-title">Client Portfolio</h3>
-              <p class="mob-slide-desc">Next-generation platform combining real-time data visualization with predictive analytics.</p>
+              <p class="mob-slide-desc">A personal brand site built to convert visitors into real conversations.</p>
               <span class="mob-slide-link" style="cursor:default;opacity:0.4;">Coming Soon</span>
             </div>
           </div>
 
         </div>
-
-        <!-- Dot indicators -->
         <div class="mob-carousel-dots" id="mobDots">
           <div class="mob-dot active" onclick="goToSlide(0)"></div>
           <div class="mob-dot" onclick="goToSlide(1)"></div>
@@ -685,44 +622,55 @@
           <div class="mob-dot" onclick="goToSlide(3)"></div>
         </div>
       </div>
-
     </section>
 
     <!-- PROCESS -->
-    <section id="process" class="section-padding bg-zinc-900/20">
+    <section id="process" class="section-padding" style="background: rgba(86,28,36,0.07);">
       <div class="max-w-7xl mx-auto">
         <div class="mb-24 reveal">
-          <p class="font-mono text-[10px] text-zinc-600 uppercase tracking-widest mb-4">/ 02 Methodology</p>
-          <h2 class="text-6xl md:text-8xl font-bold tracking-tighter">The Workflow</h2>
+          <p class="font-mono text-[10px] uppercase tracking-widest mb-4" style="color: var(--burg-mid);">/ 02 Methodology</p>
+          <h2 class="text-6xl md:text-8xl font-bold tracking-tighter" style="color: var(--cream);">How I Work</h2>
         </div>
         <div class="grid md:grid-cols-4 gap-12">
 
           <div class="reveal process-step">
             <span class="watermark-num">01</span>
-            <div class="flex items-center gap-3 mb-6"><i data-lucide="search" style="width:24px;height:24px;"></i><span class="font-mono text-zinc-700 text-2xl">01</span></div>
-            <h4 class="text-xl font-bold mb-4 uppercase tracking-tight">Discovery</h4>
-            <p class="font-mono text-[11px] text-zinc-500 leading-relaxed">Defining the core vision, objectives, and user demographics to establish a solid foundation.</p>
+            <div class="flex items-center gap-3 mb-6">
+              <i data-lucide="search" style="width:24px;height:24px;color:var(--taupe);"></i>
+              <span class="font-mono text-2xl" style="color:rgba(86,28,36,0.6);">01</span>
+            </div>
+            <h4 class="text-xl font-bold mb-4 uppercase tracking-tight" style="color:var(--cream);">Discovery</h4>
+            <p class="font-mono text-[11px] leading-relaxed" style="color:var(--taupe);">We start with a conversation — understanding your goals, your audience, and what you actually need before touching any code.</p>
           </div>
 
           <div class="reveal process-step" style="transition-delay: 0.1s;">
             <span class="watermark-num">02</span>
-            <div class="flex items-center gap-3 mb-6"><i data-lucide="layers" style="width:24px;height:24px;"></i><span class="font-mono text-zinc-700 text-2xl">02</span></div>
-            <h4 class="text-xl font-bold mb-4 uppercase tracking-tight">Architecture</h4>
-            <p class="font-mono text-[11px] text-zinc-500 leading-relaxed">Mapping user flows and wireframes to ensure seamless digital navigation.</p>
+            <div class="flex items-center gap-3 mb-6">
+              <i data-lucide="layers" style="width:24px;height:24px;color:var(--taupe);"></i>
+              <span class="font-mono text-2xl" style="color:rgba(86,28,36,0.6);">02</span>
+            </div>
+            <h4 class="text-xl font-bold mb-4 uppercase tracking-tight" style="color:var(--cream);">Architecture</h4>
+            <p class="font-mono text-[11px] leading-relaxed" style="color:var(--taupe);">Structure before style. I map out the page flow and user journey to make sure every click feels natural and intentional.</p>
           </div>
 
           <div class="reveal process-step" style="transition-delay: 0.2s;">
             <span class="watermark-num">03</span>
-            <div class="flex items-center gap-3 mb-6"><i data-lucide="palette" style="width:24px;height:24px;"></i><span class="font-mono text-zinc-700 text-2xl">03</span></div>
-            <h4 class="text-xl font-bold mb-4 uppercase tracking-tight">Visual Dev</h4>
-            <p class="font-mono text-[11px] text-zinc-500 leading-relaxed">Engineering high-end motion design and minimalist aesthetics tailored to the brand.</p>
+            <div class="flex items-center gap-3 mb-6">
+              <i data-lucide="palette" style="width:24px;height:24px;color:var(--taupe);"></i>
+              <span class="font-mono text-2xl" style="color:rgba(86,28,36,0.6);">03</span>
+            </div>
+            <h4 class="text-xl font-bold mb-4 uppercase tracking-tight" style="color:var(--cream);">Build</h4>
+            <p class="font-mono text-[11px] leading-relaxed" style="color:var(--taupe);">This is where it comes alive — clean code, smooth animations, and a design that actually reflects your brand's personality.</p>
           </div>
 
           <div class="reveal process-step" style="transition-delay: 0.3s;">
             <span class="watermark-num">04</span>
-            <div class="flex items-center gap-3 mb-6"><i data-lucide="rocket" style="width:24px;height:24px;"></i><span class="font-mono text-zinc-700 text-2xl">04</span></div>
-            <h4 class="text-xl font-bold mb-4 uppercase tracking-tight">Deployment</h4>
-            <p class="font-mono text-[11px] text-zinc-500 leading-relaxed">Rigorous performance optimization followed by a precision-led global launch.</p>
+            <div class="flex items-center gap-3 mb-6">
+              <i data-lucide="rocket" style="width:24px;height:24px;color:var(--taupe);"></i>
+              <span class="font-mono text-2xl" style="color:rgba(86,28,36,0.6);">04</span>
+            </div>
+            <h4 class="text-xl font-bold mb-4 uppercase tracking-tight" style="color:var(--cream);">Launch</h4>
+            <p class="font-mono text-[11px] leading-relaxed" style="color:var(--taupe);">Tested across devices, optimised for speed, and deployed — then handed over to you with everything you need to manage it.</p>
           </div>
 
         </div>
@@ -730,21 +678,21 @@
     </section>
 
     <!-- ABOUT -->
-    <section id="about" class="bg-white text-black section-padding">
+    <section id="about" class="section-padding" style="background: var(--cream); color: var(--burgundy);">
       <div class="max-w-5xl mx-auto">
         <div class="reveal">
-          <h2 class="text-6xl md:text-9xl font-bold tracking-tighter mb-12">Yuga.</h2>
+          <h2 class="text-6xl md:text-9xl font-bold tracking-tighter mb-12" style="color: var(--burgundy);">Yuga.</h2>
           <div class="grid md:grid-cols-2 gap-20 items-start">
-            <p class="text-2xl font-bold leading-[1.1] tracking-tight">At 18, I specialize in the intersection of code and cinematic art. CODE101 is my laboratory for digital interaction.</p>
+            <p class="text-2xl font-bold leading-[1.1] tracking-tight" style="color: var(--burgundy);">I'm an 18-year-old developer from Coimbatore. I build websites that look considered, load fast, and actually work for the people using them.</p>
             <div class="space-y-8">
-              <p class="font-mono text-sm text-zinc-500">I build high-performance environments for brands that value silence over noise and precision over clutter.</p>
-              <div class="pt-8 border-t border-zinc-200">
-                <p class="font-mono text-[10px] uppercase tracking-widest text-zinc-400 mb-4">Core Stack</p>
+              <p class="font-mono text-sm" style="color: var(--burg-mid);">CODE101 is my freelance practice — started to prove that good web design doesn't have to cost a fortune or take months. I work directly with clients, keep things simple, and deliver work I'm proud to put my name on.</p>
+              <div class="pt-8" style="border-top: 1px solid rgba(86,28,36,0.2);">
+                <p class="font-mono text-[10px] uppercase tracking-widest mb-4" style="color: rgba(86,28,36,0.5);">Tools I use</p>
                 <div class="flex flex-wrap gap-3">
-                  <span class="px-4 py-2 bg-zinc-100 rounded text-[10px] font-mono hover:bg-zinc-200 transition-colors cursor-pointer" tabindex="0">React / Next.js</span>
-                  <span class="px-4 py-2 bg-zinc-100 rounded text-[10px] font-mono hover:bg-zinc-200 transition-colors cursor-pointer" tabindex="0">Tailwind CSS</span>
-                  <span class="px-4 py-2 bg-zinc-100 rounded text-[10px] font-mono hover:bg-zinc-200 transition-colors cursor-pointer" tabindex="0">Three.js</span>
-                  <span class="px-4 py-2 bg-zinc-100 rounded text-[10px] font-mono hover:bg-zinc-200 transition-colors cursor-pointer" tabindex="0">GSAP</span>
+                  <span class="px-4 py-2 rounded text-[10px] font-mono cursor-pointer transition-colors" style="background:rgba(86,28,36,0.08); color:var(--burgundy);" tabindex="0">React / Next.js</span>
+                  <span class="px-4 py-2 rounded text-[10px] font-mono cursor-pointer transition-colors" style="background:rgba(86,28,36,0.08); color:var(--burgundy);" tabindex="0">Tailwind CSS</span>
+                  <span class="px-4 py-2 rounded text-[10px] font-mono cursor-pointer transition-colors" style="background:rgba(86,28,36,0.08); color:var(--burgundy);" tabindex="0">Three.js</span>
+                  <span class="px-4 py-2 rounded text-[10px] font-mono cursor-pointer transition-colors" style="background:rgba(86,28,36,0.08); color:var(--burgundy);" tabindex="0">GSAP</span>
                 </div>
               </div>
             </div>
@@ -756,49 +704,61 @@
     <!-- PRICING -->
     <section id="pricing" class="section-padding max-w-7xl mx-auto">
       <div class="text-center mb-24 reveal">
-        <h2 class="text-6xl md:text-9xl font-bold tracking-tighter">Invest</h2>
-        <p class="font-mono text-zinc-600 uppercase tracking-[0.5em] text-[10px] mt-4">Transparent Professional Tiers</p>
+        <h2 class="text-6xl md:text-9xl font-bold tracking-tighter" style="color:var(--cream);">Pricing</h2>
+        <p class="font-mono uppercase tracking-[0.5em] text-[10px] mt-4" style="color:var(--burg-mid);">Straightforward, No Hidden Fees</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 
-        <div class="bg-zinc-900/30 border border-zinc-800 p-12 rounded reveal flex flex-col justify-between pricing-card ripple-container" tabindex="0">
+        <div class="p-12 rounded reveal flex flex-col justify-between pricing-card ripple-container" style="background:rgba(86,28,36,0.12); border:1px solid rgba(86,28,36,0.3);" tabindex="0">
           <div>
-            <div class="flex items-center gap-3 mb-4"><i data-lucide="star" style="width:20px;height:20px;"></i><p class="font-mono text-[9px] text-zinc-600 uppercase">Lvl 01 // Essential</p></div>
-            <h3 class="text-4xl font-bold mb-8">₹1499</h3>
-            <ul class="font-mono text-[11px] text-zinc-500 space-y-4 mb-12">
-              <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;"></i>High-End Landing Page</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;"></i>Full Mobile Adaptation</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;"></i>Core Animation Suite</li>
+            <div class="flex items-center gap-3 mb-4">
+              <i data-lucide="star" style="width:20px;height:20px;color:var(--taupe);"></i>
+              <p class="font-mono text-[9px] uppercase" style="color:var(--burg-mid);">Tier 01 // Starter</p>
+            </div>
+            <h3 class="text-4xl font-bold mb-2" style="color:var(--cream);">₹1499</h3>
+            <p class="font-mono text-[10px] mb-8" style="color:var(--taupe);">Good for small businesses getting online for the first time.</p>
+            <ul class="font-mono text-[11px] space-y-4 mb-12" style="color:var(--taupe);">
+              <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;color:var(--burg-mid);"></i>Single-page website</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;color:var(--burg-mid);"></i>Fully mobile-responsive</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;color:var(--burg-mid);"></i>Animations included</li>
             </ul>
           </div>
-          <button class="btn-pro w-full plan-btn" data-plan="Essential Presence" tabindex="0">Select Tier</button>
+          <button class="btn-pro w-full plan-btn" data-plan="Starter" tabindex="0">Get Started</button>
         </div>
 
-        <div class="bg-white text-black p-12 rounded reveal flex flex-col justify-between md:-translate-y-6 shadow-2xl pricing-card ripple-container" tabindex="0">
+        <div class="p-12 rounded reveal flex flex-col justify-between md:-translate-y-6 shadow-2xl pricing-card ripple-container" style="background:var(--cream); color:var(--burgundy);" tabindex="0">
           <div>
-            <div class="flex items-center gap-3 mb-4"><i data-lucide="flame" style="width:20px;height:20px;color:#ff6b35;"></i><p class="font-mono text-[9px] text-zinc-400 uppercase">Lvl 02 // Most Demanding</p></div>
-            <h3 class="text-4xl font-bold mb-8">₹1999</h3>
-            <ul class="font-mono text-[11px] text-zinc-700 space-y-4 mb-12">
-              <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;color:#ff6b35;"></i>Multi-Page Ecosystem</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;color:#ff6b35;"></i>Custom 3D &amp; WebGL Effects</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;color:#ff6b35;"></i>Advanced Motion Logic</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;color:#ff6b35;"></i>Priority Dev Support</li>
+            <div class="flex items-center gap-3 mb-4">
+              <i data-lucide="flame" style="width:20px;height:20px;color:var(--burgundy);"></i>
+              <p class="font-mono text-[9px] uppercase" style="color:var(--burg-mid);">Tier 02 // Most Popular</p>
+            </div>
+            <h3 class="text-4xl font-bold mb-2" style="color:var(--burgundy);">₹1999</h3>
+            <p class="font-mono text-[10px] mb-8" style="color:var(--burg-mid);">For brands that want to make a real impression online.</p>
+            <ul class="font-mono text-[11px] space-y-4 mb-12" style="color:var(--burg-mid);">
+              <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;color:var(--burgundy);"></i>Multi-page website</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;color:var(--burgundy);"></i>Custom 3D &amp; motion effects</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;color:var(--burgundy);"></i>Advanced interactions</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;color:var(--burgundy);"></i>Priority turnaround</li>
             </ul>
           </div>
-          <button class="btn-pro w-full plan-btn !bg-black !text-white" data-plan="Cinematic Experience" tabindex="0">Choose Tier</button>
+          <button class="btn-pro w-full plan-btn" data-plan="Professional" style="color:var(--burgundy); border-color:rgba(86,28,36,0.4);" tabindex="0">Choose This</button>
         </div>
 
-        <div class="bg-zinc-900/30 border border-zinc-800 p-12 rounded reveal flex flex-col justify-between pricing-card ripple-container" tabindex="0">
+        <div class="p-12 rounded reveal flex flex-col justify-between pricing-card ripple-container" style="background:rgba(86,28,36,0.12); border:1px solid rgba(86,28,36,0.3);" tabindex="0">
           <div>
-            <div class="flex items-center gap-3 mb-4"><i data-lucide="crown" style="width:20px;height:20px;"></i><p class="font-mono text-[9px] text-zinc-600 uppercase">Lvl 03 // Custom</p></div>
-            <h3 class="text-4xl font-bold mb-8">Bespoke</h3>
-            <ul class="font-mono text-[11px] text-zinc-500 space-y-4 mb-12">
-              <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;"></i>Full Brand Identity Build</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;"></i>Complex Technical Systems</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;"></i>Ongoing Partnership</li>
+            <div class="flex items-center gap-3 mb-4">
+              <i data-lucide="crown" style="width:20px;height:20px;color:var(--taupe);"></i>
+              <p class="font-mono text-[9px] uppercase" style="color:var(--burg-mid);">Tier 03 // Custom</p>
+            </div>
+            <h3 class="text-4xl font-bold mb-2" style="color:var(--cream);">Let's Talk</h3>
+            <p class="font-mono text-[10px] mb-8" style="color:var(--taupe);">Have something specific in mind? I'll build it.</p>
+            <ul class="font-mono text-[11px] space-y-4 mb-12" style="color:var(--taupe);">
+              <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;color:var(--burg-mid);"></i>Full brand + website build</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;color:var(--burg-mid);"></i>Complex features &amp; systems</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;color:var(--burg-mid);"></i>Ongoing support available</li>
             </ul>
           </div>
-          <button class="btn-pro w-full plan-btn" data-plan="Custom Enterprise" tabindex="0">Initialize</button>
+          <button class="btn-pro w-full plan-btn" data-plan="Custom" tabindex="0">Start a Conversation</button>
         </div>
 
       </div>
@@ -807,63 +767,69 @@
     <!-- FAQ -->
     <section class="section-padding max-w-4xl mx-auto">
       <div class="mb-16 reveal">
-        <p class="font-mono text-[10px] text-zinc-600 uppercase tracking-widest mb-4">/ 03 Inquiries</p>
-        <h2 class="text-5xl font-bold tracking-tighter">Common Questions</h2>
+        <p class="font-mono text-[10px] uppercase tracking-widest mb-4" style="color:var(--burg-mid);">/ 03 FAQs</p>
+        <h2 class="text-5xl font-bold tracking-tighter" style="color:var(--cream);">Things People Ask</h2>
       </div>
       <div class="reveal">
         <div class="faq-item" onclick="toggleFaq(this)" tabindex="0" role="button" aria-expanded="false">
           <div class="faq-question text-lg font-bold">
-            HOW LONG DOES A PROJECT TAKE? <i data-lucide="plus" class="w-4 h-4 faq-icon"></i>
+            How long does a project take? <i data-lucide="plus" class="w-4 h-4 faq-icon" style="color:var(--taupe);"></i>
           </div>
-          <div class="faq-answer mt-4">Standard projects typically span 7-14 business days, depending on the complexity of motion and architectural requirements.</div>
+          <div class="faq-answer mt-4">Most projects are done within 7 to 14 days. Simpler sites can be faster — more complex ones may take a bit longer, but I'll always give you a clear timeline upfront.</div>
         </div>
         <div class="faq-item" onclick="toggleFaq(this)" tabindex="0" role="button" aria-expanded="false">
           <div class="faq-question text-lg font-bold">
-            DO YOU PROVIDE MAINTENANCE? <i data-lucide="plus" class="w-4 h-4 faq-icon"></i>
+            Do you help after launch? <i data-lucide="plus" class="w-4 h-4 faq-icon" style="color:var(--taupe);"></i>
           </div>
-          <div class="faq-answer mt-4">Yes, I provide 30 days of post-launch technical support to ensure your cinematic experience remains fluid and functional.</div>
+          <div class="faq-answer mt-4">Yes — every project comes with 30 days of post-launch support. If something breaks or needs tweaking, I'll sort it out at no extra cost.</div>
         </div>
         <div class="faq-item" onclick="toggleFaq(this)" tabindex="0" role="button" aria-expanded="false">
           <div class="faq-question text-lg font-bold">
-            WILL MY WEBSITE WORK ON MOBILE DEVICES? <i data-lucide="plus" class="w-4 h-4 faq-icon"></i>
+            Will it work on mobile? <i data-lucide="plus" class="w-4 h-4 faq-icon" style="color:var(--taupe);"></i>
           </div>
-          <div class="faq-answer mt-4">Yes, all websites I create are fully responsive and optimized for mobile, tablet, and desktop.</div>
+          <div class="faq-answer mt-4">Always. Every site I build is tested on phones, tablets, and desktops before delivery — mobile is not an afterthought, it's part of the design from day one.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)" tabindex="0" role="button" aria-expanded="false">
+          <div class="faq-question text-lg font-bold">
+            How do I get started? <i data-lucide="plus" class="w-4 h-4 faq-icon" style="color:var(--taupe);"></i>
+          </div>
+          <div class="faq-answer mt-4">Just fill out the form below with a quick brief about what you need. I'll respond on WhatsApp within a few hours and we can go from there.</div>
         </div>
       </div>
     </section>
 
     <!-- CONTACT -->
-    <section id="contact" class="section-padding bg-zinc-950">
+    <section id="contact" class="section-padding" style="background: rgba(86,28,36,0.08);">
       <div class="max-w-4xl mx-auto">
         <div class="text-center mb-16 reveal">
-          <h2 class="text-6xl font-bold tracking-tighter">Connect</h2>
-          <p class="font-mono text-zinc-500 text-[10px] uppercase tracking-widest mt-2">Available for Worldwide Partnership</p>
+          <h2 class="text-6xl font-bold tracking-tighter" style="color:var(--cream);">Let's Build</h2>
+          <p class="font-mono text-[10px] uppercase tracking-widest mt-2" style="color:var(--taupe);">Open for New Projects</p>
         </div>
         <form id="contactForm" class="grid gap-10 reveal">
           <div class="grid md:grid-cols-2 gap-10">
             <div class="relative">
-              <label for="name" class="font-mono text-[8px] text-zinc-600 uppercase tracking-widest mb-2 block">Full Name</label>
-              <input type="text" id="name" placeholder="YOUR NAME" class="bg-transparent border-b border-zinc-800 p-4 focus:border-white outline-none font-mono text-xs uppercase w-full" required aria-label="Full Name">
+              <label for="name" class="font-mono text-[8px] uppercase tracking-widest mb-2 block" style="color:var(--taupe);">Your Name</label>
+              <input type="text" id="name" placeholder="e.g. Priya Sharma" class="bg-transparent p-4 outline-none font-mono text-xs w-full" style="border-bottom: 1px solid rgba(199,183,163,0.2);" required aria-label="Full Name">
             </div>
             <div class="relative">
-              <label for="type" class="font-mono text-[8px] text-zinc-600 uppercase tracking-widest mb-2 block">Service Selection</label>
-              <select id="type" class="bg-transparent border-b border-zinc-800 p-4 focus:border-white outline-none font-mono text-xs text-zinc-500 w-full" required aria-label="Service Selection">
-                <option value="" disabled selected>SERVICE SELECTION</option>
-                <option value="Essential Presence">Essential Presence (₹1499)</option>
-                <option value="Cinematic Experience">Cinematic Experience (₹1999)</option>
-                <option value="Custom Enterprise">Custom / Enterprise</option>
+              <label for="type" class="font-mono text-[8px] uppercase tracking-widest mb-2 block" style="color:var(--taupe);">What do you need?</label>
+              <select id="type" class="bg-transparent p-4 outline-none font-mono text-xs w-full" style="border-bottom: 1px solid rgba(199,183,163,0.2); color:var(--taupe);" required aria-label="Service Selection">
+                <option value="" disabled selected style="background:var(--bg);">Select a package</option>
+                <option value="Starter" style="background:var(--bg);">Starter — ₹1499</option>
+                <option value="Professional" style="background:var(--bg);">Professional — ₹1999</option>
+                <option value="Custom" style="background:var(--bg);">Custom — Let's discuss</option>
               </select>
             </div>
           </div>
           <div class="relative">
-            <label for="message" class="font-mono text-[8px] text-zinc-600 uppercase tracking-widest mb-2 block">Project Brief</label>
-            <textarea id="message" rows="3" placeholder="PROJECT BRIEF" class="bg-transparent border-b border-zinc-800 p-4 focus:border-white outline-none font-mono text-xs w-full" required aria-label="Project Brief"></textarea>
+            <label for="message" class="font-mono text-[8px] uppercase tracking-widest mb-2 block" style="color:var(--taupe);">Tell me about your project</label>
+            <textarea id="message" rows="3" placeholder="What's the site for? Any references or ideas?" class="bg-transparent p-4 outline-none font-mono text-xs w-full" style="border-bottom: 1px solid rgba(199,183,163,0.2);" required aria-label="Project Brief"></textarea>
           </div>
           <div class="text-center">
-            <button type="submit" class="btn-pro" tabindex="0">Initialize WhatsApp</button>
+            <button type="submit" class="btn-pro" tabindex="0">Send via WhatsApp</button>
           </div>
-          <div id="formSuccess" class="hidden text-center font-mono text-[10px] text-green-400 animate-pulse">
-            Opening WhatsApp... Thank you for connecting!
+          <div id="formSuccess" class="hidden text-center font-mono text-[10px] animate-pulse" style="color:var(--taupe);">
+            Opening WhatsApp... talk soon.
           </div>
         </form>
       </div>
@@ -871,20 +837,19 @@
 
   </main>
 
-  <footer class="p-12 text-center border-t border-zinc-900 text-zinc-600 font-mono text-[9px] uppercase tracking-[0.4em]">
-    © 2026 CODE101 // Engineered by Yuga // Coimbatore, IN
+  <footer class="p-12 text-center font-mono text-[9px] uppercase tracking-[0.4em]" style="border-top: 1px solid rgba(86,28,36,0.3); color: rgba(199,183,163,0.3);">
+    © 2026 CODE101 // Built by Yuga // Coimbatore, IN
   </footer>
 
   <script>
     lucide.createIcons();
-
     const isMobile = window.innerWidth < 768;
 
-    /* ── LOGO → scroll to top ── */
+    /* ── LOGO → top ── */
     document.querySelector('.logo').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
     document.querySelector('.logo').addEventListener('keydown', (e) => { if (e.key === 'Enter') window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
-    /* ── 3D HERO TILT (desktop only) ── */
+    /* ── 3D HERO TILT ── */
     const heroTitle = document.getElementById('heroTitle');
     if (!isMobile) {
       window.addEventListener('mousemove', (e) => {
@@ -894,239 +859,134 @@
       });
     }
 
-    /* ── CUSTOM CURSOR (desktop) + HAPTICS (mobile) ── */
+    /* ── CURSOR + HAPTICS ── */
     const cursor = document.getElementById('cursor');
-    const interactiveElements = document.querySelectorAll('a, button, .work-card, .faq-item, input, select, textarea, .process-step, .pricing-card');
+    const interactiveEls = document.querySelectorAll('a, button, .work-card, .faq-item, input, select, textarea, .process-step, .pricing-card');
 
     if (!isMobile) {
       window.addEventListener('mousemove', (e) => {
         cursor.style.left = e.clientX + 'px';
         cursor.style.top  = e.clientY + 'px';
       });
-      interactiveElements.forEach(el => {
+      interactiveEls.forEach(el => {
         el.addEventListener('mouseenter', () => { cursor.style.width = '60px'; cursor.style.height = '60px'; });
         el.addEventListener('mouseleave', () => { cursor.style.width = '8px';  cursor.style.height = '8px'; });
       });
     } else {
-      interactiveElements.forEach(el => {
+      interactiveEls.forEach(el => {
         el.addEventListener('touchstart', () => { if (navigator.vibrate) navigator.vibrate(10); }, { passive: true });
       });
     }
 
-    /* ════════════════════════════════════════════════
-       MOBILE FEATURE 1 — HAMBURGER MENU
-    ════════════════════════════════════════════════ */
+    /* ── HAMBURGER ── */
     const mobHamburger = document.getElementById('mobHamburger');
     const mobMenu      = document.getElementById('mobMenu');
     let menuOpen = false;
 
-    function openMobMenu() {
-      menuOpen = true;
-      mobHamburger.classList.add('open');
-      mobMenu.classList.add('open');
-      mobHamburger.setAttribute('aria-expanded', 'true');
-      document.body.style.overflow = 'hidden'; // prevent scroll behind menu
-    }
+    function openMobMenu()  { menuOpen = true;  mobHamburger.classList.add('open');    mobMenu.classList.add('open');    mobHamburger.setAttribute('aria-expanded', 'true');  document.body.style.overflow = 'hidden'; }
+    function closeMobMenu() { menuOpen = false; mobHamburger.classList.remove('open'); mobMenu.classList.remove('open'); mobHamburger.setAttribute('aria-expanded', 'false'); document.body.style.overflow = ''; }
 
-    function closeMobMenu() {
-      menuOpen = false;
-      mobHamburger.classList.remove('open');
-      mobMenu.classList.remove('open');
-      mobHamburger.setAttribute('aria-expanded', 'false');
-      document.body.style.overflow = '';
-    }
+    mobHamburger.addEventListener('click', () => { if (navigator.vibrate) navigator.vibrate(15); menuOpen ? closeMobMenu() : openMobMenu(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && menuOpen) closeMobMenu(); });
 
-    mobHamburger.addEventListener('click', () => {
-      if (navigator.vibrate) navigator.vibrate(15);
-      menuOpen ? closeMobMenu() : openMobMenu();
-    });
-
-    // Close menu on Escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && menuOpen) closeMobMenu();
-    });
-
-    /* ════════════════════════════════════════════════
-       MOBILE FEATURE 2 — SWIPE CAROUSEL
-    ════════════════════════════════════════════════ */
+    /* ── CAROUSEL ── */
     const track  = document.getElementById('mobCarouselTrack');
     const slides = document.querySelectorAll('.mob-carousel-slide');
     const dots   = document.querySelectorAll('.mob-dot');
-    let currentSlide = 0;
-    let startX = 0;
-    let isDragging = false;
-    let dragDelta = 0;
+    let currentSlide = 0, startX = 0, isDragging = false, dragDelta = 0;
 
-    function getSlideWidth() {
-      // 88% card + 4% gap = 92% per slide, offset = 6% padding
-      const wrap = document.getElementById('mobCarousel');
-      return wrap ? wrap.offsetWidth * 0.92 : window.innerWidth * 0.92;
-    }
+    function getSlideWidth() { const w = document.getElementById('mobCarousel'); return w ? w.offsetWidth * 0.92 : window.innerWidth * 0.92; }
 
     function goToSlide(index) {
       if (index < 0) index = 0;
       if (index >= slides.length) index = slides.length - 1;
-
       currentSlide = index;
-      const offset = getSlideWidth() * index;
-      track.style.transform = `translateX(-${offset}px)`;
-
-      // Update active card
+      track.style.transform = `translateX(-${getSlideWidth() * index}px)`;
       slides.forEach((s, i) => s.classList.toggle('active', i === index));
-      // Update dots
-      dots.forEach((d, i) => d.classList.toggle('active', i === index));
-
+      dots.forEach((d, i)   => d.classList.toggle('active', i === index));
       if (navigator.vibrate) navigator.vibrate(8);
     }
 
-    // Touch events for swipe
-    track.addEventListener('touchstart', (e) => {
-      startX    = e.touches[0].clientX;
-      isDragging = true;
-      track.style.transition = 'none'; // remove transition during drag
-    }, { passive: true });
+    track.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; isDragging = true; track.style.transition = 'none'; }, { passive: true });
+    track.addEventListener('touchmove',  (e) => { if (!isDragging) return; dragDelta = e.touches[0].clientX - startX; track.style.transform = `translateX(${-(getSlideWidth() * currentSlide) + dragDelta}px)`; }, { passive: true });
+    track.addEventListener('touchend',   ()  => { isDragging = false; track.style.transition = 'transform 0.45s cubic-bezier(0.19, 1, 0.22, 1)'; if (dragDelta < -60) goToSlide(currentSlide + 1); else if (dragDelta > 60) goToSlide(currentSlide - 1); else goToSlide(currentSlide); dragDelta = 0; });
 
-    track.addEventListener('touchmove', (e) => {
-      if (!isDragging) return;
-      dragDelta = e.touches[0].clientX - startX;
-      const base = getSlideWidth() * currentSlide;
-      track.style.transform = `translateX(${-base + dragDelta}px)`;
-    }, { passive: true });
-
-    track.addEventListener('touchend', () => {
-      isDragging = false;
-      track.style.transition = 'transform 0.45s cubic-bezier(0.19, 1, 0.22, 1)';
-
-      // Swipe threshold: 60px
-      if (dragDelta < -60)      goToSlide(currentSlide + 1);
-      else if (dragDelta > 60)  goToSlide(currentSlide - 1);
-      else                      goToSlide(currentSlide); // snap back
-
-      dragDelta = 0;
-    });
-
-    /* ════════════════════════════════════════════════
-       MOBILE FEATURE 3 — PRICING RIPPLE + SCROLL
-    ════════════════════════════════════════════════ */
+    /* ── PRICING RIPPLE ── */
     document.querySelectorAll('.plan-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const plan = btn.getAttribute('data-plan');
-        document.getElementById('type').value = plan;
-
+        document.getElementById('type').value = btn.getAttribute('data-plan');
         if (isMobile) {
-          // Create ripple at tap position
           const card = btn.closest('.ripple-container');
           if (card) {
-            const rect   = card.getBoundingClientRect();
-            const ripple = document.createElement('div');
-            ripple.className = 'ripple-circle';
-            // Position relative to card
-            ripple.style.left = (e.clientX - rect.left) + 'px';
-            ripple.style.top  = (e.clientY - rect.top)  + 'px';
-            card.appendChild(ripple);
-            // Remove ripple element after animation finishes
-            ripple.addEventListener('animationend', () => ripple.remove());
+            const rect = card.getBoundingClientRect();
+            const rip  = document.createElement('div');
+            rip.className = 'ripple-circle';
+            rip.style.left = (e.clientX - rect.left) + 'px';
+            rip.style.top  = (e.clientY - rect.top)  + 'px';
+            card.appendChild(rip);
+            rip.addEventListener('animationend', () => rip.remove());
           }
-          // Delay scroll slightly so ripple is visible
-          setTimeout(() => {
-            document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
-          }, 400);
+          setTimeout(() => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' }), 400);
         } else {
-          // Desktop: immediate scroll (original behaviour)
           document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
         }
       });
     });
 
-    /* ════════════════════════════════════════════════
-       FAQ ACCORDION
-    ════════════════════════════════════════════════ */
+    /* ── FAQ ── */
     function toggleFaq(el) {
       const answer = el.querySelector('.faq-answer');
       const icon   = el.querySelector('.faq-icon');
       const isOpen = el.getAttribute('aria-expanded') === 'true';
-      if (isOpen) {
-        answer.style.maxHeight = null;
-        icon.style.transform   = 'rotate(0deg)';
-        el.setAttribute('aria-expanded', 'false');
-      } else {
-        answer.style.maxHeight = answer.scrollHeight + 'px';
-        icon.style.transform   = 'rotate(45deg)';
-        el.setAttribute('aria-expanded', 'true');
-      }
+      if (isOpen) { answer.style.maxHeight = null; icon.style.transform = 'rotate(0deg)';  el.setAttribute('aria-expanded', 'false'); }
+      else         { answer.style.maxHeight = answer.scrollHeight + 'px'; icon.style.transform = 'rotate(45deg)'; el.setAttribute('aria-expanded', 'true'); }
       if (navigator.vibrate) navigator.vibrate(8);
     }
-
     document.querySelectorAll('.faq-item').forEach(item => {
-      item.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleFaq(item); }
-      });
+      item.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleFaq(item); } });
     });
 
-    /* ════════════════════════════════════════════════
-       SMOKE PARTICLE SYSTEM
-    ════════════════════════════════════════════════ */
-    const smokeCanvas = document.getElementById('smokeCanvas');
-    const ctx         = smokeCanvas.getContext('2d');
-    let particles     = [];
-
-    function resizeCanvas() { smokeCanvas.width = window.innerWidth; smokeCanvas.height = window.innerHeight; }
+    /* ── SMOKE ── */
+    const sc  = document.getElementById('smokeCanvas');
+    const ctx = sc.getContext('2d');
+    let particles = [];
+    function resizeCanvas() { sc.width = window.innerWidth; sc.height = window.innerHeight; }
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
     class Smoke {
       constructor() { this.reset(); }
-      reset() {
-        this.x     = Math.random() * smokeCanvas.width;
-        this.y     = smokeCanvas.height + 100;
-        this.size  = Math.random() * 250 + 100;
-        this.alpha = Math.random() * 0.3;
-        this.vy    = -Math.random() * 0.5 - 0.2;
-      }
-      update() { this.y += this.vy; this.alpha -= 0.0006; if (this.alpha <= 0) this.reset(); }
+      reset() { this.x = Math.random() * sc.width; this.y = sc.height + 100; this.size = Math.random() * 250 + 100; this.alpha = Math.random() * 0.2; this.vy = -Math.random() * 0.5 - 0.2; }
+      update() { this.y += this.vy; this.alpha -= 0.0005; if (this.alpha <= 0) this.reset(); }
       draw() {
         ctx.beginPath();
         const g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
-        g.addColorStop(0, `rgba(255,255,255,${this.alpha})`);
+        g.addColorStop(0, `rgba(86,28,36,${this.alpha})`);
         g.addColorStop(1, 'rgba(0,0,0,0)');
         ctx.fillStyle = g;
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
       }
     }
-
-    const particleCount = isMobile ? 12 : 30;
-    for (let i = 0; i < particleCount; i++) particles.push(new Smoke());
-
-    function anim() {
-      ctx.clearRect(0, 0, smokeCanvas.width, smokeCanvas.height);
-      particles.forEach(p => { p.update(); p.draw(); });
-      requestAnimationFrame(anim);
-    }
+    for (let i = 0; i < (isMobile ? 10 : 25); i++) particles.push(new Smoke());
+    function anim() { ctx.clearRect(0, 0, sc.width, sc.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(anim); }
     anim();
 
-    /* ════════════════════════════════════════════════
-       SCROLL REVEAL
-    ════════════════════════════════════════════════ */
-    const revealObserver = new IntersectionObserver(
-      entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
-      { threshold: 0.1 }
-    );
-    document.querySelectorAll('.reveal').forEach(r => revealObserver.observe(r));
+    /* ── SCROLL REVEAL ── */
+    const obs = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(r => obs.observe(r));
 
-    /* ════════════════════════════════════════════════
-       CONTACT FORM → WHATSAPP
-    ════════════════════════════════════════════════ */
+    /* ── FORM → WHATSAPP ── */
     document.getElementById('contactForm').addEventListener('submit', (e) => {
       e.preventDefault();
       const n = document.getElementById('name').value;
       const t = document.getElementById('type').value;
       const m = document.getElementById('message').value;
-      const successMsg = document.getElementById('formSuccess');
-      successMsg.classList.remove('hidden');
+      const msg = document.getElementById('formSuccess');
+      msg.classList.remove('hidden');
       setTimeout(() => {
-        window.open(`https://wa.me/919843487386?text=*CODE101 INQUIRY*%0A*Name:* ${n}%0A*Tier:* ${t}%0A*Brief:* ${m}`, '_blank');
-        successMsg.classList.add('hidden');
+        window.open(`https://wa.me/919843487386?text=*CODE101 Inquiry*%0A*Name:* ${n}%0A*Package:* ${t}%0A*Project:* ${m}`, '_blank');
+        msg.classList.add('hidden');
       }, 1000);
     });
   </script>
